@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Blueprints</h1>
+
+<div id="blueprints">
+  <% @blueprints.each do |blueprint| %>
+    <%= render blueprint %>
+    <p>
+      <%= link_to "Show this blueprint", blueprint %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New blueprint", new_blueprint_path %>

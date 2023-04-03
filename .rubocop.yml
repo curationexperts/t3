@@ -6,5 +6,16 @@ require:
 AllCops:
   NewCops: enable
 
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+RSpec/FactoryBot/SyntaxMethods:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - 'db/**/*'
+    - 'test/**/*'
