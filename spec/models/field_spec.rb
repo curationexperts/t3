@@ -37,9 +37,9 @@ RSpec.describe Field do
     end
 
     it 'orders new fields at the end', :aggregate_failures do
-      field1 = described_class.create!(blueprint:, name: 'field_1')
-      field2 = described_class.create!(blueprint:, name: 'field_2')
-      field3 = described_class.create!(blueprint:, name: 'field_3')
+      field1 = described_class.create!(blueprint: blueprint, name: 'field_1')
+      field2 = described_class.create!(blueprint: blueprint, name: 'field_2')
+      field3 = described_class.create!(blueprint: blueprint, name: 'field_3')
       expect(field3.order).to be > field2.order
       expect(field2.order).to be > field1.order
     end

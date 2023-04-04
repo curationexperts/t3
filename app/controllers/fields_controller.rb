@@ -16,11 +16,13 @@ class FieldsController < ApplicationController
   end
 
   # GET /fields/1/edit
-  def edit; end
+  def edit
+    params[:blueprint_id] = @field.blueprint_id
+  end
 
   # POST /fields or /fields.json
-  def create
-    @field = Field.new(field_params)
+  def create # rubocop:disable Metrics/AbcSize
+    @field = Field.new(field_params.merge(blueprint_id: params[:blueprint_id]))
 
     respond_to do |format|
       if @field.save
@@ -51,7 +53,7 @@ class FieldsController < ApplicationController
     @field.destroy
 
     respond_to do |format|
-      format.html { redirect_to fields_url, notice: 'Field was successfully destroyed.' }
+      format.html { redirect_to blueprint_url(@field.blueprint_id), notice: 'Field was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

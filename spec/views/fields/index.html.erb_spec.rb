@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'fields/index' do
+  let(:field1) { FactoryBot.create(:field, name: 'field_1') }
+  let(:field2) { FactoryBot.create(:field, name: 'field_2') }
+  let(:blueprint) { FactoryBot.create(:blueprint, fields: [field1, field2]) }
+
   before do
-    assign(:fields, [
-             FactoryBot.create(:field, name: 'field_1'),
-             FactoryBot.create(:field, name: 'field_2')
-           ])
+    assign(:fields, [field1, field2])
+    params[:blueprint_id] = blueprint.id
   end
 
   it 'renders a list of fields' do

@@ -4,4 +4,37 @@
     <%= blueprint.name %>
   </p>
 
+  <table>
+    <thead>
+    <tr>
+      <th class='field_order'>#</th>
+      <th class='field_name'>Field</th>
+      <th class='field_required'>Required</th>
+      <th class='field_multiple'>Multiple</th>
+      <th class='field_data_type'>Type</th>
+      <th class='field_actions'>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% blueprint.fields.sort_by{|f| f.order}.each do |field| -%>
+    <tr>
+      <td class='field_order'><%= field.order -%></td>
+      <td class='field_name'><%= field.name -%></td>
+      <td class='field_required'><%= field.required -%></td>
+      <td class='field_multiple'><%= field.multiple -%></td>
+      <td class='field_data_type'><%= field.data_type -%></td>
+      <td class='field_actions'>
+        <%= link_to('edit', edit_field_path(field)) %>
+        <%= link_to('delete', field_path(field), method: :delete) %>
+      </td>
+    </tr>
+    <% end -%>
+    <tr>
+      <td class='field_order'></td>
+      <td class='field_name' colspan='4'><%= link_to('add field', new_blueprint_field_path(blueprint)) -%></td>
+      <td class='field_actions'></td>
+    </tr>
+    </tbody>
+  </table>
+
 </div>
