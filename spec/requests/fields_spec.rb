@@ -16,18 +16,14 @@ RSpec.describe '/fields' do
   # This should return the minimal set of attributes required to create a valid
   # Field. As you add validations to Field, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
-
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
+  let(:blueprint) { FactoryBot.create(:blueprint) }
+  let(:valid_attributes) { FactoryBot.attributes_for(:field).merge(blueprint_id: blueprint.id) }
+  let(:invalid_attributes) { FactoryBot.attributes_for(:field, name: 'Bad name!').merge(blueprint_id: blueprint.id) }
 
   describe 'GET /index' do
     it 'renders a successful response' do
       Field.create! valid_attributes
-      get fields_url
+      get blueprint_fields_path(blueprint.id)
       expect(response).to be_successful
     end
   end
@@ -42,7 +38,7 @@ RSpec.describe '/fields' do
 
   describe 'GET /new' do
     it 'renders a successful response' do
-      get new_field_url
+      get new_blueprint_field_url('1')
       expect(response).to be_successful
     end
   end
@@ -59,12 +55,12 @@ RSpec.describe '/fields' do
     context 'with valid parameters' do
       it 'creates a new Field' do
         expect do
-          post fields_url, params: { field: valid_attributes }
+          post blueprint_fields_path(blueprint.id), params: { field: valid_attributes.except(:blueprint_id) }
         end.to change(Field, :count).by(1)
       end
 
       it 'redirects to the created field' do
-        post fields_url, params: { field: valid_attributes }
+        post blueprint_fields_url(blueprint.id), params: { field: valid_attributes }
         expect(response).to redirect_to(field_url(Field.last))
       end
     end
@@ -72,12 +68,12 @@ RSpec.describe '/fields' do
     context 'with invalid parameters' do
       it 'does not create a new Field' do
         expect do
-          post fields_url, params: { field: invalid_attributes }
+          post blueprint_fields_url(blueprint.id), params: { field: invalid_attributes }
         end.not_to change(Field, :count)
       end
 
       it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post fields_url, params: { field: invalid_attributes }
+        post blueprint_fields_url(blueprint.id), params: { field: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -85,15 +81,14 @@ RSpec.describe '/fields' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
-      end
+      let(:new_attributes) { { name: 'a_new_name', required: true } }
 
-      it 'updates the requested field' do
+      it 'updates the requested field', :aggregate_failures do
         field = Field.create! valid_attributes
+        expect(field.name).to eq 'MyString'
         patch field_url(field), params: { field: new_attributes }
         field.reload
-        skip('Add assertions for updated state')
+        expect(field.name).to eq 'a_new_name'
       end
 
       it 'redirects to the field' do
@@ -107,7 +102,7 @@ RSpec.describe '/fields' do
     context 'with invalid parameters' do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
         field = Field.create! valid_attributes
-        patch field_url(field), params: { field: invalid_attributes }
+        patch field_url(field), params: { field: invalid_attributes, blueprint_id: blueprint.id }
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -124,7 +119,7 @@ RSpec.describe '/fields' do
     it 'redirects to the fields list' do
       field = Field.create! valid_attributes
       delete field_url(field)
-      expect(response).to redirect_to(fields_url)
+      expect(response).to redirect_to(blueprint_url(field.blueprint_id))
     end
   end
 end

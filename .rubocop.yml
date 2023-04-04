@@ -15,6 +15,9 @@ RSpec/FactoryBot/SyntaxMethods:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
 Style/Documentation:
   Exclude:
     - 'db/**/*'

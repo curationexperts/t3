@@ -4,7 +4,7 @@
 
 <div>
   <%= link_to "Edit this field", edit_field_path(@field) %> |
-  <%= link_to "Back to fields", fields_path %>
+  <%= link_to "Back to fields", blueprint_fields_path(@field.blueprint_id) %>
 
   <%= button_to "Destroy this field", @field, method: :delete %>
 </div>
