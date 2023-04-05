@@ -11,7 +11,13 @@
 # a separate helper file that requires the additional dependencies and performs
 # the additional setup, and require it from the spec files that actually need
 # it.
-#
+
+if ENV['COVERAGE']
+  require 'simplecov'
+  require 'simplecov_json_formatter'
+  SimpleCov.start 'rails'
+end
+
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
