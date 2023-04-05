@@ -20,6 +20,7 @@ jobs:
           PGHOST: localhost
           PGUSER: t3user
           POSTGRES_PASSWORD: ephemeral
+          COVERAGE: true
       - image: postgres:14.7
         environment:
           POSTGRES_USER: t3user
@@ -29,13 +30,21 @@ jobs:
     executor: ruby/default
     steps:
       - checkout
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            # download test reporter as a static binary
+                     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                     chmod +x ./cc-test-reporter
       - ruby/install-deps
       - node/install-packages:
           pkg-manager: yarn
       - run: bundle exec rake assets:precompile
       - run: bundle exec rake db:setup
       - ruby/rubocop-check
+      - run: ./cc-test-reporter before-build
       - ruby/rspec-test
+      - run: ./cc-test-reporter after-build --coverage-input-type simplecov
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
