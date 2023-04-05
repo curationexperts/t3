@@ -14,12 +14,21 @@ jobs:
     working_directory: ~/t3
     docker:
       - image: cimg/ruby:3.2.1
-    environment:
-      RAILS_ENV: test
+        environment:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: t3user
+      - image: postgres:9.5
+        environment:
+          POSTGRES_USER: t3user
+          POSTGRES_DB: t3_test
+          POSTGRES_PASSWORD: ""
+
     executor: ruby/default
     steps:
       - checkout
       - ruby/install-deps
+      - run: bundle exec rake db:setup
       - run: bundle exec rspec
 
 # Invoke jobs via workflows
