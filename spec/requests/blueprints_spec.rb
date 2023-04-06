@@ -16,13 +16,9 @@ RSpec.describe '/blueprints' do
   # This should return the minimal set of attributes required to create a valid
   # Blueprint. As you add validations to Blueprint, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
+  let(:valid_attributes) { { name: 'sample_blueprint' } }
 
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
+  let(:invalid_attributes) { { name: 'bad &^%#@! blueprint!' } }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -85,15 +81,13 @@ RSpec.describe '/blueprints' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
-      end
+      let(:new_attributes) { { name: 'renamed_blueprint' } }
 
       it 'updates the requested blueprint' do
         blueprint = Blueprint.create! valid_attributes
         patch blueprint_url(blueprint), params: { blueprint: new_attributes }
         blueprint.reload
-        skip('Add assertions for updated state')
+        expect(blueprint.name).to eq 'renamed_blueprint'
       end
 
       it 'redirects to the blueprint' do
