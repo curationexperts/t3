@@ -39,7 +39,6 @@ jobs:
       - ruby/install-deps
       - node/install-packages:
           pkg-manager: yarn
-      - run: bundle exec rake assets:precompile
       - run: bundle exec rake db:setup
       - ruby/rubocop-check
       - run: ./cc-test-reporter before-build
