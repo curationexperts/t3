@@ -12,6 +12,6 @@ RSpec.describe 'fields/show' do
     expect(rendered).to match(/false/)
     expect(rendered).to match(/false/)
     expect(rendered).to match(/0/)
-    expect(rendered).to match(/3/)
+    expect(rendered).to match(/string/)
   end
 end
