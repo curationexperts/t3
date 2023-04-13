@@ -16,6 +16,6 @@ RSpec.describe 'fields/index' do
     assert_select 'div>p', text: /Name/, count: 2
     assert_select 'div>p', text: /false/, count: 4
     assert_select 'div>p', text: /Order:\s+0/, count: 2
-    assert_select 'div>p', text: /Type:\s+3/, count: 2
+    assert_select 'div>p', text: /Type:\s+string/, count: 2
   end
 end

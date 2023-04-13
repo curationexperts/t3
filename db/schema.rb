@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_03_224500) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_13_171328) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,5 +32,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_224500) do
     t.index ["blueprint_id"], name: "index_fields_on_blueprint_id"
   end
 
+  create_table "works", force: :cascade do |t|
+    t.json "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "blueprint_id", null: false
+    t.index ["blueprint_id"], name: "index_works_on_blueprint_id"
+  end
+
   add_foreign_key "fields", "blueprints"
+  add_foreign_key "works", "blueprints"
 end

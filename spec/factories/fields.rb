@@ -4,7 +4,7 @@ FactoryBot.define do
     blueprint
     required { false }
     multiple { false }
-    data_type { 3 }
+    data_type { 'string' }
     order { 0 }
   end
 end
