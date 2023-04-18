@@ -21,7 +21,7 @@ class FieldsController < ApplicationController
   end
 
   # POST /fields or /fields.json
-  def create # rubocop:disable Metrics/AbcSize
+  def create
     @field = Field.new(field_params.merge(blueprint_id: params[:blueprint_id]))
 
     respond_to do |format|

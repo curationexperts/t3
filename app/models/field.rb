@@ -37,11 +37,11 @@ class Field < ApplicationRecord
 
   DATA_TYPE_MAPPER = {
     'text' => 'te',
-    'string' => 'st',
-    'integer' => 'in',
-    'float' => 'fl',
+    'string' => 's',
+    'integer' => 'i',
+    'float' => 'f',
     'date' => 'dt',
-    'boolean' => 'bo'
+    'boolean' => 'b'
   }.freeze
   def type_flag
     DATA_TYPE_MAPPER.fetch(data_type, 'xx')
