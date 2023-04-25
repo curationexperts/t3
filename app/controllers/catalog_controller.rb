@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Blacklight controller that handles searches and document requests
-class CatalogController < ApplicationController
+class CatalogController < ApplicationController # rubocop:disable Metrics/ClassLength
   include Blacklight::Catalog
 
   # If you'd like to handle errors returned by Solr in a certain way,
@@ -10,7 +10,7 @@ class CatalogController < ApplicationController
   #
   # rescue_from Blacklight::Exceptions::InvalidRequest, with: :my_handling_method
 
-  configure_blacklight do |config|
+  configure_blacklight do |config| # rubocop:disable Metrics/BlockLength
     ## Specify the style of markup to be generated (may be 4 or 5)
     # config.bootstrap_version = 5
     #
@@ -71,6 +71,7 @@ class CatalogController < ApplicationController
 
     config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
     config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
+    config.add_nav_action(:dashboard, partial: 'blacklight/nav/dashboard')
 
     # solr field configuration for document/show views
     # config.show.title_field = 'title_tsim'
@@ -109,22 +110,25 @@ class CatalogController < ApplicationController
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
 
-    config.add_facet_field 'format', label: 'Format'
-    config.add_facet_field 'pub_date_ssim', label: 'Publication Year', single: true
-    config.add_facet_field 'subject_ssim', label: 'Topic', limit: 20, index_range: 'A'..'Z'
-    config.add_facet_field 'language_ssim', label: 'Language', limit: true
-    config.add_facet_field 'lc_1letter_ssim', label: 'Call Number'
-    config.add_facet_field 'subject_geo_ssim', label: 'Region'
-    config.add_facet_field 'subject_era_ssim', label: 'Era'
+    config.add_facet_field 'keyword_sim', label: 'Keyword'
+    config.add_facet_field 'creator_sim', label: 'Creator'
+    config.add_facet_field 'object_type_ssim', label: 'Class'
+    # config.add_facet_field 'format', label: 'Format'
+    # config.add_facet_field 'pub_date_ssim', label: 'Publication Year', single: true
+    # config.add_facet_field 'subject_ssim', label: 'Topic', limit: 20, index_range: 'A'..'Z'
+    # config.add_facet_field 'language_ssim', label: 'Language', limit: true
+    # config.add_facet_field 'lc_1letter_ssim', label: 'Call Number'
+    # config.add_facet_field 'subject_geo_ssim', label: 'Region'
+    # config.add_facet_field 'subject_era_ssim', label: 'Era'
 
-    config.add_facet_field 'example_pivot_field', label: 'Pivot Field', pivot: %w[format language_ssim],
-                                                  collapsing: true
-
-    config.add_facet_field 'example_query_facet_field', label: 'Publish Date', query: {
-      years_5: { label: 'within 5 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 5} TO *]" },
-      years_10: { label: 'within 10 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 10} TO *]" },
-      years_25: { label: 'within 25 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 25} TO *]" }
-    }
+    # config.add_facet_field 'example_pivot_field', label: 'Pivot Field', pivot: %w[format language_ssim],
+    #                                               collapsing: true
+    #
+    # config.add_facet_field 'example_query_facet_field', label: 'Publish Date', query: {
+    #   years_5: { label: 'within 5 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 5} TO *]" },
+    #   years_10: { label: 'within 10 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 10} TO *]" },
+    #   years_25: { label: 'within 25 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 25} TO *]" }
+    # }
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -133,8 +137,10 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
-    config.add_index_field 'title_tsim', label: 'Title'
+    config.add_index_field 'title_tesim', label: 'Title'
     config.add_index_field 'title_vern_ssim', label: 'Title'
+    config.add_index_field 'keyword_sim', label: 'Keyword'
+    config.add_index_field 'creator_sim', label: 'Creator'
     config.add_index_field 'author_tsim', label: 'Author'
     config.add_index_field 'author_vern_ssim', label: 'Author'
     config.add_index_field 'resource_type_ssim', label: 'Type'
@@ -277,5 +283,11 @@ class CatalogController < ApplicationController
     # if the name of the solr.SuggestComponent provided in your solrconfig.xml is not the
     # default 'mySuggester', uncomment and provide it below
     # config.autocomplete_suggester = 'mySuggester'
+  end
+
+  def self.available_solr_fields
+    repo = CatalogController.blacklight_config.repository
+    r = repo.send_and_receive('admin/luke', {})
+    r['fields']
   end
 end

@@ -44,8 +44,8 @@ RSpec.describe Work do
       {
         'blueprint_ssi' => 'basic_metadata_mapping',
         'id' => 'Test001',
-        'title_tesi' => 'One Hundred Years of Solitute',
-        'author_tesim' => 'Márquez, Gabriel García',
+        'title_tsi' => 'One Hundred Years of Solitute',
+        'author_tsim' => 'Márquez, Gabriel García',
         'date_dtsi' => '1967'
       }
     end
