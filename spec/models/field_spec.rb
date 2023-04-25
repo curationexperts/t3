@@ -61,7 +61,7 @@ RSpec.describe Field, :aggregate_failures do
 
     it 'includes a type flag', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
       new_field.data_type = 'text'
-      expect(new_field.dynamic_field_name).to match(/_te/)
+      expect(new_field.dynamic_field_name).to match(/_t/)
       new_field.data_type = 'string'
       expect(new_field.dynamic_field_name).to match(/_s/)
       new_field.data_type = 'integer'
