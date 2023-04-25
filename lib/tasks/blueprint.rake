@@ -1,4 +1,4 @@
-namespace :blueprint do
+namespace :blueprint do # rubocop:disable Metrics/BlockLength
   desc 'Dump existing blueprints'
   task dump: :environment do
     band = ' ==================================================================================================='
@@ -12,7 +12,7 @@ namespace :blueprint do
   end
 
   desc 'Create a default group of blueprints'
-  task seed: :environment do
+  task seed: :environment do # rubocop:disable Metrics/BlockLength
     blueprint = Blueprint.create(name: 'tenejo_work')
     blueprint.fields.create(name: 'identifier',             data_type: 'string', multiple: false)
     blueprint.fields.create(name: 'object_type',            data_type: 'string', multiple: false)

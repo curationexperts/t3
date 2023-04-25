@@ -1,0 +1,27 @@
+<h1>Administration</h1>
+
+<ul>
+  <li><span class='label'>Solr:</span> <%= CatalogController.blacklight_config.connection_config[:url] -%></li>
+  <li>Search Results Index:
+    <uL>
+      <% CatalogController.blacklight_config.index_fields.each do |field, config,| %>
+        <li><span class='label'><%= config.label -%>:</span> <%= config.field -%></li>
+      <% end %>
+    </uL>
+  </li>
+  <li>Single Item View:
+    <uL>
+      <% CatalogController.blacklight_config.show_fields.each do |field, config,| %>
+        <li><span class='label'><%= config.label -%>:</span> <%= config.field -%></li>
+      <% end %>
+    </uL>
+  </li>
+  <li>Available Fields:
+    <uL>
+      <% CatalogController.available_solr_fields.each do |field, config,| %>
+        <li><span class='label'><%= field -%>(<%= config['docs'] -%>):</span> <%= config['schema'] -%></li>
+      <% end %>
+    </uL>
+  </li>
+
+</ul>
