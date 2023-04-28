@@ -1,0 +1,10 @@
+<div id='solr_config' class='card'>
+  <div class='card-body'>
+    <h2>Item View Fields</h2>
+    <ul>
+      <% CatalogController.blacklight_config.show_fields.each do |field, config,| %>
+        <li><span class='label'><%= config.label -%>:</span> <%= config.field -%></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
