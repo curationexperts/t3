@@ -1,0 +1,10 @@
+<div id='solr_config' class='card'>
+  <div class='card-body'>
+    <h2>Fields in Solr</h2>
+    <ul>
+      <% AdminController.available_solr_fields.each do |field, config,| %>
+        <li><span class='label'><%= field -%>(<%= config['docs'] -%>):</span> <%= config['schema'] -%></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
