@@ -1,4 +1,4 @@
-# ActionMailer defaults to be applied app-wide
+# External e-mail support
 class ApplicationMailer < ActionMailer::Base
   default from: 'from@example.com'
   layout 'mailer'
