@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.1'
 
+gem 'blacklight', '~> 8.0', '>= 8.0.1'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
@@ -83,3 +85,12 @@ group :test do
   gem 'simplecov_json_formatter'
   gem 'webdrivers'
 end
+
+group :development, :test do
+  gem 'solr_wrapper', '>= 0.3'
+end
+gem 'bootstrap', '~> 5.1'
+gem 'devise'
+gem 'devise-guests', '~> 0.8'
+gem 'rsolr', '>= 1.0', '< 3'
+gem 'sassc-rails', '~> 2.1'
