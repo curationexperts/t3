@@ -99,7 +99,7 @@ GEM
       xpath (~> 3.2)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
-    cssbundling-rails (1.1.2)
+    dartsass-rails (0.4.1)
       railties (>= 6.0.0)
     date (3.3.3)
     debug (1.7.2)
@@ -373,7 +373,7 @@ DEPENDENCIES
   bootsnap
   bootstrap (~> 5.1)
   capybara
-  cssbundling-rails
+  dartsass-rails (~> 0.4.1)
   debug
   devise
   devise-guests (~> 0.8)
@@ -392,7 +392,6 @@ DEPENDENCIES
   rubocop-capybara
   rubocop-rails
   rubocop-rspec
-  sassc-rails (~> 2.1)
   selenium-webdriver
   simplecov
   simplecov_json_formatter
