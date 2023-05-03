@@ -6,8 +6,20 @@ ruby '3.2.1'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
+# Use Blacklight for front-end discovery
+gem 'blacklight', '~> 8.0'
+gem 'devise'
+gem 'devise-guests', '~> 0.8'
+gem 'rsolr', '>= 1.0', '< 3'
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
+
+# Bootstrap support
+gem 'bootstrap', '~> 5.2', '>= 5.2.3'
+
+# Sass support
+gem 'dartsass-rails', '~> 0.4.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -79,4 +91,8 @@ group :test do
   gem 'simplecov'
   gem 'simplecov_json_formatter'
   gem 'webdrivers'
+end
+
+group :development, :test do
+  gem 'solr_wrapper', '>= 0.3'
 end
