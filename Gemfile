@@ -9,7 +9,10 @@ gem 'blacklight', '~> 8.0', '>= 8.0.1'
 gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
+gem 'sprockets-rails', :require => 'sprockets/railtie'
+
+# Use DartSass for scss processing
+gem "dartsass-rails", "~> 0.4.1"
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -25,9 +28,6 @@ gem 'turbo-rails'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem 'stimulus-rails'
-
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem 'cssbundling-rails'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
@@ -93,4 +93,5 @@ gem 'bootstrap', '~> 5.1'
 gem 'devise'
 gem 'devise-guests', '~> 0.8'
 gem 'rsolr', '>= 1.0', '< 3'
-gem 'sassc-rails', '~> 2.1'
+
+
