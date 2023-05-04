@@ -59,19 +59,19 @@ RSpec.describe Field, :aggregate_failures do
       expect(new_field.dynamic_field_name).to match(/m$/)
     end
 
-    it 'includes a type flag' do # rubocop:disable RSpec/ExampleLength
+    it 'includes a type flag', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
       new_field.data_type = 'text'
-      expect(new_field.dynamic_field_name).to match(/_te/)
+      expect(new_field.dynamic_field_name).to match(/_t/)
       new_field.data_type = 'string'
-      expect(new_field.dynamic_field_name).to match(/_st/)
+      expect(new_field.dynamic_field_name).to match(/_s/)
       new_field.data_type = 'integer'
-      expect(new_field.dynamic_field_name).to match(/_in/)
+      expect(new_field.dynamic_field_name).to match(/_i/)
       new_field.data_type = 'float'
-      expect(new_field.dynamic_field_name).to match(/_fl/)
+      expect(new_field.dynamic_field_name).to match(/_f/)
       new_field.data_type = 'date'
       expect(new_field.dynamic_field_name).to match(/_dt/)
       new_field.data_type = 'boolean'
-      expect(new_field.dynamic_field_name).to match(/_bo/)
+      expect(new_field.dynamic_field_name).to match(/_b/)
       new_field.data_type = nil
       expect(new_field.dynamic_field_name).to match(/_xx/)
     end

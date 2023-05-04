@@ -4,6 +4,7 @@ RSpec.describe Work do
   let(:new_work) { described_class.new }
   let(:basic_description) do
     {
+      'identifier' => 'Test001',
       'title' => 'One Hundred Years of Solitute',
       'author' => 'Márquez, Gabriel García',
       'date' => '1967'
@@ -41,9 +42,10 @@ RSpec.describe Work do
   describe '#to_solr' do
     let(:solr_doc) do
       {
-        'blueprint_stsi' => 'basic_metadata_mapping',
-        'title_tesi' => 'One Hundred Years of Solitute',
-        'author_tesim' => 'Márquez, Gabriel García',
+        'blueprint_ssi' => 'basic_metadata_mapping',
+        'id' => 'Test001',
+        'title_tsi' => 'One Hundred Years of Solitute',
+        'author_tsim' => 'Márquez, Gabriel García',
         'date_dtsi' => '1967'
       }
     end

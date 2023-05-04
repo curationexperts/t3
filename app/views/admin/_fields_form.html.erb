@@ -1,0 +1,35 @@
+<% @repo_config = RepositoryConfiguration.current %>
+
+<div id='solr_config' class='card'>
+  <div class='card-body'>
+    <h2>Field Configuration</h2>
+    <%= form_with model: @repo_config, url: admin_path do |config_form| %>
+      <table>
+        <thead>
+        <tr>
+          <td>FIELD</td>
+          <td>LABEL</td>
+          <td>SEARCH</td>
+          <td>LIST</td>
+          <td>ITEM</td>
+          <td>FACET</td>
+        </tr>
+        </thead>
+        <tbody>
+        <%= config_form.fields_for :fields, @repo_config.fields do |field_form| %>
+          <tr>
+            <td><%= field_form.text_field :name   -%></td>
+            <td><%= field_form.text_field :label  -%></td>
+            <td><%= field_form.check_box  :search -%></td>
+            <td><%= field_form.check_box  :index  -%></td>
+            <td><%= field_form.check_box  :show   -%></td>
+            <td><%= field_form.check_box  :facet  -%></td>
+          </tr>
+        <% end %>
+
+        </tbody>
+      </table>
+      <%= config_form.submit "Update" %>
+      <% end %>
+  </div>
+</div>
