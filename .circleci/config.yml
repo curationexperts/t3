@@ -37,6 +37,7 @@ jobs:
                      chmod +x ./cc-test-reporter
       - ruby/install-deps
       - run: bundle exec rake db:setup
+      - ruby/rubocop-check
       - run: ./cc-test-reporter before-build
       - ruby/rspec-test
       - run: ./cc-test-reporter after-build --coverage-input-type simplecov
