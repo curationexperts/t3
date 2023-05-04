@@ -68,6 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
+    ast (2.4.2)
     autoprefixer-rails (10.4.13.0)
       execjs (~> 2)
     bcrypt (3.1.18)
@@ -152,6 +153,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    json (2.6.3)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.2)
@@ -198,6 +200,9 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     ostruct (0.5.5)
+    parallel (1.23.0)
+    parser (3.2.2.1)
+      ast (~> 2.4.1)
     pg (1.5.3)
     popper_js (2.11.7)
     public_suffix (5.0.1)
@@ -233,6 +238,7 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
       zeitwerk (~> 2.5)
+    rainbow (3.1.1)
     rake (13.0.6)
     redis (4.8.1)
     regexp_parser (2.8.0)
@@ -265,6 +271,27 @@ GEM
     rspec-support (3.12.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
+    rubocop (1.50.2)
+      json (~> 2.3)
+      parallel (~> 1.10)
+      parser (>= 3.2.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.28.1)
+      parser (>= 3.2.1.0)
+    rubocop-capybara (2.18.0)
+      rubocop (~> 1.41)
+    rubocop-rails (2.19.1)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.33.0, < 2.0)
+    rubocop-rspec (2.20.0)
+      rubocop (~> 1.33)
+      rubocop-capybara (~> 2.17)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -312,6 +339,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+    unicode-display_width (2.4.2)
     view_component (3.0.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
@@ -358,6 +386,10 @@ DEPENDENCIES
   rsolr (>= 1.0, < 3)
   rspec-rails
   rspec_junit_formatter
+  rubocop
+  rubocop-capybara
+  rubocop-rails
+  rubocop-rspec
   sassc-rails (~> 2.1)
   selenium-webdriver
   simplecov

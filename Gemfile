@@ -62,6 +62,10 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'rspec-rails'
+  gem 'rubocop'
+  gem 'rubocop-capybara'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 4.0'
 end
 

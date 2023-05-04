@@ -1,0 +1,26 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-capybara
+
+AllCops:
+  NewCops: enable
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+RSpec/FactoryBot/SyntaxMethods:
+  Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - 'db/**/*'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
+Naming/VariableNumber:
+  CheckSymbols: false
