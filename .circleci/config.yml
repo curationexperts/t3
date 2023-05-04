@@ -1,0 +1,49 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  ruby: circleci/ruby@2.0.0
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  test:
+    working_directory: ~/t3
+    docker:
+      - image: cimg/ruby:3.2.1
+        environment:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: t3user
+          POSTGRES_PASSWORD: ephemeral
+          COVERAGE: true
+      - image: postgres:14.7
+        environment:
+          POSTGRES_USER: t3user
+          POSTGRES_DB: t3_test
+          POSTGRES_PASSWORD: ephemeral
+
+    executor: ruby/default
+    steps:
+      - checkout
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            # download test reporter as a static binary
+                     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                     chmod +x ./cc-test-reporter
+      - ruby/install-deps
+      - run: bundle exec rake db:setup
+      - run: ./cc-test-reporter before-build
+      - ruby/rspec-test
+      - run: ./cc-test-reporter after-build --coverage-input-type simplecov
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  base_build:
+    jobs:
+      - test
