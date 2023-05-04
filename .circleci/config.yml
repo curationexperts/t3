@@ -13,7 +13,7 @@ jobs:
   test:
     working_directory: ~/t3
     docker:
-      - image: cimg/ruby:3.2.1
+      - image: cimg/ruby:3.2.1-node
         environment:
           RAILS_ENV: test
           PGHOST: localhost

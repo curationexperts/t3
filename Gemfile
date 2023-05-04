@@ -6,6 +6,14 @@ ruby "3.2.1"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4", ">= 7.0.4.3"
 
+# Blacklight search and discovery engine using Devise for user auth
+gem 'blacklight', '~> 8.0'
+gem "bootstrap", "\~\>\ 5.1"
+gem "devise"
+gem "devise-guests", "~> 0.8"
+gem "rsolr", ">= 1.0", "< 3"
+gem "sassc-rails", "~> 2.1"
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
 
@@ -54,6 +62,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'rspec-rails'
+  gem "solr_wrapper", '~> 4.0'
 end
 
 group :development do
