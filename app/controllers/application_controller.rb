@@ -1,4 +1,4 @@
-# Appliation-wide controller defaults
+# Application-wide controller defaults and behaviors
 class ApplicationController < ActionController::Base
   # Adds a few additional behaviors into the application controller
   include Blacklight::Controller

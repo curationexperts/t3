@@ -12,6 +12,7 @@
 # the additional setup, and require it from the spec files that actually need
 # it.
 
+# Hooks to generate coverage reports in CI environment
 if ENV['COVERAGE']
   require 'simplecov'
   require 'simplecov_json_formatter'
@@ -66,7 +67,7 @@ RSpec.configure do |config|
   #
   #   # Limits the available syntax to the non-monkey patched syntax that is
   #   # recommended. For more details, see:
-  #   # https://relishapp.com/rspec/rspec-core/docs/configuration/zero-monkey-patching-mode
+  #   # https://rspec.info/features/3-12/rspec-core/configuration/zero-monkey-patching-mode/
   #   config.disable_monkey_patching!
   #
   #   # Many RSpec users commonly either run the entire suite or an individual

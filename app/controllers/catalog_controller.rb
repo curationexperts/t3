@@ -56,22 +56,19 @@ class CatalogController < ApplicationController
     # config.index.search_header_component = MyApp::SearchHeaderComponent
     # config.index.document_actions.delete(:bookmark)
 
-    config.add_results_document_tool(:bookmark, component: Blacklight::Document::BookmarkComponent,
-                                                if: :render_bookmarks_control?)
+    config.add_results_document_tool(:bookmark, component: Blacklight::Document::BookmarkComponent, if: :render_bookmarks_control?)
 
     config.add_results_collection_tool(:sort_widget)
     config.add_results_collection_tool(:per_page_widget)
     config.add_results_collection_tool(:view_type_group)
 
-    config.add_show_tools_partial(:bookmark, component: Blacklight::Document::BookmarkComponent,
-                                             if: :render_bookmarks_control?)
+    config.add_show_tools_partial(:bookmark, component: Blacklight::Document::BookmarkComponent, if: :render_bookmarks_control?)
     config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
     config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
     config.add_show_tools_partial(:citation)
 
     config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
     config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
-    config.add_nav_action(:dashboard, partial: 'blacklight/nav/dashboard')
 
     # solr field configuration for document/show views
     # config.show.title_field = 'title_tsim'
@@ -110,25 +107,21 @@ class CatalogController < ApplicationController
     #  (useful when user clicks "more" on a large facet and wants to navigate alphabetically across a large set of results)
     # :index_range can be an array or range of prefixes that will be used to create the navigation (note: It is case sensitive when searching values)
 
-    config.add_facet_field 'keyword_sim', label: 'Keyword'
-    config.add_facet_field 'creator_sim', label: 'Creator'
-    config.add_facet_field 'object_type_ssim', label: 'Class'
-    # config.add_facet_field 'format', label: 'Format'
-    # config.add_facet_field 'pub_date_ssim', label: 'Publication Year', single: true
-    # config.add_facet_field 'subject_ssim', label: 'Topic', limit: 20, index_range: 'A'..'Z'
-    # config.add_facet_field 'language_ssim', label: 'Language', limit: true
-    # config.add_facet_field 'lc_1letter_ssim', label: 'Call Number'
-    # config.add_facet_field 'subject_geo_ssim', label: 'Region'
-    # config.add_facet_field 'subject_era_ssim', label: 'Era'
+    config.add_facet_field 'format', label: 'Format'
+    config.add_facet_field 'pub_date_ssim', label: 'Publication Year', single: true
+    config.add_facet_field 'subject_ssim', label: 'Topic', limit: 20, index_range: 'A'..'Z'
+    config.add_facet_field 'language_ssim', label: 'Language', limit: true
+    config.add_facet_field 'lc_1letter_ssim', label: 'Call Number'
+    config.add_facet_field 'subject_geo_ssim', label: 'Region'
+    config.add_facet_field 'subject_era_ssim', label: 'Era'
 
-    # config.add_facet_field 'example_pivot_field', label: 'Pivot Field', pivot: %w[format language_ssim],
-    #                                               collapsing: true
-    #
-    # config.add_facet_field 'example_query_facet_field', label: 'Publish Date', query: {
-    #   years_5: { label: 'within 5 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 5} TO *]" },
-    #   years_10: { label: 'within 10 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 10} TO *]" },
-    #   years_25: { label: 'within 25 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 25} TO *]" }
-    # }
+    config.add_facet_field 'example_pivot_field', label: 'Pivot Field', pivot: %w[format language_ssim], collapsing: true
+
+    config.add_facet_field 'example_query_facet_field', label: 'Publish Date', query: {
+      years_5: { label: 'within 5 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 5} TO *]" },
+      years_10: { label: 'within 10 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 10} TO *]" },
+      years_25: { label: 'within 25 Years', fq: "pub_date_ssim:[#{Time.zone.now.year - 25} TO *]" }
+    }
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -137,84 +130,32 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display
-    # config.add_index_field 'title_tesim', label: 'Title'
-    # config.add_index_field 'title_vern_ssim', label: 'Title'
-    # config.add_index_field 'keyword_sim', label: 'Keyword'
-    # config.add_index_field 'creator_sim', label: 'Creator'
-    # config.add_index_field 'author_tsim', label: 'Author'
-    # config.add_index_field 'author_vern_ssim', label: 'Author'
-    # config.add_index_field 'resource_type_ssim', label: 'Type'
-    # config.add_index_field 'object_type_ssim', label: 'Class'
-    # config.add_index_field 'description_tesim', label: 'Description'
-    # config.add_index_field 'format', label: 'Format'
-    # config.add_index_field 'language_ssim', label: 'Language'
-    # config.add_index_field 'published_ssim', label: 'Published'
-    # config.add_index_field 'published_vern_ssim', label: 'Published'
-    # config.add_index_field 'lc_callnum_ssim', label: 'Call number'
-    RepositoryConfiguration.current.fields.select(&:index).each do |f|
-      config.add_index_field f.name, label: f.label
-    end
+    config.add_index_field 'title_tsim', label: 'Title'
+    config.add_index_field 'title_vern_ssim', label: 'Title'
+    config.add_index_field 'author_tsim', label: 'Author'
+    config.add_index_field 'author_vern_ssim', label: 'Author'
+    config.add_index_field 'format', label: 'Format'
+    config.add_index_field 'language_ssim', label: 'Language'
+    config.add_index_field 'published_ssim', label: 'Published'
+    config.add_index_field 'published_vern_ssim', label: 'Published'
+    config.add_index_field 'lc_callnum_ssim', label: 'Call number'
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
-    # config.add_show_field 'title_tsim', label: 'Title'
-    # config.add_show_field 'title_vern_ssim', label: 'Title'
-    # config.add_show_field 'subtitle_tsim', label: 'Subtitle'
-    # config.add_show_field 'subtitle_vern_ssim', label: 'Subtitle'
-    # config.add_show_field 'author_tsim', label: 'Author'
-    # config.add_show_field 'author_vern_ssim', label: 'Author'
-    # config.add_show_field 'format', label: 'Format'
-    # config.add_show_field 'url_fulltext_ssim', label: 'URL'
-    # config.add_show_field 'url_suppl_ssim', label: 'More Information'
-    # config.add_show_field 'language_ssim', label: 'Language'
-    # config.add_show_field 'published_ssim', label: 'Published'
-    # config.add_show_field 'published_vern_ssim', label: 'Published'
-    # config.add_show_field 'lc_callnum_ssim', label: 'Call number'
-    # config.add_show_field 'isbn_ssim', label: 'ISBN'
-    #
-    # # T3 generated fields
-    # config.add_show_field 'identifier_ssi', label: 'Identifier'
-    # config.add_show_field 'object_type_ssim', label: 'Object Type'
-    # config.add_show_field 'visibility_ssim', label: 'Visibility'
-    # config.add_show_field 'parent_ssim', label: 'Parent'
-    # config.add_show_field 'title_tesi', label: 'Title'
-    # config.add_show_field 'files_ssim', label: 'Files'
-    # config.add_show_field 'abstract_tesim', label: 'Abstract'
-    # config.add_show_field 'access_right_tesim', label: 'Access Right'
-    # config.add_show_field 'alternative_title_tesim', label: 'Alternative Title'
-    # config.add_show_field 'based_near_ssim', label: 'Based Near'
-    # config.add_show_field 'bibliographic_citation_tesim', label: 'Bibliographic Citation'
-    # config.add_show_field 'contributor_tesim', label: 'Contributor'
-    # config.add_show_field 'creator_tesim', label: 'Creator'
-    # config.add_show_field 'date_accepted_ssim', label: 'Date Accepted'
-    # config.add_show_field 'date_copyrighted_ssim', label: 'Date Copyrighted'
-    # config.add_show_field 'date_created_ssim', label: 'Date Created'
-    # config.add_show_field 'date_issued_ssim', label: 'Date Issued'
-    # config.add_show_field 'date_normalized_ssim', label: 'Date Normalized'
-    # config.add_show_field 'description_tesim', label: 'Description'
-    # config.add_show_field 'extent_ssim', label: 'Extent'
-    # config.add_show_field 'genre_ssim', label: 'Genre'
-    # config.add_show_field 'import_url_ssim', label: 'Import Url'
-    # config.add_show_field 'keyword_ssim', label: 'Keyword'
-    # config.add_show_field 'language_tesim', label: 'Language'
-    # config.add_show_field 'license_tesim', label: 'License'
-    # config.add_show_field 'other_identifiers_ssim', label: 'Other Identifiers'
-    # config.add_show_field 'publisher_tesim', label: 'Publisher'
-    # config.add_show_field 'related_url_ssim', label: 'Related Url'
-    # config.add_show_field 'relative_path_ssim', label: 'Relative Path'
-    # config.add_show_field 'resource_format_ssim', label: 'Resource Format'
-    # config.add_show_field 'resource_type_ssim', label: 'Resource Type'
-    # config.add_show_field 'rights_notes_tesim', label: 'Rights Notes'
-    # config.add_show_field 'rights_statement_tesim', label: 'Rights Statement'
-    # config.add_show_field 'source_tesim', label: 'Source'
-    # config.add_show_field 'subject_tesim', label: 'Subject'
-    # config.add_show_field 'on_behalf_of_ssim', label: 'On Behalf Of'
-    # config.add_show_field 'owner_ssim', label: 'Owner'
-    # config.add_show_field 'proxy_depositor_ssim', label: 'Proxy Depositor'
-    # config.add_show_field 'error_ssim', label: 'Error'
-    RepositoryConfiguration.current.fields.select(&:show).each do |f|
-      config.add_show_field f.name, label: f.label
-    end
+    config.add_show_field 'title_tsim', label: 'Title'
+    config.add_show_field 'title_vern_ssim', label: 'Title'
+    config.add_show_field 'subtitle_tsim', label: 'Subtitle'
+    config.add_show_field 'subtitle_vern_ssim', label: 'Subtitle'
+    config.add_show_field 'author_tsim', label: 'Author'
+    config.add_show_field 'author_vern_ssim', label: 'Author'
+    config.add_show_field 'format', label: 'Format'
+    config.add_show_field 'url_fulltext_ssim', label: 'URL'
+    config.add_show_field 'url_suppl_ssim', label: 'More Information'
+    config.add_show_field 'language_ssim', label: 'Language'
+    config.add_show_field 'published_ssim', label: 'Published'
+    config.add_show_field 'published_vern_ssim', label: 'Published'
+    config.add_show_field 'lc_callnum_ssim', label: 'Call number'
+    config.add_show_field 'isbn_ssim', label: 'ISBN'
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields

@@ -8,9 +8,18 @@ gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
 # Use Blacklight for front-end discovery
 gem 'blacklight', '~> 8.0'
+gem 'devise'
+gem 'devise-guests', '~> 0.8'
+gem 'rsolr', '>= 1.0', '< 3'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
+
+# Bootstrap support
+gem 'bootstrap', '~> 5.2', '>= 5.2.3'
+
+# Sass support
+gem 'dartsass-rails', '~> 0.4.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -18,17 +27,14 @@ gem 'pg', '~> 1.1'
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '~> 5.0'
 
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'jsbundling-rails'
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem 'importmap-rails'
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem 'turbo-rails'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem 'stimulus-rails'
-
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem 'cssbundling-rails'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
@@ -48,8 +54,8 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Use Thor to provide cleaner cli tooling than Rake
-gem 'thor'
+# Use Sass to process CSS
+# gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -90,8 +96,3 @@ end
 group :development, :test do
   gem 'solr_wrapper', '>= 0.3'
 end
-gem 'bootstrap', '~> 5.1'
-gem 'devise'
-gem 'devise-guests', '~> 0.8'
-gem 'rsolr', '>= 1.0', '< 3'
-gem 'sassc-rails', '~> 2.1'

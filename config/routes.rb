@@ -21,12 +21,6 @@ Rails.application.routes.draw do
       delete 'clear'
     end
   end
-  resources :blueprints do
-    resources :fields, shallow: true
-  end
-
-  resource :admin, controller: 'admin', except: %i[new create destroy]
-
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

@@ -1,4 +1,4 @@
-# ActiveRecord configurations and methods to be applied app-wide
+# App-wide behaviors defined here
 class ApplicationRecord < ActiveRecord::Base
   primary_abstract_class
 end

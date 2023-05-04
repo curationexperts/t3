@@ -1,4 +1,4 @@
-# Devise User object for authn & authz
+# User model for authentication and authorization features
 class User < ApplicationRecord
   # Connects this user object to Blacklights Bookmarks.
   include Blacklight::User

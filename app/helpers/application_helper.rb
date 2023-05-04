@@ -1,4 +1,3 @@
-# Top-level module for helpers available across views
-# NOTE: consider a named helper module to keep model specific helpers organized
+# App-wide helpers defined here
 module ApplicationHelper
 end
