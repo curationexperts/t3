@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @config %>
+
+<div>
+  <%= link_to "Edit this config", edit_config_path(@config) %> |
+  <%= link_to "Back to configs", configs_path %>
+
+  <%= button_to "Destroy this config", @config, method: :delete %>
+</div>

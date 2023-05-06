@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Configs</h1>
+
+<div id="configs">
+  <% @configs.each do |config| %>
+    <%= render config %>
+    <p>
+      <%= link_to "Show this config", config %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New config", new_config_path %>
