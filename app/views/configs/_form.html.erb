@@ -1,0 +1,29 @@
+<%= form_with(model: config) do |form| %>
+  <% if config.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(config.errors.count, "error") %> prohibited this config from being saved:</h2>
+
+      <ul>
+        <% config.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= render 'host_form', config: @config -%>
+
+  <div>
+    <%= form.label :solr_core, style: "display: block" %>
+    <%= form.text_field :solr_core %>
+  </div>
+
+  <div>
+    <%= form.label :fields, style: "display: block" %>
+    <%= form.text_field :fields %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

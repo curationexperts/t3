@@ -1,0 +1,13 @@
+<%= fields_for @config do |form| %>
+  <%= form.hidden_field :solr_version %>
+
+  <div>
+    <%= form.label :solr_host, style: "display: block" -%>
+    <%= form.text_field :solr_host, disabled: @config.verified? -%>
+    <% if @config.verified? %>
+      <%= button_tag '✓ Verified', type: 'button', disabled: true, id: 'verify_host' -%>
+    <% else %>
+      <%= button_tag 'Verify Host', type: 'submit', id: 'verify_host' -%>
+  <% end %>
+  </div>
+<% end %>
