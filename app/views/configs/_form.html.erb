@@ -11,12 +11,9 @@
     </div>
   <% end %>
 
+  <%= form.hidden_field :setup_step %>
   <%= render 'host_form', config: @config -%>
-
-  <div>
-    <%= form.label :solr_core, style: "display: block" %>
-    <%= form.text_field :solr_core %>
-  </div>
+  <%= render 'core_form', config: @config -%>
 
   <div>
     <%= form.label :fields, style: "display: block" %>

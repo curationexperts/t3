@@ -1,0 +1,17 @@
+<%= fields_for @config do |form| %>
+  <div>
+    <%= form.label :solr_core -%>
+    <% case @config.setup_step %>
+    <% when 'host' %>
+      <%= form.text_field :solr_core, disabled: true %>
+    <% when 'core' %>
+      <%= form.select(:solr_core, @config.available_cores << 'Please choose a core',
+                    { disabled: ['Please choose a core'], selected: @config.solr_core || 'Please choose a core'}) -%>
+      <%= button_tag 'Select core', type: 'submit', id: 'select_core', disabled: @config.setup_step != 'core' -%>
+    <% else %>
+      <%= form.hidden_field :solr_core %>
+      <%= form.text_field :solr_core, disabled: true %>
+      <%= button_tag '✓ Selected', type: 'button', disabled: true, id: 'select_core' -%>
+    <% end %>
+  </div>
+<% end %>

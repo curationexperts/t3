@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Config, :aggregate_failures do
   let(:config) { described_class.new(valid_params) }
-  let(:valid_params) { { solr_host: 'http://localhost:8983', solr_version: '9.2.1', solr_core: 'blacklight-core' } }
+  let(:valid_params) { FactoryBot.attributes_for(:config) }
 
   it 'validates' do
     expect(config).to be_valid
