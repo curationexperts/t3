@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe Config, :aggregate_failures do
   let(:config) { described_class.new(valid_params) }
   let(:valid_params) { FactoryBot.attributes_for(:config) }
+  let(:rsolr_error) do
+    RSolr::Error::Http.new(
+      { uri: 'http://im_not_solr.com/solr/admin/info/system?wt=ruby' }, { body: '...some raw html...' }
+    )
+  end
 
   it 'validates' do
     expect(config).to be_valid
@@ -37,11 +42,6 @@ RSpec.describe Config, :aggregate_failures do
 
   describe '#verify_host' do
     let(:solr_client) { RSolr::Client.new(nil, url: 'http://localhost:8983') }
-    let(:rsolr_error) do
-      RSolr::Error::Http.new(
-        { uri: 'http://im_not_solr.com/solr/admin/info/system?wt=ruby' }, { body: '...some raw html...' }
-      )
-    end
 
     let(:admin_info) { { 'lucene' => { 'solr-spec-version' => '9.2.1' } } }
 
@@ -88,6 +88,11 @@ RSpec.describe Config, :aggregate_failures do
       expect(config.solr_host_looks_valid).to be false
     end
 
+    it 'returns false for invalid uris' do
+      config.solr_host = 'http://😀'
+      expect(config.solr_host_looks_valid).to be false
+    end
+
     it 'returns true for well-formed http urls' do
       config.solr_host = 'http://localhost:8983'
       expect(config.solr_host_looks_valid).to be true
@@ -119,6 +124,14 @@ RSpec.describe Config, :aggregate_failures do
     it 'returns an empty list when the host is not verified' do
       allow(config).to receive(:verified?).and_return(false)
       config.solr_host = 'https://localhost:8983'
+      expect(config.available_cores).to eq []
+    end
+
+    it 'gracefully degrades during unexpected connection errors' do
+      allow(RSolr::Client).to receive(:new).and_return(solr_client)
+      allow(solr_client).to receive(:get).and_raise(rsolr_error)
+      config.solr_host = 'http://localhost:8983'
+      config.solr_version = '9.2.1'
       expect(config.available_cores).to eq []
     end
   end
