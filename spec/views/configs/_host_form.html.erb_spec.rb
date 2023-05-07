@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe 'configs/_host_form' do
   context 'without a verified host' do
     before do
-      @config = Config.new
-      allow(@config).to receive(:verified?).and_return(false) # rubocop:disable RSpec/InstanceVariable
+      @config = Config.new(setup_step: 'host')
     end
 
     it 'enables the host input field' do
@@ -20,8 +19,7 @@ RSpec.describe 'configs/_host_form' do
 
   context 'with a verified host' do
     before do
-      @config = Config.new
-      allow(@config).to receive(:verified?).and_return(true) # rubocop:disable RSpec/InstanceVariable
+      @config = Config.new(setup_step: 'core')
     end
 
     it 'disables the host input field' do
