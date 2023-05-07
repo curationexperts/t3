@@ -16,13 +16,7 @@ RSpec.describe '/configs' do
   # This should return the minimal set of attributes required to create a valid
   # Config. As you add validations to Config, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    {
-      solr_host: test_host,
-      solr_version: '9.2.1',
-      solr_core: 'blacklight-core'
-    }
-  end
+  let(:valid_attributes) { FactoryBot.attributes_for(:config) }
 
   let(:invalid_attributes) do
     {
@@ -75,18 +69,18 @@ RSpec.describe '/configs' do
   describe 'POST /create' do
     context 'with valid host only' do
       it 'verifies the host' do
-        post configs_url, params: { config: { solr_host: test_host } }
+        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
         config = controller.view_assigns['config']
         expect(config.solr_version).not_to be_nil
       end
 
       it 'responds succesfully' do
-        post configs_url, params: { config: { solr_host: test_host } }
+        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
         expect(response).to have_http_status(:accepted)
       end
 
       it 'renders the updated new form with solr_version populated' do
-        post configs_url, params: { config: { solr_host: test_host } }
+        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
         expect(response.body).to include 'value="9.2.1"'
       end
     end
@@ -111,9 +105,9 @@ RSpec.describe '/configs' do
         end.not_to change(Config, :count)
       end
 
-      it "renders a response with 422 status (i.e. to display the 'new' template)" do
+      it 'renders a response with "accepted" status (i.e. to display the "new" template)' do
         post configs_url, params: { config: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:accepted)
       end
     end
   end
