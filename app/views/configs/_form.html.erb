@@ -16,11 +16,11 @@
   <%= render 'core_form', config: @config -%>
 
   <div>
-    <%= form.label :fields, style: "display: block" %>
-    <%= form.text_field :fields %>
+    <%= form.label :fields -%><span style='display: inline-block; width: 1.5rem;'>&nbsp;</span>
+    <%= form.text_field :fields, disabled: config.setup_step != 'fields' -%>
+    <% if @config.setup_step == 'fields' %>
+      <%= form.submit 'Finish'  %>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
 <% end %>
