@@ -1,12 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe Config, :aggregate_failures do
-  let(:config) { described_class.new(valid_params) }
-  let(:valid_params) { FactoryBot.attributes_for(:config) }
+  let(:config) { described_class.new(FactoryBot.attributes_for(:config)) }
+
+  let(:solr_client) { RSolr::Client.new(nil) }
+
   let(:rsolr_error) do
     RSolr::Error::Http.new(
       { uri: 'http://im_not_solr.com/solr/admin/info/system?wt=ruby' }, { body: '...some raw html...' }
     )
+  end
+
+  # Fake a minimal Solr server
+  before do
+    allow(RSolr::Client).to receive(:new).and_return(solr_client)
+
+    allow(solr_client).to receive(:get) do |*args|
+      case args.first
+      when /admin.info.system/
+        JSON.load_file(file_fixture('solr/admin_info_system.json'))
+      when /admin.cores/
+        JSON.load_file(file_fixture('solr/admin_cores.json'))
+      when /tenejo.admin.luke/
+        JSON.load_file(file_fixture('solr/tenejo_admin_luke.json'))
+      else
+        raise(rsolr_error)
+      end
+    end
   end
 
   it 'validates' do
@@ -41,16 +61,7 @@ RSpec.describe Config, :aggregate_failures do
   end
 
   describe '#verify_host' do
-    let(:solr_client) { RSolr::Client.new(nil, url: 'http://localhost:8983') }
-
-    let(:admin_info) { { 'lucene' => { 'solr-spec-version' => '9.2.1' } } }
-
-    before do
-      allow(RSolr::Client).to receive(:new).and_return(solr_client)
-    end
-
     it 'sets the solr version if the host is running solr' do
-      allow(solr_client).to receive(:get).and_return(admin_info)
       config.solr_version = nil
       config.verify_host
       expect(config.solr_version).to eq '9.2.1'
@@ -59,7 +70,6 @@ RSpec.describe Config, :aggregate_failures do
 
     it 'resets the solr_version if called on non-solr hosts' do
       allow(solr_client).to receive(:get).and_raise(rsolr_error)
-
       config.solr_host = 'http://im_not_solr.com'
       config.verify_host
       expect(config.verified?).to be false
@@ -105,34 +115,36 @@ RSpec.describe Config, :aggregate_failures do
   end
 
   describe '#available_cores' do
-    let(:solr_client) { RSolr::Client.new(nil, url: 'http://localhost:8983') }
-    let(:cores) do
-      { 'status' =>
-          { 'blacklight-core' => { 'name' => 'blacklight-core' },
-            'catalog-core' => { 'name' => 'catalog-core' },
-            'tenejo' => { 'name' => 'tenejo' } } }
-    end
-
     it 'returns a list of core names' do
-      allow(RSolr::Client).to receive(:new).and_return(solr_client)
-      allow(solr_client).to receive(:get).and_return(cores)
-      config.solr_host = 'http://localhost:8983'
-      config.solr_version = '9.2.1'
       expect(config.available_cores).to contain_exactly('blacklight-core', 'tenejo', 'catalog-core')
     end
 
     it 'returns an empty list when the host is not verified' do
       allow(config).to receive(:verified?).and_return(false)
-      config.solr_host = 'https://localhost:8983'
       expect(config.available_cores).to eq []
     end
 
     it 'gracefully degrades during unexpected connection errors' do
-      allow(RSolr::Client).to receive(:new).and_return(solr_client)
       allow(solr_client).to receive(:get).and_raise(rsolr_error)
-      config.solr_host = 'http://localhost:8983'
-      config.solr_version = '9.2.1'
+      allow(config).to receive(:verified?).and_return(true)
       expect(config.available_cores).to eq []
+    end
+  end
+
+  describe '#available_fields' do
+    it 'returns a list of fields indexed in the core' do
+      config.solr_core = 'tenejo'
+      expect(config.available_fields).to include('title_sim', 'system_create_dtsi')
+    end
+
+    it 'includes configuration info for each field' do
+      config.solr_core = 'tenejo'
+      expect(config.available_fields.values.first.keys).to include('type', 'schema', 'docs')
+    end
+
+    it 'returns an empty list when there is a connection problem or misconfiguration' do
+      config.solr_core = '- not - a - valid - core -'
+      expect(config.available_fields).to eq []
     end
   end
 end
