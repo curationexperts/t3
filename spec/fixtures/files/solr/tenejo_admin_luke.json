@@ -1,0 +1,659 @@
+// 20230508155644
+// http://localhost:8983/solr/tenejo/admin/luke
+
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 3
+  },
+  "index": {
+    "numDocs": 33912,
+    "maxDoc": 34927,
+    "deletedDocs": 1015,
+    "indexHeapUsageBytes": 67312,
+    "version": 1166326,
+    "segmentCount": 9,
+    "current": true,
+    "hasDeletions": true,
+    "directory": "org.apache.lucene.store.NRTCachingDirectory:NRTCachingDirectory(MMapDirectory@/opt/solrdata/data/tenejo/data/index lockFactory=org.apache.lucene.store.NativeFSLockFactory@6dafb41d; maxCacheMB=48.0 maxMergeSizeMB=4.0)",
+    "segmentsFile": "segments_a3h",
+    "segmentsFileSizeInBytes": 907,
+    "userData": {
+      "commitCommandVer": "1761186688162332672",
+      "commitTimeMSec": "1679598510897"
+    },
+    "lastModified": "2023-03-23T19:08:30.897Z"
+  },
+  "fields": {
+    "_version_": {
+      "type": "long",
+      "schema": "I-S-U-----OF------",
+      "docs": 34927
+    },
+    "accessControl_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 7161
+    },
+    "accessTo_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 6628
+    },
+    "actionable_workflow_roles_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 2
+    },
+    "admin_set_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "index": "(unstored field)",
+      "docs": 227
+    },
+    "admin_set_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 227
+    },
+    "all_text_timv": {
+      "type": "text",
+      "schema": "IT--UMVop---------",
+      "docs": 4
+    },
+    "alpha_channels_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 6874
+    },
+    "alternative_title_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 2
+    },
+    "based_near_label_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 1
+    },
+    "based_near_label_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 1
+    },
+    "based_near_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 1
+    },
+    "based_near_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 1
+    },
+    "collection_type_gid_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 45
+    },
+    "contributor_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "index": "(unstored field)",
+      "docs": 67
+    },
+    "contributor_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 67
+    },
+    "creator_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "index": "(unstored field)",
+      "docs": 263
+    },
+    "creator_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 263
+    },
+    "date_created_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 178
+    },
+    "date_issued_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 1
+    },
+    "date_modified_dtsi": {
+      "type": "date",
+      "schema": "I-S-U-----OF------",
+      "dynamicBase": "*_dtsi",
+      "docs": 6899
+    },
+    "date_uploaded_dtsi": {
+      "type": "date",
+      "schema": "I-S-U-----OF------",
+      "dynamicBase": "*_dtsi",
+      "docs": 271
+    },
+    "depositor_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 275
+    },
+    "depositor_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 275
+    },
+    "description_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 227
+    },
+    "digest_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 6889
+    },
+    "duration_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 6
+    },
+    "edit_access_group_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 10
+    },
+    "edit_access_person_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 8
+    },
+    "extent_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 24
+    },
+    "extent_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 24
+    },
+    "file_format_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 6889
+    },
+    "file_format_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 6889
+    },
+    "file_set_ids_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 227
+    },
+    "file_size_lts": {
+      "type": "tlong",
+      "schema": "--S---------------",
+      "dynamicBase": "*_lts"
+    },
+    "file_title_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 3
+    },
+    "generic_type_si": {
+      "type": "string",
+      "schema": "I---U-----OF-----l",
+      "dynamicBase": "*_si",
+      "docs": 6889
+    },
+    "generic_type_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 273
+    },
+    "genre_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 15
+    },
+    "genre_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 15
+    },
+    "hasEmbargo_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 228
+    },
+    "hasFormat_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 2
+    },
+    "hasLease_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 228
+    },
+    "hasRelatedImage_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 7147
+    },
+    "hasRelatedMediaFragment_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 7116
+    },
+    "has_model_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 34927
+    },
+    "height_is": {
+      "type": "int",
+      "schema": "--S---------------",
+      "dynamicBase": "*_is"
+    },
+    "human_readable_type_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 7162
+    },
+    "human_readable_type_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 7162
+    },
+    "id": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "docs": 34927
+    },
+    "identifier_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 268
+    },
+    "isPartOf_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 227
+    },
+    "keyword_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 218
+    },
+    "keyword_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 218
+    },
+    "label_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 6889
+    },
+    "label_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 6889
+    },
+    "language_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 2
+    },
+    "language_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 2
+    },
+    "license_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 10
+    },
+    "member_ids_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 227
+    },
+    "member_of_collection_ids_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 238
+    },
+    "member_of_collections_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 225
+    },
+    "mime_type_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "index": "ITS-------OF------",
+      "docs": 6889
+    },
+    "nesting_collection__ancestors_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 238
+    },
+    "nesting_collection__deepest_nested_depth_isi": {
+      "type": "int",
+      "schema": "I-S-U-----OF------",
+      "dynamicBase": "*_isi",
+      "index": "-TS---------------",
+      "docs": 272
+    },
+    "nesting_collection__parent_ids_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 238
+    },
+    "nesting_collection__pathnames_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 272
+    },
+    "ordered_targets_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 171
+    },
+    "original_checksum_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 6887
+    },
+    "original_file_id_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 6889
+    },
+    "other_identifiers_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 22
+    },
+    "page_count_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 4
+    },
+    "proxyFor_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 6740
+    },
+    "proxy_in_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "docs": 171
+    },
+    "publisher_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "index": "(unstored field)",
+      "docs": 61
+    },
+    "publisher_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 61
+    },
+    "read_access_group_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "index": "ITS-------OF------",
+      "docs": 7133
+    },
+    "related_url_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 39
+    },
+    "resource_format_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 9
+    },
+    "resource_format_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 9
+    },
+    "resource_type_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 224
+    },
+    "resource_type_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 224
+    },
+    "rights_notes_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 8
+    },
+    "rights_statement_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 260
+    },
+    "sample_rate_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 5
+    },
+    "source_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "index": "ITS---------------",
+      "docs": 64
+    },
+    "subject_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 65
+    },
+    "subject_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 65
+    },
+    "suggest": {
+      "type": "textSuggest",
+      "schema": "IT--UM------------",
+      "dynamicBase": "*suggest",
+      "index": "(unstored field)",
+      "docs": 34927
+    },
+    "suppressed_bsi": {
+      "type": "boolean",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_bsi",
+      "index": "ITS-------OF------",
+      "docs": 227
+    },
+    "system_create_dtsi": {
+      "type": "date",
+      "schema": "I-S-U-----OF------",
+      "dynamicBase": "*_dtsi",
+      "docs": 34927
+    },
+    "system_modified_dtsi": {
+      "type": "date",
+      "schema": "I-S-U-----OF------",
+      "dynamicBase": "*_dtsi",
+      "docs": 34927
+    },
+    "thumbnail_path_ss": {
+      "type": "string",
+      "schema": "--S--------------l",
+      "dynamicBase": "*_ss"
+    },
+    "timestamp": {
+      "type": "date",
+      "schema": "I-S-U-----OF------",
+      "docs": 34927
+    },
+    "title_sim": {
+      "type": "string",
+      "schema": "I---UM----OF-----l",
+      "dynamicBase": "*_sim",
+      "docs": 7162
+    },
+    "title_tesim": {
+      "type": "text_en",
+      "schema": "ITS-UM------------",
+      "dynamicBase": "*_tesim",
+      "docs": 7162
+    },
+    "visibility_ssi": {
+      "type": "string",
+      "schema": "I-S-U-----OF-----l",
+      "dynamicBase": "*_ssi",
+      "index": "ITS-------OF------",
+      "docs": 7161
+    },
+    "width_is": {
+      "type": "int",
+      "schema": "--S---------------",
+      "dynamicBase": "*_is"
+    },
+    "workflow_state_name_ssim": {
+      "type": "string",
+      "schema": "I-S-UM----OF-----l",
+      "dynamicBase": "*_ssim",
+      "docs": 2
+    }
+  },
+  "info": {
+    "key": {
+      "I": "Indexed",
+      "T": "Tokenized",
+      "S": "Stored",
+      "D": "DocValues",
+      "U": "UnInvertible",
+      "M": "Multivalued",
+      "V": "TermVector Stored",
+      "o": "Store Offset With TermVector",
+      "p": "Store Position With TermVector",
+      "y": "Store Payloads With TermVector",
+      "O": "Omit Norms",
+      "F": "Omit Term Frequencies & Positions",
+      "P": "Omit Positions",
+      "H": "Store Offsets with Positions",
+      "L": "Lazy",
+      "B": "Binary",
+      "f": "Sort Missing First",
+      "l": "Sort Missing Last"
+    },
+    "NOTE": "Document Frequency (df) is not updated when a document is marked for deletion.  df values include deleted documents."
+  }
+}

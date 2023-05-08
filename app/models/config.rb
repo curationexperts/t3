@@ -43,4 +43,14 @@ class Config < ApplicationRecord
   rescue RSolr::Error::Http
     []
   end
+
+  def available_fields
+    return [] unless solr_core
+
+    solr = RSolr.connect url: solr_host
+    response = solr.get("/solr/#{solr_core}/admin/luke", params: { wt: 'json' })
+    response.fetch('fields', {})
+  rescue RSolr::Error::Http, URI::InvalidURIError
+    []
+  end
 end
