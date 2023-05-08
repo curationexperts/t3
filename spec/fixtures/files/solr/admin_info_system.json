@@ -1,0 +1,114 @@
+// 20230508162103
+// http://localhost:8983/solr/admin/info/system
+
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 7
+  },
+  "mode": "std",
+  "solr_home": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr",
+  "core_root": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr",
+  "lucene": {
+    "solr-spec-version": "9.2.1",
+    "solr-impl-version": "9.2.1 a4c64ab6a2a270ca69c28c706dabb2927ed8a7c2 - jsweeney - 2023-04-24 11:35:31",
+    "lucene-spec-version": "9.4.2",
+    "lucene-impl-version": "9.4.2 858d9b437047a577fa9457089afff43eefa461db - jpountz - 2022-11-17 12:56:39"
+  },
+  "jvm": {
+    "version": "17.0.7 17.0.7+0",
+    "name": "Homebrew OpenJDK 64-Bit Server VM",
+    "spec": {
+      "vendor": "Oracle Corporation",
+      "name": "Java Platform API Specification",
+      "version": "17"
+    },
+    "jre": {
+      "vendor": "Homebrew",
+      "version": "17.0.7"
+    },
+    "vm": {
+      "vendor": "Homebrew",
+      "name": "OpenJDK 64-Bit Server VM",
+      "version": "17.0.7+0"
+    },
+    "processors": 8,
+    "memory": {
+      "free": "245.5 MB",
+      "total": "512 MB",
+      "max": "512 MB",
+      "used": "266.5 MB (%52.1)",
+      "raw": {
+        "free": 257385600,
+        "total": 536870912,
+        "max": 536870912,
+        "used": 279485312,
+        "used%": 52.05819606781006
+      }
+    },
+    "jmx": {
+      "classpath": "start.jar",
+      "commandLineArgs": [
+        "-Xms512m",
+        "-Xmx512m",
+        "-XX:+UseG1GC",
+        "-XX:+PerfDisableSharedMem",
+        "-XX:+ParallelRefProcEnabled",
+        "-XX:MaxGCPauseMillis=250",
+        "-XX:+UseLargePages",
+        "-XX:+AlwaysPreTouch",
+        "-XX:+ExplicitGCInvokesConcurrent",
+        "-Xlog:gc*:file=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/logs/solr_gc.log:time,uptime:filecount=9,filesize=20M",
+        "-Dsolr.jetty.inetaccess.includes=",
+        "-Dsolr.jetty.inetaccess.excludes=",
+        "-Dsolr.log.dir=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/logs",
+        "-Djetty.port=8983",
+        "-DSTOP.PORT=7983",
+        "-DSTOP.KEY=solrrocks",
+        "-Dhost=localhost",
+        "-Duser.timezone=UTC",
+        "-XX:-OmitStackTraceInFastThrow",
+        "-XX:+CrashOnOutOfMemoryError",
+        "-XX:ErrorFile=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/logs/jvm_crash_%p.log",
+        "-Djetty.home=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server",
+        "-Dsolr.solr.home=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr",
+        "-Dsolr.install.dir=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1",
+        "-Dsolr.install.symDir=/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1",
+        "-Dsolr.default.confdir=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/configsets/_default/conf",
+        "-Xss256k",
+        "-XX:CompileCommand=exclude,com.github.benmanes.caffeine.cache.BoundedLocalCache::put",
+        "-Djava.security.manager",
+        "-Djava.security.policy=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/etc/security.policy",
+        "-Djava.security.properties=/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/etc/security.properties",
+        "-Dsolr.internal.network.permission=*",
+        "-DdisableAdminUI=false",
+        "-Dsolr.log.muteconsole"
+      ],
+      "startTime": "2023-05-08T21:19:08.841Z",
+      "upTimeMS": 114661
+    }
+  },
+  "security": {
+
+  },
+  "system": {
+    "name": "Mac OS X",
+    "arch": "x86_64",
+    "availableProcessors": 8,
+    "systemLoadAverage": 3.2021484375,
+    "version": "13.2.1",
+    "committedVirtualMemorySize": 38321176576,
+    "cpuLoad": "NaN",
+    "freeMemorySize": 4139012096,
+    "freePhysicalMemorySize": 4139024384,
+    "freeSwapSpaceSize": 1095499776,
+    "processCpuLoad": 0.16037735849056603,
+    "processCpuTime": 18789887000,
+    "systemCpuLoad": "NaN",
+    "totalMemorySize": 34359738368,
+    "totalPhysicalMemorySize": 34359738368,
+    "totalSwapSpaceSize": 2147483648,
+    "maxFileDescriptorCount": 10240,
+    "openFileDescriptorCount": 191
+  }
+}

@@ -1,0 +1,92 @@
+// 20230508164404
+// http://localhost:8983/solr/admin/cores
+
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 6
+  },
+  "initFailures": {
+
+  },
+  "status": {
+    "blacklight-core": {
+      "name": "blacklight-core",
+      "instanceDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/blacklight-core",
+      "dataDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/blacklight-core/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema.xml",
+      "startTime": "2023-05-08T21:43:59.205Z",
+      "uptime": 5353,
+      "index": {
+        "numDocs": 0,
+        "maxDoc": 0,
+        "deletedDocs": 0,
+        "version": 2,
+        "segmentCount": 0,
+        "current": true,
+        "hasDeletions": false,
+        "directory": "org.apache.lucene.store.MMapDirectory:MMapDirectory@/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/blacklight-core/data/index lockFactory=org.apache.lucene.store.NativeFSLockFactory@78255141",
+        "segmentsFile": "segments_1",
+        "segmentsFileSizeInBytes": 69,
+        "userData": {
+
+        },
+        "sizeInBytes": 69,
+        "size": "69 bytes"
+      }
+    },
+    "catalog-core": {
+      "name": "catalog-core",
+      "instanceDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/catalog-core",
+      "dataDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/catalog-core/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema.xml",
+      "startTime": "2023-05-08T21:43:56.852Z",
+      "uptime": 7710,
+      "index": {
+        "numDocs": 0,
+        "maxDoc": 0,
+        "deletedDocs": 0,
+        "version": 2,
+        "segmentCount": 0,
+        "current": true,
+        "hasDeletions": false,
+        "directory": "org.apache.lucene.store.MMapDirectory:MMapDirectory@/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/catalog-core/data/index lockFactory=org.apache.lucene.store.NativeFSLockFactory@78255141",
+        "segmentsFile": "segments_1",
+        "segmentsFileSizeInBytes": 69,
+        "userData": {
+
+        },
+        "sizeInBytes": 69,
+        "size": "69 bytes"
+      }
+    },
+    "tenejo": {
+      "name": "tenejo",
+      "instanceDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/tenejo",
+      "dataDir": "/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/tenejo/data/",
+      "config": "solrconfig.xml",
+      "schema": "managed-schema.xml",
+      "startTime": "2023-05-08T21:43:56.852Z",
+      "uptime": 7711,
+      "index": {
+        "numDocs": 0,
+        "maxDoc": 0,
+        "deletedDocs": 0,
+        "version": 2,
+        "segmentCount": 0,
+        "current": true,
+        "hasDeletions": false,
+        "directory": "org.apache.lucene.store.MMapDirectory:MMapDirectory@/private/var/folders/xz/hm89v2r10z3f82g038c4ng500000gn/T/solr-9.2.1/server/solr/tenejo/data/index lockFactory=org.apache.lucene.store.NativeFSLockFactory@78255141",
+        "segmentsFile": "segments_1",
+        "segmentsFileSizeInBytes": 69,
+        "userData": {
+
+        },
+        "sizeInBytes": 69,
+        "size": "69 bytes"
+      }
+    }
+  }
+}
