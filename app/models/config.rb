@@ -1,7 +1,8 @@
 # Data object for Solr and Field configuration
 class Config < ApplicationRecord
   validates :solr_host, presence: true
-  validates :solr_version, presence: true
+  validate  :solr_host_responsive, on: :create
+  validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
   validates :fields, presence: true
 
@@ -15,22 +16,13 @@ class Config < ApplicationRecord
     solr_version.present?
   end
 
-  def verify_host
-    return unless solr_host_looks_valid
-
-    solr = RSolr.connect url: solr_host
-    response = solr.get('/solr/admin/info/system', params: { wt: 'json' })
-    self.solr_version = response.dig('lucene', 'solr-spec-version')
-  rescue RSolr::Error::Http
-    self.solr_version = nil
-  end
-
   def solr_host_looks_valid
     return false unless solr_host
 
     uri = URI.parse(solr_host)
     uri.is_a?(URI::HTTP) && uri.host.present?
   rescue URI::InvalidURIError
+    errors.add(:solr_host, 'does not appear to be a valid url')
     false
   end
 
@@ -52,5 +44,19 @@ class Config < ApplicationRecord
     response.fetch('fields', {})
   rescue RSolr::Error::Http, URI::InvalidURIError
     []
+  end
+
+  def solr_host_responsive
+    return unless solr_host
+    return unless solr_host_looks_valid
+
+    solr = RSolr.connect url: solr_host
+    response = solr.get('/solr/admin/info/system', params: { wt: 'json' })
+    self.solr_version = response.dig('lucene', 'solr-spec-version')
+    errors.add(:solr_host, 'did not return a valid Solr version') unless solr_version
+  rescue RSolr::Error::Http
+    errors.add :solr_host, 'returned unexpected HTTP error'
+  rescue RSolr::Error::ConnectionRefused
+    errors.add :solr_host, "#{solr_host} is not responding"
   end
 end
