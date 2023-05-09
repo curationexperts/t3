@@ -12,6 +12,9 @@ Rails/I18nLocaleTexts:
 RSpec/FactoryBot/SyntaxMethods:
   Enabled: false
 
+RSpec/ExampleLength:
+  CountAsOne: ['array', 'hash', 'heredoc']
+
 Style/Documentation:
   Exclude:
     - 'db/**/*'
@@ -21,6 +24,9 @@ Style/FrozenStringLiteralComment:
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+Style/WordArray:
+  Enabled: false
 
 Naming/VariableNumber:
   CheckSymbols: false
