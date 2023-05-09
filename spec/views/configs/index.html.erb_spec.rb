@@ -1,8 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe 'configs/index' do
+  let(:config) { FactoryBot.build(:config) }
+  let(:another) { FactoryBot.build(:config) }
+
   before do
-    assign(:configs, [FactoryBot.create(:config), FactoryBot.create(:config)])
+    allow(config).to receive(:solr_host_responsive)
+    config.save!
+    allow(another).to receive(:solr_host_responsive)
+    another.save!
+    assign(:configs, [config, another])
   end
 
   it 'renders a list of configs' do

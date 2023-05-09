@@ -22,6 +22,8 @@ class ConfigsController < ApplicationController
   # POST /configs or /configs.json
   def create # rubocop:disable Metrics/MethodLength
     @config = Config.new(config_params)
+
+    @config.validate
     increment_setup_step
 
     respond_to do |format|
@@ -74,7 +76,7 @@ class ConfigsController < ApplicationController
   def increment_setup_step
     case @config.setup_step
     when 'host'
-      @config.setup_step = 'core' if @config.verify_host
+      @config.setup_step = 'core' if @config.verified?
     when 'core'
       @config.setup_step = 'fields' if @config.solr_core.present?
     when 'fields'

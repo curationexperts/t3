@@ -33,15 +33,42 @@ RSpec.describe Config, :aggregate_failures do
     expect(config).to be_valid
   end
 
-  it 'requires solr_host' do
+  it 'solr_host exists' do
     config.solr_host = nil
     expect(config).not_to be_valid
-    expect(config.errors.messages[:solr_host]).to include("can't be blank")
+    expect(config.errors.messages[:solr_host]).to include(/can't be blank/)
   end
 
-  it 'requires solr_version' do
-    config.solr_version = nil
+  it 'solr host is a valid url' do
+    config.solr_host = 'http://😀'
     expect(config).not_to be_valid
+    expect(config.errors.messages[:solr_host]).to include(/does not appear to be a valid url/)
+  end
+
+  it 'solr_host is responding' do
+    allow(solr_client).to receive(:get).and_raise(RSolr::Error::ConnectionRefused)
+
+    expect(config).not_to be_valid
+    expect(config.errors.messages[:solr_host]).to include(/is not responding/)
+  end
+
+  it 'solr_host responds without errors' do
+    allow(solr_client).to receive(:get).and_call_original
+    allow(solr_client.connection).to receive(:send).and_raise(Faraday::Error, 'Gateway Timeout')
+
+    expect(config).not_to be_valid
+    expect(config.errors.messages[:solr_host]).to include(/unexpected HTTP error/)
+  end
+
+  it 'sets solr_version when solr_host is valid' do
+    config.solr_version = nil
+    config.validate(:create)
+    expect(config.solr_version).to eq '9.2.1'
+  end
+
+  it 'solr_version must be present' do
+    config.solr_version = nil
+    expect(config).not_to be_valid(:update)
     expect(config.errors.messages[:solr_version]).to include("can't be blank")
   end
 
@@ -57,23 +84,6 @@ RSpec.describe Config, :aggregate_failures do
       expect(config.verified?).to be false
       config.solr_version = '9.2.1'
       expect(config.verified?).to be true
-    end
-  end
-
-  describe '#verify_host' do
-    it 'sets the solr version if the host is running solr' do
-      config.solr_version = nil
-      config.verify_host
-      expect(config.solr_version).to eq '9.2.1'
-      expect(config.verified?).to be true
-    end
-
-    it 'resets the solr_version if called on non-solr hosts' do
-      allow(solr_client).to receive(:get).and_raise(rsolr_error)
-      config.solr_host = 'http://im_not_solr.com'
-      config.verify_host
-      expect(config.verified?).to be false
-      expect(config.solr_version).to be_nil
     end
   end
 
