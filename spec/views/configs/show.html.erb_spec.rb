@@ -1,19 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'configs/show', :aggregate_failures do
+  let(:config) { FactoryBot.build(:config) }
+
   before do
-    assign(:config, Config.create!(
-                      solr_host: 'Solr Host',
-                      solr_core: 'Solr Core',
-                      solr_version: '3.2.1',
-                      fields: 'some json here...'
-                    ))
+    allow(config).to receive(:solr_host_responsive)
+    config.save!
+    assign(:config, config)
   end
 
   it 'renders attributes in <p>' do
     render
-    expect(rendered).to match(/Solr Host/)
-    expect(rendered).to match(/Solr Core/)
+    expect(rendered).to match(/localhost/)
+    expect(rendered).to match(/blacklight-core/)
     expect(rendered).to match(/json/)
   end
 end

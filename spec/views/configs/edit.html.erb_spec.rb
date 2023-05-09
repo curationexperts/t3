@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe 'configs/edit' do
-  let(:config) { FactoryBot.create(:config) }
+  let(:config) { FactoryBot.build(:config) }
 
   before do
+    allow(config).to receive(:solr_host_responsive)
+    config.save!
     assign(:config, config)
   end
 
