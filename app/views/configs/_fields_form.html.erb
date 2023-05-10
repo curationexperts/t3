@@ -1,0 +1,11 @@
+<%= fields_for @config do |form| %>
+  <div>
+    <%= form.label :fields -%><span style='display: inline-block; width: 1.5rem;'>&nbsp;</span>
+    <% if @config.setup_step == 'fields' %>
+      <%= form.text_field :fields -%>
+      <%= button_tag 'Save Fields', type: 'submit', id: 'update_fields' -%>
+    <% else %>
+      <%= form.text_field :fields, disabled: true -%>
+    <% end %>
+  </div>
+<% end %>

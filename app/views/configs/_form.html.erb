@@ -14,13 +14,5 @@
   <%= form.hidden_field :setup_step %>
   <%= render 'host_form', config: @config -%>
   <%= render 'core_form', config: @config -%>
-
-  <div>
-    <%= form.label :fields -%><span style='display: inline-block; width: 1.5rem;'>&nbsp;</span>
-    <%= form.text_field :fields, disabled: config.setup_step != 'fields' -%>
-    <% if @config.setup_step == 'fields' %>
-      <%= form.submit 'Finish'  %>
-    <% end %>
-  </div>
-
+  <%= render 'fields_form', config: @config %>
 <% end %>
