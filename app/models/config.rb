@@ -62,8 +62,8 @@ class Config < ApplicationRecord
   end
 
   def populate_fields
-    self.fields = available_fields.map do |name, _config|
-      FieldConfig.new(solr_field_name: name)
+    self.fields = available_fields.map do |name, config|
+      FieldConfig.new(solr_field_name: name, solr_suffix: config['dynamicBase'])
     end
   end
 end

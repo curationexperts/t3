@@ -5,23 +5,25 @@ class FieldConfig
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  attribute :solr_field_name
-  attribute :display_label
+  attribute :solr_field_name, :string
+  attribute :solr_suffix, :string
+  attribute :display_label, :string
   attribute :enabled, :boolean, default: true
   attribute :searchable, :boolean, default: true
   attribute :facetable, :boolean, default: false
   attribute :search_results, :boolean, default: true
   attribute :item_view, :boolean, default: true
 
-  def display_label
-    attributes['display_label'] || self.display_label = suggested_label
+  def initialize(*)
+    super
+    self.display_label ||= suggested_label
   end
 
   # Name stripped of leading and trailing underscores and solr suffixes
   def suggested_label
     return unless solr_field_name
 
-    solr_field_name.match(/_*(.*[^_])(_+[^_]*)$/i)[1].titleize
+    solr_field_name&.delete_suffix(solr_suffix.to_s.delete_prefix('*'))&.titleize&.strip
   end
 
   def ==(other)
