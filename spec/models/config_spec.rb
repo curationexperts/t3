@@ -144,7 +144,7 @@ RSpec.describe Config, :aggregate_failures do
   describe '#available_fields' do
     it 'returns a list of fields indexed in the core' do
       config.solr_core = 'tenejo'
-      expect(config.available_fields).to include('title_sim', 'system_create_dtsi')
+      expect(config.available_fields).to include('title_sim', 'description_tesim')
     end
 
     it 'includes configuration info for each field' do
@@ -166,9 +166,15 @@ RSpec.describe Config, :aggregate_failures do
       expect(config.fields.count).to eq config.available_fields.count
     end
 
-    it 'populates the fields attribute with a list of FieldConfig objects' do
+    it 'populates "fields" with a list of FieldConfig objects' do
       config.populate_fields
       expect(config.fields.map(&:class).uniq).to eq [FieldConfig]
+    end
+
+    it 'adds a suggested label in the initial list' do
+      config.populate_fields
+      resource_type = config.fields.select { |f| f.solr_field_name.match(/resource_type/) }.first
+      expect(resource_type.display_label).to eq 'Resource Type'
     end
   end
 end

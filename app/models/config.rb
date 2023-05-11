@@ -62,10 +62,8 @@ class Config < ApplicationRecord
   end
 
   def populate_fields
-    fields = []
-    available_fields.each do |name, _config|
-      fields << FieldConfig.new(solr_field_name: name)
+    self.fields = available_fields.map do |name, _config|
+      FieldConfig.new(solr_field_name: name)
     end
-    self.fields = fields
   end
 end

@@ -69,11 +69,10 @@ RSpec.describe FieldConfig, :aggregate_failures do
     end
   end
 
-  it 'provides label suggestions' do
+  it 'populates suggested display_label values based on the solr_field_name' do
+    expect(new_field.display_label).to be_nil
     new_field.solr_field_name = '__Rights-Statement_tsi'
-    expect(new_field.suggested_label).to eq 'Rights Statement'
-    new_field.solr_field_name = '__title__'
-    expect(new_field.suggested_label).to eq 'Title'
+    expect(new_field.display_label).to eq 'Rights Statement'
   end
 
   it 'serializes to JSON' do

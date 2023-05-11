@@ -13,8 +13,14 @@ class FieldConfig
   attribute :search_results, :boolean, default: true
   attribute :item_view, :boolean, default: true
 
+  def display_label
+    attributes['display_label'] || self.display_label = suggested_label
+  end
+
   # Name stripped of leading and trailing underscores and solr suffixes
   def suggested_label
+    return unless solr_field_name
+
     solr_field_name.match(/_*(.*[^_])(_+[^_]*)$/i)[1].titleize
   end
 
