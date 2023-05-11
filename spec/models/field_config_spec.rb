@@ -5,6 +5,7 @@ RSpec.describe FieldConfig, :aggregate_failures do
   let(:expected_attributes) do
     [
       'solr_field_name',
+      'solr_suffix',
       'enabled',
       'display_label',
       'searchable',
@@ -69,16 +70,54 @@ RSpec.describe FieldConfig, :aggregate_failures do
     end
   end
 
-  it 'populates suggested display_label values based on the solr_field_name' do
-    expect(new_field.display_label).to be_nil
-    new_field.solr_field_name = '__Rights-Statement_tsi'
-    expect(new_field.display_label).to eq 'Rights Statement'
+  it 'populates "display_label" with suggested values' do
+    field = described_class.new(solr_field_name: 'rights_statement_tesim', solr_suffix: '*_tesim')
+    expect(field.display_label).to eq 'Rights Statement'
+  end
+
+  describe '#suggested_label' do
+    it 'capitalizes simple field names' do
+      new_field.solr_field_name = 'id'
+      new_field.solr_suffix = nil
+      expect(new_field.suggested_label).to eq 'Id'
+    end
+
+    it 'removes the solr suffix' do
+      new_field.solr_field_name = 'creator_sim'
+      new_field.solr_suffix = '*_sim'
+      expect(new_field.suggested_label).to eq 'Creator'
+    end
+
+    it 'removes preceeding and trailing spaces and underscores' do
+      new_field.solr_field_name = '_version_'
+      new_field.solr_suffix = nil
+      expect(new_field.suggested_label).to eq 'Version'
+    end
+
+    it 'humanizes snake case' do
+      new_field.solr_field_name = 'workflow_state_name_ssim'
+      new_field.solr_suffix = '*_ssim'
+      expect(new_field.suggested_label).to eq 'Workflow State Name'
+    end
+
+    it 'humanizes camel case' do
+      new_field.solr_field_name = 'hasRelatedMediaFragment_ssim'
+      new_field.solr_suffix = '*_ssim'
+      expect(new_field.suggested_label).to eq 'Has Related Media Fragment'
+    end
+
+    it 'handles nil solr_field_names' do
+      new_field.solr_field_name = nil
+      new_field.solr_suffix = nil
+      expect(new_field.suggested_label).to be_nil
+    end
   end
 
   it 'serializes to JSON' do
-    field = described_class.new(solr_field_name: 'title_tesim', display_label: 'Title')
+    field = described_class.new(solr_field_name: 'title_tesim', solr_suffix: '*_tesim')
     expect(field.as_json['attributes']).to eq({
                                                 'solr_field_name' => 'title_tesim',
+                                                'solr_suffix' => '*_tesim',
                                                 'display_label' => 'Title',
                                                 'enabled' => true,
                                                 'searchable' => true,
