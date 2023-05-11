@@ -4,7 +4,8 @@ class Config < ApplicationRecord
   validate  :solr_host_responsive, on: :create
   validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
-  validates :fields, presence: true
+
+  attribute :fields, FieldConfig::ListType.new, default: -> { [] }
 
   enum setup_step: {
     host: %i[solr_host solr_version],
@@ -58,5 +59,13 @@ class Config < ApplicationRecord
     errors.add :solr_host, 'returned unexpected HTTP error'
   rescue RSolr::Error::ConnectionRefused
     errors.add :solr_host, "#{solr_host} is not responding"
+  end
+
+  def populate_fields
+    fields = []
+    available_fields.each do |name, _config|
+      fields << FieldConfig.new(solr_field_name: name)
+    end
+    self.fields = fields
   end
 end

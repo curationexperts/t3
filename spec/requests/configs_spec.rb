@@ -114,7 +114,10 @@ RSpec.describe '/configs' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do # rubocop:disable RSpec/MultipleMemoizedHelpers
-      let(:new_attributes) { { fields: 'some json fields here...' } }
+      let(:new_attributes) do
+        { fields: [{ solr_field_name: 'index_field1', display_label: 'Label' },
+                   { solr_field_name: 'another_index_field', display_label: 'Another Label' }] }
+      end
 
       it 'updates the requested config' do
         config = Config.create! valid_attributes

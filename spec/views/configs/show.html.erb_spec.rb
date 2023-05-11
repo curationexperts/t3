@@ -13,6 +13,6 @@ RSpec.describe 'configs/show', :aggregate_failures do
     render
     expect(rendered).to match(/localhost/)
     expect(rendered).to match(/blacklight-core/)
-    expect(rendered).to match(/json/)
+    expect(rendered).to match(/FieldConfig/)
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Config, :aggregate_failures do
-  let(:config) { described_class.new(FactoryBot.attributes_for(:config)) }
+  let(:config) { FactoryBot.build(:config) }
 
   let(:solr_client) { RSolr::Client.new(nil) }
 
@@ -155,6 +155,20 @@ RSpec.describe Config, :aggregate_failures do
     it 'returns an empty list when there is a connection problem or misconfiguration' do
       config.solr_core = '- not - a - valid - core -'
       expect(config.available_fields).to eq []
+    end
+  end
+
+  describe '#populate_fields' do
+    let(:config) { FactoryBot.build(:config, solr_core: 'tenejo') }
+
+    it 'has the same number of elements as the solr index' do
+      config.populate_fields
+      expect(config.fields.count).to eq config.available_fields.count
+    end
+
+    it 'populates the fields attribute with a list of FieldConfig objects' do
+      config.populate_fields
+      expect(config.fields.map(&:class).uniq).to eq [FieldConfig]
     end
   end
 end
