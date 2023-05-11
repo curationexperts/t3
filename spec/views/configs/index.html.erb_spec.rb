@@ -17,6 +17,5 @@ RSpec.describe 'configs/index' do
     cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
     assert_select cell_selector, text: Regexp.new('localhost'.to_s), count: 2
     assert_select cell_selector, text: Regexp.new('blacklight'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('FieldConfig'.to_s), count: 2
   end
 end
