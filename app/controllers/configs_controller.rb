@@ -69,7 +69,11 @@ class ConfigsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def config_params
-    params.require(:config).permit(:setup_step, :solr_host, :solr_version, :solr_core, :fields)
+    params.require(:config).permit(:setup_step, :solr_host, :solr_version, :solr_core,
+                                   fields_attributes: %i[
+                                     solr_field_name enabled display_label
+                                     searchable facetable search_results item_view
+                                   ])
   end
 
   # Manage multi-step create state
@@ -79,8 +83,8 @@ class ConfigsController < ApplicationController
       @config.setup_step = 'core' if @config.verified?
     when 'core'
       @config.setup_step = 'fields' if @config.solr_core.present?
-    when 'fields'
-      @config.setup_step = 'fields' # just hang out at the last step ;)
+      @config.populate_fields
+    when 'fields' # just hang out at the last step ;)
     else
       @config.setup_step = 'host'
     end

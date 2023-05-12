@@ -13,6 +13,13 @@ class Config < ApplicationRecord
     fields: [:fields]
   }
 
+  # Emulate #accepts_nested_attributes_for behavior
+  def fields_attributes=(attributes)
+    self.fields = attributes.map do |_i, field_params|
+      FieldConfig.new(field_params)
+    end
+  end
+
   def verified?
     solr_version.present?
   end
@@ -62,6 +69,8 @@ class Config < ApplicationRecord
   end
 
   def populate_fields
+    return unless fields.empty? && solr_host.present? && solr_core.present?
+
     self.fields = available_fields.map do |name, config|
       FieldConfig.new(solr_field_name: name, solr_suffix: config['dynamicBase'])
     end
