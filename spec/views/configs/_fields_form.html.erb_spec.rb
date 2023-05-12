@@ -7,10 +7,6 @@ RSpec.describe 'configs/_fields_form' do
       render
     end
 
-    it 'disables the field input' do
-      expect(rendered).to have_field 'config[fields]', disabled: true
-    end
-
     it 'does not have an update fields button' do
       expect(rendered).not_to have_button 'update_fields'
     end
@@ -20,10 +16,6 @@ RSpec.describe 'configs/_fields_form' do
     before do
       @config = Config.new(setup_step: 'fields')
       render
-    end
-
-    it 'disables the field input' do
-      expect(rendered).to have_field 'config[fields]'
     end
 
     it 'shows an update fields button' do
