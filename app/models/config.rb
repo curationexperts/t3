@@ -20,6 +20,30 @@ class Config < ApplicationRecord
     end
   end
 
+  def self.current
+    Config.order('updated_at').last
+  end
+
+  def enabled_fields
+    fields.select { |f| f.enabled }
+  end
+
+  def search_fields
+    enabled_fields.select { |f| f.searchable }
+  end
+
+  def facet_fields
+    enabled_fields.select { |f| f.facetable }
+  end
+
+  def index_fields
+    enabled_fields.select { |f| f.search_results }
+  end
+
+  def show_fields
+    enabled_fields.select { |f| f.item_view }
+  end
+
   def verified?
     solr_version.present?
   end

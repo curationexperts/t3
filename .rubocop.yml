@@ -9,6 +9,10 @@ AllCops:
 Rails/I18nLocaleTexts:
   Enabled: false
 
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'spec/**/*'
+
 RSpec/FactoryBot/SyntaxMethods:
   Enabled: false
 
@@ -24,6 +28,9 @@ Style/FrozenStringLiteralComment:
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+Style/SymbolProc:
+  AllowedPatterns: ['map', 'select']
 
 Style/WordArray:
   Enabled: false
