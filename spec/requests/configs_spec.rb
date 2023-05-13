@@ -16,8 +16,28 @@ RSpec.describe '/configs' do
   # This should return the minimal set of attributes required to create a valid
   # Config. As you add validations to Config, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { FactoryBot.attributes_for(:config) }
 
+  let(:fields_as_json) do
+    [{ 'attributes' =>
+         { 'solr_field_name' => 'title_tsi',
+           'solr_suffix' => '*_tsi',
+           'display_label' => 'Title',
+           'enabled' => true,
+           'searchable' => true,
+           'facetable' => false,
+           'search_results' => true,
+           'item_view' => true } },
+     { 'attributes' =>
+         { 'solr_field_name' => 'identifier_ssi',
+           'solr_suffix' => '*_ssi',
+           'display_label' => 'Identifier',
+           'enabled' => true,
+           'searchable' => true,
+           'facetable' => false,
+           'search_results' => true,
+           'item_view' => true } }]
+  end
+  let(:valid_attributes) { FactoryBot.attributes_for(:config) }
   let(:invalid_attributes) do
     {
       solr_host: 'ftp://example.org',
@@ -25,14 +45,18 @@ RSpec.describe '/configs' do
     }
   end
 
-  # Stub out a minimal solr server
   let(:test_host) { 'http://localhost:8983' }
-  let(:solr_client) { RSolr::Client.new(nil, url: test_host) }
-  let(:admin_info) { { 'lucene' => { 'solr-spec-version' => '9.2.1' } } }
+
+  # Stub out a minimal solr server
 
   before do
-    allow(RSolr::Client).to receive(:new).and_return(solr_client)
-    allow(solr_client).to receive(:get).and_return(admin_info)
+    solr_client = instance_double RSolr::Client
+    allow(RSolr).to receive(:connect).and_return(solr_client)
+    allow(solr_client).to receive(:get).and_return(
+      { 'lucene' => { 'solr-spec-version' => '9.2.1' } }
+    )
+
+    FactoryBot.create(:config, fields: fields_as_json)
   end
 
   describe 'GET /index' do
@@ -113,7 +137,7 @@ RSpec.describe '/configs' do
   end
 
   describe 'PATCH /update' do
-    context 'with valid parameters' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    context 'with valid parameters' do
       let(:new_attributes) do
         { fields: [{ solr_field_name: 'index_field1', display_label: 'Label' },
                    { solr_field_name: 'another_index_field', display_label: 'Another Label' }] }
