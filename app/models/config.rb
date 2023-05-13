@@ -5,6 +5,8 @@ class Config < ApplicationRecord
   validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
 
+  after_commit :update_catalog_controller
+
   attribute :fields, FieldConfig::ListType.new, default: -> { [] }
 
   enum setup_step: {
@@ -21,7 +23,7 @@ class Config < ApplicationRecord
   end
 
   def self.current
-    Config.order('updated_at').last
+    Config.order('updated_at').last || Config.new
   end
 
   def enabled_fields
@@ -98,5 +100,9 @@ class Config < ApplicationRecord
     self.fields = available_fields.map do |name, config|
       FieldConfig.new(solr_field_name: name, solr_suffix: config['dynamicBase'])
     end
+  end
+
+  def update_catalog_controller
+    CatalogController.update_config
   end
 end
