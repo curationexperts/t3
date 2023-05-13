@@ -8,7 +8,7 @@
             <td class='name'>Solr Field</td>
             <td class='enabled'>Enabled</td>
             <td class='label'>Label</td>
-            <td class='search'>Search</td>
+<!--            <td class='search'>Search</td>-->
             <td class='facet'>Facet</td>
             <td class='index'>List</td>
             <td class='show'>Item</td>
@@ -22,7 +22,7 @@
                 <%= field_form.hidden_field :solr_suffix -%></td>
               <td class='enabled'><%= field_form.check_box :enabled -%></td>
               <td class='label'><%= field_form.text_field :display_label -%></td>
-              <td class='search'><%= field_form.check_box :searchable -%></td>
+<!--              <td class='search'><%#= field_form.check_box :searchable -%></td>-->
               <td class='facet'><%= field_form.check_box :facetable -%></td>
               <td class='index'><%= field_form.check_box :search_results -%></td>
               <td class='show'><%= field_form.check_box :item_view -%></td>

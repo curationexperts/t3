@@ -16,7 +16,7 @@
     <td class='name'>Solr Field</td>
     <td class='enabled'>Enabled</td>
     <td class='label'>Label</td>
-    <td class='search'>Search</td>
+<!--    <td class='search'>Search</td>-->
     <td class='facet'>Facet</td>
     <td class='index'>List</td>
     <td class='show'>Item</td>
@@ -27,7 +27,7 @@
       <td class='name'><%= field.solr_field_name -%></td>
       <td class='enabled'><%= check_box_tag "fields[#{i}][enabled]", 'yes', field.enabled, disabled: true -%></td>
       <td class='label'><%= field.display_label -%></td>
-      <td class='search'><%= check_box_tag "fields[#{i}][searchable]", 'yes', field.searchable, disabled: true -%></td>
+<!--      <td class='search'><%#= check_box_tag "fields[#{i}][searchable]", 'yes', field.searchable, disabled: true -%></td>-->
       <td class='facet'><%= check_box_tag "fields[#{i}][facetable]", 'yes', field.facetable, disabled: true -%></td>
       <td class='index'><%= check_box_tag "fields[#{i}][search_results]", 'yes', field.search_results, disabled: true -%></td>
       <td class='show'><%= check_box_tag "fields[#{i}][item_view]", 'yes', field.item_view, disabled: true -%></td>
