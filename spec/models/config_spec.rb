@@ -228,4 +228,10 @@ RSpec.describe Config, :aggregate_failures do
       end
     end
   end
+
+  it 'updates the catalog controller on saves' do
+    allow(CatalogController).to receive(:update_config)
+    config.save!
+    expect(CatalogController).to have_received(:update_config)
+  end
 end
