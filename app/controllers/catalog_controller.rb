@@ -240,6 +240,7 @@ class CatalogController < ApplicationController
 
   def self.update_config # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     configure_blacklight do |config|
+      config.connection_config[:url] = [Config.current.solr_host, Config.current.solr_core].join('/solr/')
       config.facet_fields = {}
       config.index_fields = {}
       config.show_fields = {}
