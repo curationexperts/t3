@@ -1,6 +1,7 @@
 # Manage style and branding related settings
 class ThemesController < ApplicationController
-  before_action :set_theme, only: %i[show edit update destroy]
+  before_action :set_theme, only: %i[edit update destroy]
+  before_action :set_theme_with_current, only: :show
 
   # GET /themes or /themes.json
   def index
@@ -61,6 +62,14 @@ class ThemesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_theme
     @theme = Theme.find(params[:id])
+  end
+
+  def set_theme_with_current
+    if params[:id] == 'current'
+      @theme = Theme.current
+    else
+      set_theme
+    end
   end
 
   # Only allow a list of trusted parameters through.
