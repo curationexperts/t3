@@ -1,0 +1,7 @@
+:root {
+  --header-background:  <%= Theme.current.header_color %>;
+  --footer-background:  <%= Theme.current.header_color %>;
+  --footer-text:        <%= Theme.current.header_text_color %>;
+  --main-background:    <%= Theme.current.background_color %>;
+  --bs-dark-rgb:        <%= Theme.current.header_color.match(/#(..)(..)(..)/).captures.map(&:hex).join(', ') %>;
+}

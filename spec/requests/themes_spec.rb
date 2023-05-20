@@ -16,9 +16,7 @@ RSpec.describe '/themes' do
   # This should return the minimal set of attributes required to create a valid
   # Theme. As you add validations to Theme, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
+  let(:valid_attributes) { { label: 'Test Theme' } }
 
   let(:invalid_attributes) do
     skip('Add a hash of attributes invalid for your model')
@@ -36,6 +34,19 @@ RSpec.describe '/themes' do
     it 'renders a successful response' do
       theme = Theme.create! valid_attributes
       get theme_url(theme)
+      expect(response).to be_successful
+    end
+
+    it 'renders as CSS when requested' do
+      theme = Theme.create! valid_attributes
+      get theme_url(theme, format: :css)
+      expect(response.content_type).to eq 'text/css; charset=utf-8'
+    end
+  end
+
+  describe 'GET /current' do
+    it 'displays the active theme' do
+      get theme_url('current')
       expect(response).to be_successful
     end
   end
