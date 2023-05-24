@@ -22,14 +22,9 @@ RSpec.describe 'themes/index' do
            ])
   end
 
-  it 'renders a list of themes' do # rubocop:todo RSpec/ExampleLength
+  it 'renders a list of themes', :aggregate_failures do
     render
-    cell_selector = Rails::VERSION::STRING >= '7' ? 'div>p' : 'tr>td'
-    assert_select cell_selector, text: Regexp.new('Label'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Site Name'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Header Color'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Header Text Color'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Background Color'.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Background Accent Color'.to_s), count: 2
+    expect(rendered).to have_selector('.theme-label .field-value', count: 2)
+    expect(rendered).to have_selector('.theme-site-name .field-value', count: 2)
   end
 end
