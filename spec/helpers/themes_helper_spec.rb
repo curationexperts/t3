@@ -1,15 +1,13 @@
 require 'rails_helper'
 
-# Specs in this file have access to a helper object that includes
-# the ThemesHelper. For example:
-#
-# describe ThemesHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe ThemesHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#rgb' do
+    it 'transforms hex color values to rgb' do
+      expect(helper.rgb('#8A2BE2')).to eq '138, 43, 226'
+    end
+
+    it 'returns black for any unrecognized input' do
+      expect(helper.rgb('not a color value')).to eq '0, 0, 0'
+    end
+  end
 end
