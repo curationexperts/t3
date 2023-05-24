@@ -1,32 +1,32 @@
-<div id="<%= dom_id theme %>">
-  <p>
-    <strong>Label:</strong>
-    <%= theme.label %>
-  </p>
+<div id="<%= dom_id theme %>" class="theme">
+  <span class="theme-label">
+    <span class="field-label">Label:</span>
+    <span class="field-value"><%= theme.label %></span>
+  </span>
 
-  <p>
-    <strong>Site name:</strong>
-    <%= theme.site_name %>
-  </p>
+  <span class="theme-site-name">
+    <span class="field-label">Site name:</span>
+    <span class="field-value"><%= theme.site_name %></span>
+  </span>
 
-  <p>
+  <span>
     <strong>Header color:</strong>
     <%= theme.header_color %>
-  </p>
+  </span>
 
-  <p>
+  <span>
     <strong>Header text color:</strong>
     <%= theme.header_text_color %>
-  </p>
+  </span>
 
-  <p>
+  <span>
     <strong>Background color:</strong>
     <%= theme.background_color %>
-  </p>
+  </span>
 
-  <p>
+  <span>
     <strong>Background accent color:</strong>
     <%= theme.background_accent_color %>
-  </p>
+  </span>
 
 </div>
