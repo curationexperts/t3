@@ -1,0 +1,36 @@
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+}
+
+#powered_by {
+  float: right;
+  margin: 1em;
+  margin-right: 2em;
+  padding: 0.5em 1em 0.5em 1em;
+  background-color:rgba(255, 255, 255, 0.5);
+  background-color: rgba(var(--bs-body-bg-rgb), 0.5);
+  border-radius: 0.3em;
+}
+
+.navbar-logo {
+  padding: 2em;
+  background-color:rgba(255, 255, 255, 0.8);
+  border-radius: 0.3em;
+  color: rgba(0, 0, 0, 0);
+  background-position: center;
+  height: 7.5vh;
+  background-size: contain;
+  width: auto;
+}
+
+.navbar-dark {
+  --bs-navbar-color: var(--footer-text);
+}
+
+// Primary header & footer color
+.bg-dark {
+
+}
