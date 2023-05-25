@@ -16,6 +16,8 @@ class Theme < ApplicationRecord
   attribute :background_color, default: '#F0F0F0'
   attribute :background_accent_color, default: '#FFFFFF'
 
+  has_one_attached :main_logo
+
   before_destroy :confirm_inactive
   after_save :refresh_current
 
@@ -35,6 +37,15 @@ class Theme < ApplicationRecord
     end
     update(active: true)
     Theme.current = self
+  end
+
+  def update_with_attachments(params)
+    return false unless update(params.reject { |k| k['main_logo'] })
+    return true if params[:main_logo].blank?
+
+    main_logo.purge if main_logo.attached?
+    main_logo.attach(params[:main_logo])
+    true
   end
 
   private

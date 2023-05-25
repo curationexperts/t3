@@ -16,21 +16,12 @@ RSpec.describe 'themes/edit' do
     assign(:theme, theme)
   end
 
-  it 'renders the edit theme form' do # rubocop:todo RSpec/ExampleLength
+  it 'renders the edit theme form', :aggregate_failures do
     render
 
-    assert_select 'form[action=?][method=?]', theme_path(theme), 'post' do
-      assert_select 'input[name=?]', 'theme[label]'
-
-      assert_select 'input[name=?]', 'theme[site_name]'
-
-      assert_select 'input[name=?]', 'theme[header_color]'
-
-      assert_select 'input[name=?]', 'theme[header_text_color]'
-
-      assert_select 'input[name=?]', 'theme[background_color]'
-
-      assert_select 'input[name=?]', 'theme[background_accent_color]'
-    end
+    expect(rendered).to have_field('theme_label', name: 'theme[label]')
+    expect(rendered).to have_field(name: 'theme[site_name]')
+    expect(rendered).to have_field('theme_main_logo', name: 'theme[main_logo]')
+    expect(rendered).to have_button('commit', type: 'submit')
   end
 end

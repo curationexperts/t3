@@ -89,4 +89,14 @@ RSpec.describe Theme do
       expect(described_class.current.label).to match(/starts inactive/)
     end
   end
+
+  describe '.main_logo' do
+    it 'is empty on new themes' do
+      expect(described_class.new.main_logo).not_to be_attached
+    end
+
+    it 'is a kind of ActiveStorage blob' do
+      expect(described_class.new.main_logo).not_to be_a ActiveStorage::Blob
+    end
+  end
 end

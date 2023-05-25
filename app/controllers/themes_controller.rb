@@ -37,7 +37,7 @@ class ThemesController < ApplicationController
   # PATCH/PUT /themes/1 or /themes/1.json
   def update
     respond_to do |format|
-      if @theme.update(theme_params)
+      if @theme.update_with_attachments(theme_params)
         format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully updated.' }
         format.json { render :show, status: :ok, location: @theme }
       else
@@ -74,7 +74,7 @@ class ThemesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def theme_params
-    params.require(:theme).permit(:label, :site_name, :header_color, :header_text_color, :background_color,
+    params.require(:theme).permit(:label, :site_name, :main_logo, :header_color, :header_text_color, :background_color,
                                   :background_accent_color)
   end
 end

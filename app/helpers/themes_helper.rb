@@ -8,4 +8,12 @@ module ThemesHelper
       '0, 0, 0'
     end
   end
+
+  def main_logo_path(theme = nil)
+    if theme.is_a?(Theme) && theme.main_logo.attached?
+      rails_storage_proxy_path theme.main_logo
+    else
+      image_path('blacklight/logo.png')
+    end
+  end
 end
