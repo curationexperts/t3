@@ -19,7 +19,7 @@ RSpec.describe '/themes' do
   let(:valid_attributes) { { label: 'Test Theme' } }
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    skip 'wait until the class requires some type of validation'
   end
 
   describe 'GET /index' do
@@ -96,15 +96,13 @@ RSpec.describe '/themes' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
-      end
+      let(:new_attributes) { { site_name: 'My New Site!' } }
 
       it 'updates the requested theme' do
         theme = Theme.create! valid_attributes
         patch theme_url(theme), params: { theme: new_attributes }
         theme.reload
-        skip('Add assertions for updated state')
+        expect(theme.site_name).to eq 'My New Site!'
       end
 
       it 'redirects to the theme' do
@@ -112,6 +110,34 @@ RSpec.describe '/themes' do
         patch theme_url(theme), params: { theme: new_attributes }
         theme.reload
         expect(response).to redirect_to(theme_url(theme))
+      end
+    end
+
+    context 'with logos attached', :aggregate_failures do
+      let(:logo) { fixture_file_upload('sample_logo.png') }
+      let(:theme) { Theme.create! valid_attributes }
+
+      it 'adds the logo' do
+        expect(theme.main_logo).not_to be_attached
+        patch theme_url(theme), params: { theme: { main_logo: logo } }
+        theme.reload
+        expect(theme.main_logo).to be_attached
+      end
+
+      it 'purges any existing logo' do # rubocop:disable RSpec/ExampleLength
+        theme.main_logo.attach(logo)
+        old_logo_blob = theme.main_logo.blob
+        patch theme_url(theme), params: { theme: { main_logo: logo } }
+        theme.reload
+        expect(theme.main_logo.blob).not_to eq old_logo_blob
+        expect { old_logo_blob.reload }.to raise_exception ActiveRecord::RecordNotFound
+      end
+
+      it 'remain attached when params are empty' do
+        theme.main_logo.attach(logo)
+        patch theme_url(theme), params: { theme: { site_name: 'New Site' } }
+        theme.reload
+        expect(theme.main_logo).to be_attached
       end
     end
 

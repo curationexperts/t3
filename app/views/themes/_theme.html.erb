@@ -1,32 +1,39 @@
 <div id="<%= dom_id theme %>" class="theme">
-  <span class="theme-label">
-    <span class="field-label">Label:</span>
-    <span class="field-value"><%= theme.label %></span>
-  </span>
+  <div class="theme-label">
+    <div class="field-label">Label:</div>
+    <div class="field-value"><%= theme.label %></div>
+  </div>
 
-  <span class="theme-site-name">
-    <span class="field-label">Site name:</span>
-    <span class="field-value"><%= theme.site_name %></span>
-  </span>
+  <div class="theme-logo">
+    <div class="field-label">Logo:</div>
+    <div class="field-value"><%= theme.main_logo.blob&.filename %></div>
+    <%= image_tag theme.main_logo if theme.main_logo.attached? %>
+  </div>
 
-  <span>
+
+  <div class="theme-site-name">
+    <div class="field-label">Site name:</div>
+    <div class="field-value"><%= theme.site_name %></div>
+  </div>
+
+  <div>
     <strong>Header color:</strong>
     <%= theme.header_color %>
-  </span>
+  </div>
 
-  <span>
+  <div>
     <strong>Header text color:</strong>
     <%= theme.header_text_color %>
-  </span>
+  </div>
 
-  <span>
+  <div>
     <strong>Background color:</strong>
     <%= theme.background_color %>
-  </span>
+  </div>
 
-  <span>
+  <div>
     <strong>Background accent color:</strong>
     <%= theme.background_accent_color %>
-  </span>
+  </div>
 
 </div>

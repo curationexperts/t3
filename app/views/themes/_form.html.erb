@@ -11,34 +11,48 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :label, style: "display: block" %>
-    <%= form.text_field :label %>
-  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div>
+          <%= form.label :label, style: "display: block" %>
+          <%= form.text_field :label %>
+        </div>
 
-  <div>
-    <%= form.label :site_name, style: "display: block" %>
-    <%= form.text_field :site_name %>
-  </div>
+        <div>
+          <%= form.label :site_name, style: "display: block" %>
+          <%= form.text_field :site_name %>
+        </div>
 
-  <div>
-    <%= form.label :header_color, style: "display: block" %>
-    <%= form.color_field :header_color %>
-  </div>
+        <div>
+          <%= form.label :header_color, style: "display: block" %>
+          <%= form.color_field :header_color %>
+        </div>
 
-  <div>
-    <%= form.label :header_text_color, style: "display: block" %>
-    <%= form.color_field :header_text_color %>
-  </div>
+        <div>
+          <%= form.label :header_text_color, style: "display: block" %>
+          <%= form.color_field :header_text_color %>
+        </div>
 
-  <div>
-    <%= form.label :background_color, style: "display: block" %>
-    <%= form.color_field :background_color %>
-  </div>
+        <div>
+          <%= form.label :background_color, style: "display: block" %>
+          <%= form.color_field :background_color %>
+        </div>
 
-  <div>
-    <%= form.label :background_accent_color, style: "display: block" %>
-    <%= form.color_field :background_accent_color %>
+        <div>
+          <%= form.label :background_accent_color, style: "display: block" %>
+          <%= form.color_field :background_accent_color %>
+        </div>
+
+      </div>
+      <div class="col">
+        <div class='theme-logo'>
+          <%= image_tag theme.main_logo if theme.main_logo.attached? %>
+          <%= form.label :main_logo, style: "display: block" %>
+          Change logo <%= form.file_field :main_logo %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div>
