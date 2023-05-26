@@ -6,6 +6,14 @@ require:
 AllCops:
   NewCops: enable
 
+Metrics/AbcSize:
+  Exclude:
+    - 'db/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'db/**/*'
+
 Rails/I18nLocaleTexts:
   Enabled: false
 

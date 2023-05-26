@@ -22,5 +22,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :themes do
+    patch 'activate', on: :member
+  end
   resources :configs
 end

@@ -1,0 +1,47 @@
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+}
+
+#powered_by {
+  float: right;
+  margin: 1em;
+  margin-right: 2em;
+  padding: 0.5em 1em 0.5em 1em;
+  background-color: rgba(var(--bs-body-bg-rgb), 0.5);
+  border-radius: 0.3em;
+}
+
+.navbar-logo {
+  background-color: unset;
+  background-image: unset;
+  height: unset;
+  width: unset;
+  overflow: visible;
+  text-indent: unset;
+
+  img {
+    height: 4.5rem;
+  }
+}
+
+.navbar-dark {
+  --bs-navbar-color: var(--footer-text);
+}
+
+.theme-logo img {
+  height: 5.5rem;
+  padding: 0.5em;
+  background-color: rgba(100%, 100%, 100%, 2%);
+  border-radius: 0.35rem;
+}
+
+form.button_to {
+  display: contents;
+}
+
+footer {
+  margin-top: 2rem;
+}

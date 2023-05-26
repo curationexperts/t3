@@ -1,0 +1,12 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Themes</h1>
+
+<div id="themes">
+  <% @themes.each do |theme| %>
+    <%= render theme %>
+      <%= link_to "Show this theme", theme %>
+  <% end %>
+</div>
+
+<%= link_to "New theme", new_theme_path %>

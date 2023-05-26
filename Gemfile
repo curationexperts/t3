@@ -8,7 +8,7 @@ gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
 # Blacklight search and discovery engine using Devise for user auth
 gem 'blacklight', '~> 8.0'
-gem 'bootstrap', '~> 5.1'
+gem 'bootstrap', '5.3.0.alpha3'
 gem 'devise'
 gem 'devise-guests', '~> 0.8'
 gem 'rsolr', '>= 1.0', '< 3'
