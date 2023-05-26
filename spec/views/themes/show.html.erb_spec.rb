@@ -1,24 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe 'themes/show' do
+  let(:theme)  { FactoryBot.create(:theme, active: false) }
+
   before do
-    assign(:theme, Theme.create!(
-                     label: 'Label',
-                     site_name: 'Site Name',
-                     header_color: 'Header Color',
-                     header_text_color: 'Header Text Color',
-                     background_color: 'Background Color',
-                     background_accent_color: 'Background Accent Color'
-                   ))
+    assign(:theme, theme)
   end
 
-  it 'renders attributes in <p>', :aggregate_failures do # rubocop:todo RSpec/ExampleLength
+  it 'renders attributes', :aggregate_failures do
     render
-    expect(rendered).to match(/Label/)
-    expect(rendered).to match(/Site Name/)
-    expect(rendered).to match(/Header Color/)
-    expect(rendered).to match(/Header Text Color/)
-    expect(rendered).to match(/Background Color/)
-    expect(rendered).to match(/Background Accent Color/)
+    expect(rendered).to match(/Theme Label/)
+    expect(rendered).to match(/My Site/)
+    expect(rendered).to match(/#000000/)
+  end
+
+  it 'has links to manage the theme', :aggregate_failures do
+    render
+    expect(rendered).to have_button('activate-theme')
+    expect(rendered).to have_link('edit-theme')
+    expect(rendered).to have_button('delete-theme')
+  end
+
+  context 'with an active theme' do
+    let(:theme)  { FactoryBot.create(:theme, active: true) }
+
+    it 'disables the activate button' do
+      render
+      expect(rendered).to have_button('activate-theme', disabled: true)
+    end
   end
 end

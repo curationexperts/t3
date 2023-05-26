@@ -150,6 +150,18 @@ RSpec.describe '/themes' do
     end
   end
 
+  describe 'PATCH /activate' do
+    let(:theme) { Theme.create! valid_attributes }
+    let(:patched) { Theme.new valid_attributes }
+
+    it 'calls #activate! on the theme' do
+      allow(Theme).to receive(:find).and_return(patched)
+      allow(patched).to receive(:activate!)
+      patch activate_theme_url(theme)
+      expect(patched).to have_received(:activate!)
+    end
+  end
+
   describe 'DELETE /destroy' do
     it 'destroys the requested theme' do
       theme = Theme.create! valid_attributes

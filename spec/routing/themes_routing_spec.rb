@@ -33,5 +33,9 @@ RSpec.describe ThemesController do
     it 'routes to #destroy' do
       expect(delete: '/themes/1').to route_to('themes#destroy', id: '1')
     end
+
+    it 'routes to #actiate via PATCH' do
+      expect(patch: '/themes/1/activate').to route_to('themes#activate', id: '1')
+    end
   end
 end
