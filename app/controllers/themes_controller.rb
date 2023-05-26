@@ -1,6 +1,6 @@
 # Manage style and branding related settings
 class ThemesController < ApplicationController
-  before_action :set_theme, only: %i[edit update destroy]
+  before_action :set_theme, only: %i[edit update activate destroy]
   before_action :set_theme_with_current, only: :show
 
   # GET /themes or /themes.json
@@ -39,6 +39,19 @@ class ThemesController < ApplicationController
     respond_to do |format|
       if @theme.update_with_attachments(theme_params)
         format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully updated.' }
+        format.json { render :show, status: :ok, location: @theme }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @theme.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH /themes/1/activate or /themes/1/activate.json
+  def activate
+    respond_to do |format|
+      if @theme.activate!
+        format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully activated.' }
         format.json { render :show, status: :ok, location: @theme }
       else
         format.html { render :edit, status: :unprocessable_entity }

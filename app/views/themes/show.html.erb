@@ -1,8 +1,14 @@
 <%= render @theme %>
 
 <div>
-  <%= link_to "Edit this theme", edit_theme_path(@theme) %> |
-  <%= link_to "Back to themes", themes_path %>
+  <% if @theme.active %>
+    <%= button_to "Active", '#', id: 'activate-theme', class: 'btn btn-outline-success', disabled: true %>
+  <% else %>
+    <%= button_to "Make Active", activate_theme_path(@theme), method: :patch, id: 'activate-theme', class: 'btn btn-success' %>
+  <% end %>
+  <%= link_to "Edit", edit_theme_path(@theme), id: 'edit-theme', class: 'btn btn-primary' %>
+  <%= link_to "Back to themes", themes_path, id: 'list-themes', class: 'btn btn-primary' %>
+  &nbsp; &mdash; &middot; &mdash; &nbsp;
+  <%= button_to "Delete", @theme, method: :delete, id: 'delete-theme', class: 'btn btn-danger' %>
 
-  <%= button_to "Destroy this theme", @theme, method: :delete %>
 </div>

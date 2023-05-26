@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :themes
   mount Blacklight::Engine => '/'
   root to: 'catalog#index'
   concern :searchable, Blacklight::Routes::Searchable.new
@@ -23,5 +22,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :themes do
+    patch 'activate', on: :member
+  end
   resources :configs
 end
