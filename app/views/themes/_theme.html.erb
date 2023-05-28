@@ -1,39 +1,27 @@
 <div id="<%= dom_id theme %>" class="theme">
-  <div class="theme-label">
-    <div class="field-label">Label:</div>
-    <div class="field-value"><%= theme.label %></div>
+
+  <div class="canvas">
+    <!-- Label-->
+    <div class="theme-label">
+      <div class="field-label visually-hidden">Label:</div>
+      <div class="field-value"><h2><%= theme.label %></h2></div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="lds-dual-ring"></div>
+
+    <!-- Site preview -->
+    <div class="preview-container">
+      <div class="preview">
+        <% if theme.persisted? %>
+          <iframe src="http://localhost:3000/catalog?theme_id=<%= theme.id.to_s -%>"></iframe>
+        <% else %>
+          <%= image_tag 'big_plus.png' %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Control buttons -->
+    <%= render(partial: 'themes/theme_controls', locals: {theme: theme}) if theme %>
   </div>
-
-  <div class="theme-logo">
-    <div class="field-label">Logo:</div>
-    <div class="field-value"><%= theme.main_logo.blob&.filename %></div>
-    <%= image_tag theme.main_logo if theme.main_logo.attached? %>
-  </div>
-
-
-  <div class="theme-site-name">
-    <div class="field-label">Site name:</div>
-    <div class="field-value"><%= theme.site_name %></div>
-  </div>
-
-  <div>
-    <strong>Header color:</strong>
-    <%= theme.header_color %>
-  </div>
-
-  <div>
-    <strong>Header text color:</strong>
-    <%= theme.header_text_color %>
-  </div>
-
-  <div>
-    <strong>Background color:</strong>
-    <%= theme.background_color %>
-  </div>
-
-  <div>
-    <strong>Background accent color:</strong>
-    <%= theme.background_accent_color %>
-  </div>
-
 </div>

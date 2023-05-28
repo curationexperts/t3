@@ -1,14 +1,3 @@
+<h1>Theme Preview</h1>
+
 <%= render @theme %>
-
-<div>
-  <% if @theme.active %>
-    <%= button_to "Active", '#', id: 'activate-theme', class: 'btn btn-outline-success', disabled: true %>
-  <% else %>
-    <%= button_to "Make Active", activate_theme_path(@theme), method: :patch, id: 'activate-theme', class: 'btn btn-success' %>
-  <% end %>
-  <%= link_to "Edit", edit_theme_path(@theme), id: 'edit-theme', class: 'btn btn-primary' %>
-  <%= link_to "Back to themes", themes_path, id: 'list-themes', class: 'btn btn-primary' %>
-  &nbsp; &mdash; &middot; &mdash; &nbsp;
-  <%= button_to "Delete", @theme, method: :delete, id: 'delete-theme', class: 'btn btn-danger' %>
-
-</div>

@@ -5,7 +5,7 @@ class ThemesController < ApplicationController
 
   # GET /themes or /themes.json
   def index
-    @themes = Theme.all
+    @themes = Theme.order(:label, :created_at).to_a << Theme.new(label: 'Add Theme')
   end
 
   # GET /themes/1 or /themes/1.json
@@ -25,7 +25,7 @@ class ThemesController < ApplicationController
 
     respond_to do |format|
       if @theme.save
-        format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully created.' }
+        format.html { redirect_to theme_url(@theme) }
         format.json { render :show, status: :created, location: @theme }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class ThemesController < ApplicationController
   def update
     respond_to do |format|
       if @theme.update_with_attachments(theme_params)
-        format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully updated.' }
+        format.html { redirect_to theme_url(@theme) }
         format.json { render :show, status: :ok, location: @theme }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -51,7 +51,7 @@ class ThemesController < ApplicationController
   def activate
     respond_to do |format|
       if @theme.activate!
-        format.html { redirect_to theme_url(@theme), notice: 'Theme was successfully activated.' }
+        format.html { redirect_to theme_url(@theme) }
         format.json { render :show, status: :ok, location: @theme }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -65,7 +65,7 @@ class ThemesController < ApplicationController
     @theme.destroy
 
     respond_to do |format|
-      format.html { redirect_to themes_url, notice: 'Theme was successfully destroyed.' }
+      format.html { redirect_to themes_url }
       format.json { head :no_content }
     end
   end

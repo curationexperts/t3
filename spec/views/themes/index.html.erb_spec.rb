@@ -1,30 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe 'themes/index' do
+  let(:red_theme)  { FactoryBot.create(:theme, label: 'Red Theme') }
+  let(:blue_theme) { FactoryBot.create(:theme, label: 'Blue Theme') }
+  let(:new_theme)  { FactoryBot.build(:theme, label: 'Add Theme') }
+
   before do
-    assign(:themes, [
-             Theme.create!(
-               label: 'Label',
-               site_name: 'Site Name',
-               header_color: 'Header Color',
-               header_text_color: 'Header Text Color',
-               background_color: 'Background Color',
-               background_accent_color: 'Background Accent Color'
-             ),
-             Theme.create!(
-               label: 'Label',
-               site_name: 'Site Name',
-               header_color: 'Header Color',
-               header_text_color: 'Header Text Color',
-               background_color: 'Background Color',
-               background_accent_color: 'Background Accent Color'
-             )
-           ])
+    assign(:themes, [red_theme, blue_theme, new_theme])
   end
 
-  it 'renders a list of themes', :aggregate_failures do
+  it 'displays a list of themes', :aggregate_failures do
     render
-    expect(rendered).to have_selector('.theme-label .field-value', count: 2)
-    expect(rendered).to have_selector('.theme-site-name .field-value', count: 2)
+    expect(rendered).to have_selector('.theme-label .field-value', count: 3)
+  end
+
+  it 'renders theme management controls (as a partial)' do
+    render
+    expect(rendered).to have_selector('div.theme-controls', count: 3)
   end
 end
