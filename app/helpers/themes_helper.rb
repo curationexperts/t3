@@ -16,4 +16,10 @@ module ThemesHelper
       image_path('blacklight/logo.png')
     end
   end
+
+  def theme_id
+    requested_id = params[:theme_id]
+    theme = Theme.find_by(id: requested_id) || Theme.current
+    theme.id
+  end
 end

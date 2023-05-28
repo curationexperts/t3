@@ -19,8 +19,11 @@ module Blacklight
     end
 
     def logo_img
-      if Theme.current.main_logo.attached?
-        image_tag(Theme.current.main_logo)
+      requested_id = params[:theme_id]
+      theme = Theme.find_by(id: requested_id) || Theme.current
+
+      if theme.main_logo.attached?
+        image_tag(theme.main_logo)
       else
         image_tag('blacklight/logo.png')
       end
