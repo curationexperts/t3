@@ -80,18 +80,25 @@ class Config < ApplicationRecord
     []
   end
 
-  def solr_host_responsive
-    return unless solr_host
-    return unless solr_host_looks_valid
-
+  def fetch_solr_version
     solr = RSolr.connect url: solr_host
     response = solr.get('/solr/admin/info/system', params: { wt: 'json' })
     self.solr_version = response.dig('lucene', 'solr-spec-version')
-    errors.add(:solr_host, 'did not return a valid Solr version') unless solr_version
   rescue RSolr::Error::Http
     errors.add :solr_host, 'returned unexpected HTTP error'
   rescue RSolr::Error::ConnectionRefused
     errors.add :solr_host, "#{solr_host} is not responding"
+  end
+
+  def solr_host_responsive
+    return false unless solr_host_looks_valid
+
+    if fetch_solr_version.nil?
+      errors.add(:solr_host, 'did not return a valid Solr version') unless check_solr_version
+      return false
+    end
+
+    true
   end
 
   def populate_fields
