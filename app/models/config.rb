@@ -94,7 +94,7 @@ class Config < ApplicationRecord
     return false unless solr_host_looks_valid
 
     if fetch_solr_version.nil?
-      errors.add(:solr_host, 'did not return a valid Solr version') unless check_solr_version
+      errors.add(:solr_host, 'did not return a valid Solr version')
       return false
     end
 
