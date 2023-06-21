@@ -22,7 +22,10 @@ class CatalogController < ApplicationController
     #
     ## Model that maps search index responses to the blacklight response model
     # config.response_model = Blacklight::Solr::Response
-    #
+
+    # Use our own view components for the header
+    config.header_component = T3::HeaderComponent
+
     ## The destination for the link around the logo in the header
     # config.logo_link = root_path
     #
@@ -52,7 +55,7 @@ class CatalogController < ApplicationController
     # Some components can be configured
     # config.index.document_component = MyApp::SearchResultComponent
     # config.index.constraints_component = MyApp::ConstraintsComponent
-    # config.index.search_bar_component = MyApp::SearchBarComponent
+    config.index.search_bar_component = T3::SearchBarComponent
     # config.index.search_header_component = MyApp::SearchHeaderComponent
     # config.index.document_actions.delete(:bookmark)
 

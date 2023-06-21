@@ -5,6 +5,12 @@ body {
   grid-template-columns: 100%;
 }
 
+.application_name {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
 #powered_by {
   float: right;
   margin: 1em;
@@ -36,6 +42,10 @@ body {
   padding: 0.5em;
   background-color: rgba(100%, 100%, 100%, 2%);
   border-radius: 0.35rem;
+}
+
+.header_search {
+  background-color: var(--header-search-background);
 }
 
 form.button_to {
