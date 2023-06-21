@@ -1,7 +1,7 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.17.3'
 
-equire 'capistrano/passenger'
+require 'capistrano/passenger'
 
 set :application, 't3'
 set :repo_url, 'https://github.com/curationexperts/t3.git'
