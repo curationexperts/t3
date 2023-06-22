@@ -14,7 +14,7 @@
     <div class="preview-container">
       <div class="preview">
         <% if theme.persisted? %>
-          <iframe src="http://localhost:3000/catalog?theme_id=<%= theme.id.to_s -%>"></iframe>
+          <iframe src="/catalog?theme_id=<%= theme.id.to_s -%>"></iframe>
         <% else %>
           <%= image_tag 'big_plus.png' %>
         <% end %>
