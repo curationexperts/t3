@@ -81,6 +81,4 @@ test:
 #
 production:
   <<: *default
-  database: t3_production
-  username: t3
-  password: <%= ENV["T3_DATABASE_PASSWORD"] %>
+  database: t3

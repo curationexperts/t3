@@ -5,6 +5,9 @@ require 'capistrano/passenger'
 
 set :application, 't3'
 set :repo_url, 'https://github.com/curationexperts/t3.git'
+set :deploy_to, '/opt/t3'
+set :rails_env, 'production'
+
 set :branch, ENV['REVISION'] || ENV['BRANCH'] || ENV['BRANCH_NAME'] || 'main'
 
 # Default branch is :master
@@ -36,6 +39,9 @@ append :linked_dirs,
        'public/system',
        'vendor',
        'storage'
+
+# Files shared across deployments
+append :linked_files, "config/secrets.yml"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
