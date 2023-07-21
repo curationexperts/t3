@@ -26,4 +26,8 @@ Rails.application.routes.draw do
     patch 'activate', on: :member
   end
   resources :configs
+
+  scope path: '/admin', module: :admin do
+    resources :roles
+  end
 end

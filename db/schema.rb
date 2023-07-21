@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_24_172554) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_20_203732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_172554) do
     t.string "solr_version"
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "unique_names", unique: true
+  end
+
+  create_table "roles_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_roles_users_on_role_id"
+    t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
   create_table "searches", id: :serial, force: :cascade do |t|
     t.binary "query_params"
     t.integer "user_id"
@@ -99,4 +116,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_172554) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "roles_users", "roles"
+  add_foreign_key "roles_users", "users"
 end
