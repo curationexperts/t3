@@ -31,3 +31,6 @@
 
 en:
   hello: "Hello world"
+  t3:
+    header_links:
+      status: 'Dashboard'
