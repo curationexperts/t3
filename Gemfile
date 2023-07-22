@@ -14,6 +14,9 @@ gem 'devise-guests', '~> 0.8'
 gem 'rsolr', '>= 1.0', '< 3'
 gem 'sassc-rails', '~> 2.1'
 
+# Implement user authorization within the app
+gem 'cancancan'
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 

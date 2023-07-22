@@ -34,5 +34,8 @@ module T3
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Don't allow non-authorized users to infer existence of resources
+    config.action_dispatch.rescue_responses.merge!('CanCan::AccessDenied' => :not_found)
   end
 end

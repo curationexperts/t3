@@ -1,0 +1,21 @@
+<h1>Role Details</h1>
+
+<div id="<%= dom_id @role %>">
+  <p>
+    <strong>Name:</strong>
+    <span class='name'><%= @role.name %></span>
+  </p>
+
+  <p>
+    <strong>Description:</strong>
+    <span class='description'><%= @role.description %></span>
+  </p>
+
+</div>
+
+<div>
+  <%= link_to "Edit this role", edit_role_path(@role) %> |
+  <%= link_to "Back to roles", roles_path %>
+
+  <%= button_to "Destroy this role", @role, method: :delete %>
+</div>
