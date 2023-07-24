@@ -4,7 +4,7 @@
 
 <div id="configs">
   <% @configs.each do |config| %>
-    <%= render config %>
+    <%= render partial: 'config', object: config %>
     <p>
       <%= link_to "Show this config", config %>
     </p>

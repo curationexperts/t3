@@ -25,4 +25,33 @@ RSpec.describe 'admin/_sidebar' do
       expect(rendered).not_to have_link(href: roles_path)
     end
   end
+
+  describe 'themes link' do
+    it 'renders for authorized users' do
+      pending 'move themes under admin and add restrictions'
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Theme).and_return(true)
+      render
+      expect(rendered).to have_link(href: themes_path)
+    end
+
+    it 'is hidden from unauthorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Theme).and_return(false)
+      render
+      expect(rendered).not_to have_link(href: themes_path)
+    end
+  end
+
+  describe 'config link' do
+    it 'renders for authorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Config).and_return(true)
+      render
+      expect(rendered).to have_link(href: configs_path)
+    end
+
+    it 'is hidden from unauthorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Config).and_return(false)
+      render
+      expect(rendered).not_to have_link(href: configs_path)
+    end
+  end
 end

@@ -10,10 +10,12 @@
           <%= link_to t('t3.admin.roles'), roles_path, class: 'nav-link' + active_controller_class('roles') %>
         </li>
       <% end %>
+      <% if can? :read, Config %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.configs'), configs_path, class: 'nav-link' + active_controller_class('configs') %>
+        </li>
+      <% end %>
 
-<!--      <li class='nav-item'>-->
-        <%#= link_to t('t3.admin.solr_config'), configs_path, class: 'nav-link' %>
-<!--      </li>-->
 <!--      <li class='nav-item'>-->
         <%#= link_to t('t3.admin.themes'), themes_path, class: 'nav-link' %>
 <!--      </li>-->

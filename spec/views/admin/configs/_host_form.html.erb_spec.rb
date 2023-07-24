@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/_host_form' do
+RSpec.describe 'admin/configs/_host_form' do
   context 'without a verified host' do
     before do
       @config = Config.new(setup_step: 'host')

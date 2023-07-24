@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/new' do
+RSpec.describe 'admin/configs/new' do
   before do
     assign(:config, FactoryBot.build(:config, setup_step: 'host'))
   end

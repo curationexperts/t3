@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/edit' do
+RSpec.describe 'admin/configs/edit' do
   let(:config) { FactoryBot.build(:config) }
 
   before do

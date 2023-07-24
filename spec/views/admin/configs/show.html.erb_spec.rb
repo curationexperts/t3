@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/show', :aggregate_failures do
+RSpec.describe 'admin/configs/show', :aggregate_failures do
   let(:config) { FactoryBot.build(:config) }
 
   before do

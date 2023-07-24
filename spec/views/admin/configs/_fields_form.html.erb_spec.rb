@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/_fields_form' do
+RSpec.describe 'admin/configs/_fields_form' do
   context 'when in "host" setup step' do
     before do
       @config = Config.new(setup_step: 'host')

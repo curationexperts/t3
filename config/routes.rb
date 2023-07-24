@@ -28,11 +28,11 @@ Rails.application.routes.draw do
   resources :themes do
     patch 'activate', on: :member
   end
-  resources :configs
 
   scope path: '/admin', module: :admin do
-    resources :roles
     get :status, to: 'status#index'
+    resources :roles
+    resources :configs
   end
 
   # When app is firt booted and no Solr config exists, use this as the application root
