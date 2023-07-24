@@ -12,31 +12,11 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe '/configs' do
+RSpec.describe '/admin/configs' do
   # This should return the minimal set of attributes required to create a valid
   # Config. As you add validations to Config, be sure to
   # adjust the attributes here as well.
 
-  let(:fields_as_json) do
-    [{ 'attributes' =>
-         { 'solr_field_name' => 'title_tsi',
-           'solr_suffix' => '*_tsi',
-           'display_label' => 'Title',
-           'enabled' => true,
-           'searchable' => true,
-           'facetable' => false,
-           'search_results' => true,
-           'item_view' => true } },
-     { 'attributes' =>
-         { 'solr_field_name' => 'identifier_ssi',
-           'solr_suffix' => '*_ssi',
-           'display_label' => 'Identifier',
-           'enabled' => true,
-           'searchable' => true,
-           'facetable' => false,
-           'search_results' => true,
-           'item_view' => true } }]
-  end
   let(:valid_attributes) { FactoryBot.attributes_for(:config) }
   let(:invalid_attributes) do
     {
@@ -45,21 +25,24 @@ RSpec.describe '/configs' do
     }
   end
 
-  let(:test_host) { 'http://localhost:8983' }
-
-  # Stub out a minimal solr server
+  let(:super_admin)  { FactoryBot.create(:super_admin) }
+  let(:regular_user) { FactoryBot.create(:user) }
 
   before do
+    # Stub out a minimal solr server
     solr_client = instance_double RSolr::Client
     allow(RSolr).to receive(:connect).and_return(solr_client)
     allow(solr_client).to receive(:get).and_return(
       { 'lucene' => { 'solr-spec-version' => '9.2.1' } }
     )
 
-    FactoryBot.create(:config, fields: fields_as_json)
+    FactoryBot.create(:config_with_fields)
+
+    # Login as a privleged user
+    login_as super_admin
   end
 
-  describe 'GET /index' do
+  describe 'GET / (/index)' do
     it 'renders a successful response' do
       Config.create! valid_attributes
       get configs_url
@@ -67,7 +50,7 @@ RSpec.describe '/configs' do
     end
   end
 
-  describe 'GET /show' do
+  describe 'GET /configs/show' do
     it 'renders a successful response' do
       config = Config.create! valid_attributes
       get config_url(config)
@@ -92,6 +75,8 @@ RSpec.describe '/configs' do
 
   describe 'POST /create' do
     context 'with valid host only' do
+      let(:test_host) { 'http://localhost:8983' }
+
       it 'verifies the host' do
         post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
         config = controller.view_assigns['config']
@@ -179,6 +164,22 @@ RSpec.describe '/configs' do
       config = Config.create! valid_attributes
       delete config_url(config)
       expect(response).to redirect_to(configs_url)
+    end
+  end
+
+  describe 'resctricts access' do
+    example 'for guest users' do
+      logout
+      Config.create! valid_attributes
+      get configs_url
+      expect(response).to be_not_found
+    end
+
+    example 'for non-admin users' do
+      login_as regular_user
+      Config.create! valid_attributes
+      get configs_url
+      expect(response).to be_unauthorized
     end
   end
 end

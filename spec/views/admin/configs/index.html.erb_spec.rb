@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'configs/index' do
+RSpec.describe 'admin/configs/index' do
   let(:config) { FactoryBot.build(:config) }
   let(:another) { FactoryBot.build(:config) }
 
