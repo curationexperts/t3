@@ -1,0 +1,25 @@
+<% if can? :read, :dashboard -%>
+  <nav id='admin_sidebar' class='d-flex flex-column flex-shrink-0 p-3'>
+    <h2>Admin Tools</h2>
+    <ul class='nav nav-pills flex-column mb-auto'>
+      <li class='nav-item'>
+        <%= link_to t('t3.admin.status'), status_path, class: 'nav-link' + active_controller_class('status') %>
+      </li>
+      <% if can? :read, Role %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.roles'), roles_path, class: 'nav-link' + active_controller_class('roles') %>
+        </li>
+      <% end %>
+
+<!--      <li class='nav-item'>-->
+        <%#= link_to t('t3.admin.solr_config'), configs_path, class: 'nav-link' %>
+<!--      </li>-->
+<!--      <li class='nav-item'>-->
+        <%#= link_to t('t3.admin.themes'), themes_path, class: 'nav-link' %>
+<!--      </li>-->
+<!--      <li class='nav-item'>-->
+        <%#= link_to t('t3.admin.users'), users_path, class: 'nav-link' %>
+<!--      </li>-->
+    </ul>
+  </nav>
+<% end -%>
