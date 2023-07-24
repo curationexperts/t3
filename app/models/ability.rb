@@ -30,6 +30,8 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/blob/develop/docs/define_check_abilities.md
 
+    # Allow any user or guest to access the current theme so we can render the expected CSS
+    can :read, Theme.current
     return unless user&.guest == false
 
     return unless user.roles.map(&:name).include?('Super Admin')

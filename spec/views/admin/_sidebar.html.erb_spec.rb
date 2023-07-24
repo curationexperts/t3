@@ -28,7 +28,6 @@ RSpec.describe 'admin/_sidebar' do
 
   describe 'themes link' do
     it 'renders for authorized users' do
-      pending 'move themes under admin and add restrictions'
       allow(view.controller.current_ability).to receive(:can?).with(:read, Theme).and_return(true)
       render
       expect(rendered).to have_link(href: themes_path)

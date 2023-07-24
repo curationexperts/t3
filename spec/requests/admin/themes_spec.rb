@@ -12,7 +12,7 @@ require 'rails_helper'
 # of tools you can use to make these specs even more expressive, but we're
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
-RSpec.describe '/themes' do
+RSpec.describe '/admin/themes' do
   # This should return the minimal set of attributes required to create a valid
   # Theme. As you add validations to Theme, be sure to
   # adjust the attributes here as well.
@@ -21,6 +21,10 @@ RSpec.describe '/themes' do
   let(:invalid_attributes) do
     skip 'wait until the class requires some type of validation'
   end
+
+  let(:super_admin) { FactoryBot.create(:super_admin) }
+
+  before { login_as super_admin }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -174,6 +178,24 @@ RSpec.describe '/themes' do
       theme = Theme.create! valid_attributes
       delete theme_url(theme)
       expect(response).to redirect_to(themes_url)
+    end
+  end
+
+  describe 'resctricts access' do
+    let(:regular_user) { FactoryBot.create(:user) }
+
+    example 'for guest users' do
+      logout
+      Theme.create! valid_attributes
+      get themes_url
+      expect(response).to be_not_found
+    end
+
+    example 'for non-admin users' do
+      login_as regular_user
+      Theme.create! valid_attributes
+      get themes_url
+      expect(response).to be_unauthorized
     end
   end
 end

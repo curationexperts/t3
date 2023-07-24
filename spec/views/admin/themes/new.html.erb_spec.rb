@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'themes/new' do
+RSpec.describe 'admin/themes/new' do
   before do
     assign(:theme, Theme.new(
                      label: 'MyString',
