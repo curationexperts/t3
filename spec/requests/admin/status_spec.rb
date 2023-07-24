@@ -5,6 +5,7 @@ RSpec.describe 'Admin::Statuses' do
 
   before do
     allow(Ability).to receive(:new).and_return(stubbed_ability)
+    allow(stubbed_ability).to receive(:can?).and_return(false)
   end
 
   describe 'GET /index for users with read dashboard ability' do
