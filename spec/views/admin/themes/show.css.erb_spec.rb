@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'themes/show.css' do
+RSpec.describe 'admin/themes/show.css' do
   let(:theme)  { FactoryBot.create(:theme, active: false) }
 
   before do

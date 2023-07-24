@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'themes/edit' do
+RSpec.describe 'admin/themes/edit' do
   let(:theme) do
     Theme.create!(
       label: 'MyString',

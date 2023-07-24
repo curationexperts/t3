@@ -1,0 +1,9 @@
+<h1>Themes</h1>
+
+<div id="themes">
+  <% @themes.each do |theme| %>
+    <%= render partial: 'theme', object: theme %>
+  <% end %>
+</div>
+
+

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'themes/index' do
+RSpec.describe 'admin/themes/index' do
   let(:red_theme)  { FactoryBot.create(:theme, label: 'Red Theme') }
   let(:blue_theme) { FactoryBot.create(:theme, label: 'Blue Theme') }
   let(:new_theme)  { FactoryBot.build(:theme, label: 'Add Theme') }

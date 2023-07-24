@@ -25,13 +25,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :themes do
-    patch 'activate', on: :member
-  end
-
   scope path: '/admin', module: :admin do
     get :status, to: 'status#index'
     resources :roles
+    resources :themes do
+      patch 'activate', on: :member
+    end
     resources :configs
   end
 

@@ -13,7 +13,7 @@
     <%= favicon_link_tag %>
     <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload"  %>
     <!-- Inject dynamically updated style variables-->
-    <link type="text/css" rel="stylesheet" href="/themes/<%= theme_id %>.css" data-turbo-track=reload">
+    <link type="text/css" rel="stylesheet" href="/admin/themes/<%= theme_id %>.css" data-turbo-track=reload">
     <% if defined? Importmap %>
       <%= javascript_importmap_tags %>
     <% elsif defined? Propshaft %>
