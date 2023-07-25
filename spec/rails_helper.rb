@@ -70,9 +70,3 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
 end
-
-# Speed up Devise user creation
-# see https://github.com/heartcombo/devise/wiki/Speed-up-your-unit-tests
-Devise.setup do |config|
-  config.stretches = 1
-end
