@@ -2,6 +2,7 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-capybara
+  - rubocop-factory_bot
 
 AllCops:
   NewCops: enable
@@ -30,7 +31,7 @@ Rails/SkipsModelValidations:
   Exclude:
     - 'spec/**/*'
 
-RSpec/FactoryBot/SyntaxMethods:
+FactoryBot/SyntaxMethods:
   Enabled: false
 
 RSpec/ExampleLength:
