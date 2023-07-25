@@ -74,8 +74,8 @@ module T3
       helpers.blacklight_config
     end
 
-    def scoped_t(key, **args)
-      t(key, default: t(key, scope: 'blacklight.search.form'), **@i18n, **args)
+    def scoped_t(key, **)
+      t(key, default: t(key, scope: 'blacklight.search.form'), **@i18n, **)
     end
   end
 end
