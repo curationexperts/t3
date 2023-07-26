@@ -22,7 +22,8 @@ class User < ApplicationRecord
     email = auth.info.email
     display_name = auth.info.name
 
-    return nil unless email =~ /@curationexperts.com\z/
+    # Only permit users from curationexperts.com
+    # return nil unless email =~ /@curationexperts.com\z/
 
     create_with(email: email, password: dummy_password, display_name: display_name)
       .find_or_create_by!(provider: provider, uid: uid)
