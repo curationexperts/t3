@@ -41,7 +41,7 @@ append :linked_dirs,
        'storage'
 
 # Files shared across deployments
-append :linked_files, 'config/secrets.yml'
+append :linked_files, 'config/master.key'
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
