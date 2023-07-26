@@ -28,5 +28,16 @@ RSpec.describe 'Users::OmniauthCallbacksController' do
       expect(response).to redirect_to(new_user_session_path)
       expect(flash.alert).to include 'Invalid credentials'
     end
+
+    it 'redirects unauthorized users to signin', :aggregate_failures do
+      # simulate user creation or lookup failure: User.create without e-mail returns validation error
+      allow(User).to receive(:from_omniauth).and_return(User.create)
+
+      # test
+      post user_google_omniauth_authorize_path # No params required in test mode
+      follow_redirect!
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash.alert).to include 'Email can\'t be blank'
+    end
   end
 end

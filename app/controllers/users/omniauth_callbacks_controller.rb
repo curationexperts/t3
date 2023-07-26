@@ -4,7 +4,7 @@ module Users
     def google
       user = User.from_omniauth(auth)
 
-      if user.present?
+      if user.persisted?
         sign_in_and_redirect user, event: :authentication
       else
         session['devise.google_data'] = request.env['omniauth.auth'].except('extra')
