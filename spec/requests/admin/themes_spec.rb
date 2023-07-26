@@ -73,6 +73,8 @@ RSpec.describe '/admin/themes' do
   describe 'POST /create' do
     context 'with valid parameters' do
       it 'creates a new Theme' do
+        # Stub out Theme.current so we don't accidentally create a current theme in this test
+        allow(Theme).to receive(:current).and_return(FactoryBot.build(:theme))
         expect do
           post themes_url, params: { theme: valid_attributes }
         end.to change(Theme, :count).by(1)
