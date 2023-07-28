@@ -100,5 +100,4 @@ group :test do
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'simplecov_json_formatter'
-  gem 'webdrivers'
 end
