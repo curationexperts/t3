@@ -1,0 +1,30 @@
+<h1>User Details</h1>
+
+<div id="<%= dom_id @user %>">
+  <p>
+    <strong>E-Mail:</strong>
+    <span class='user_email'><%= @user.email %></span>
+  </p>
+
+  <p>
+    <strong>Display Name:</strong>
+    <span class='user_display_name'><%= @user.display_name %></span>
+  </p>
+
+  <p>
+    <strong>Roles:</strong>
+    <span class='user_roles'>
+      <%= @user.roles.map(&:name).join(', ') -%>
+      <% if @user.roles.empty? %>
+        <span class='fw-lighter fst-italic'>none</span>
+      <% end %>
+    </span>
+  </p>
+</div>
+
+<div>
+  <%= link_to "Edit this user", edit_user_path(@user) %> |
+  <%= link_to "Back to users", users_path %>
+
+  <%= button_to "Destroy this user", @user, method: :delete %>
+</div>

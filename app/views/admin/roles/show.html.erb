@@ -3,12 +3,22 @@
 <div id="<%= dom_id @role %>">
   <p>
     <strong>Name:</strong>
-    <span class='name'><%= @role.name %></span>
+    <span class='role_name'><%= @role.name %></span>
   </p>
 
   <p>
     <strong>Description:</strong>
-    <span class='description'><%= @role.description %></span>
+    <span class='role_description'><%= @role.description %></span>
+  </p>
+
+  <p>
+    <strong>Users:</strong>
+    <span class='role_users'>
+      <%= @role.users.map(&:email).join(', ') -%>
+      <% if @role.users.empty? %>
+        <span class='fw-lighter fst-italic'>none</span>
+      <% end %>
+    </span>
   </p>
 
 </div>

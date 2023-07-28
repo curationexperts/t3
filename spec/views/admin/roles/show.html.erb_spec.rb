@@ -12,11 +12,11 @@ RSpec.describe 'admin/roles/show' do
 
   it 'displays the role name' do
     render
-    expect(rendered).to have_selector('.name', text: 'My Role')
+    expect(rendered).to have_selector('.role_name', text: 'My Role')
   end
 
   it 'displays the role description' do
     render
-    expect(rendered).to have_selector('.description', text: 'the best of roles')
+    expect(rendered).to have_selector('.role_description', text: 'the best of roles')
   end
 end
