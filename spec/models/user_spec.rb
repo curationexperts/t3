@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User do
   let(:user) { FactoryBot.create(:user) }
+  let(:guest) { FactoryBot.create(:guest) }
   let(:role) { FactoryBot.create(:role) }
 
   it 'can have roles', :aggregate_failures do
@@ -26,6 +27,18 @@ RSpec.describe User do
         'display_name' => 'John Smith',
         'guest' => false
       )
+    end
+  end
+
+  describe 'with scopes' do
+    example '#registered', :aggregate_failures do
+      expect(described_class.registered).to include user
+      expect(described_class.registered).not_to include guest
+    end
+
+    example '#guest', :aggregate_failures do
+      expect(described_class.guest).to include guest
+      expect(described_class.guest).not_to include user
     end
   end
 end

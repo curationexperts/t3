@@ -2,10 +2,17 @@ FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
     password { Faker::Internet.password }
+    display_name { Faker::Name.name }
 
     factory :super_admin do
       roles { [Role.find_by(name: 'Super Admin')] }
     end
+  end
+
+  factory :guest, class: 'User' do
+    email { "guest_#{Faker::Internet.uuid}@example.com" }
+    guest { true }
+    to_create { |instance| instance.save(validate: false) }
   end
 
   # Sample authentication hash for google / omniauth

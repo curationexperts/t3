@@ -1,0 +1,20 @@
+<h1>Users</h1>
+
+<div id="users">
+  <table>
+    <tr>
+      <th>E-Mail</th>
+      <th>Display Name</th>
+      <th>Roles</th>
+    </tr>
+    <% @users.each do |user| %>
+      <tr id='<%= dom_id user %>'>
+        <td class='email'><%= link_to user.email, user -%></td>
+        <td class='display_name'><%= user.display_name -%></td>
+        <td class='roles'><%= user.roles.map(&:name).join(', ') -%></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<%= link_to "New User", new_user_path %>

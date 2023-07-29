@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'admin/roles/new' do
   before do
-    assign(:role, FactoryBot.build(:role))
+    assign(:role, Role.new)
   end
 
   it 'renders new role form' do

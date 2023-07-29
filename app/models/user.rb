@@ -2,6 +2,9 @@
 class User < ApplicationRecord
   has_and_belongs_to_many :roles
 
+  scope :registered, -> { where(guest: false) }
+  scope :guest, -> { where(guest: true) }
+
   # Connects this user object to Blacklights Bookmarks.
   include Blacklight::User
 
