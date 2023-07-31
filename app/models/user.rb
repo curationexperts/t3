@@ -35,4 +35,12 @@ class User < ApplicationRecord
   def self.dummy_password
     Devise.friendly_token(20)
   end
+
+  def role_name?(name)
+    role_names.include?(name)
+  end
+
+  def role_names
+    @role_names ||= roles.map(&:name)
+  end
 end

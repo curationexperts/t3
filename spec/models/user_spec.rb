@@ -5,14 +5,32 @@ RSpec.describe User do
   let(:guest) { FactoryBot.create(:guest) }
   let(:role) { FactoryBot.create(:role) }
 
-  it 'can have roles', :aggregate_failures do
-    user.roles << role
-    expect(user.roles).to include role
-    expect(role.users).to include user
+  describe '#roles' do
+    it 'returns an empty array when initialized' do
+      expect(user.roles).to be_empty
+    end
+
+    it 'accepts Role objects', :aggregate_failures do
+      user.roles << role
+      expect(user.roles).to include role
+      expect(role.users).to include user
+    end
   end
 
-  it 'has no roles when initialized' do
-    expect(user.roles).to be_empty
+  describe '#role_name?' do
+    it 'is true for users with the named role' do
+      user.roles << role
+      user.save!
+      expect(user.role_name?(role.name)).to be true
+    end
+
+    it 'is false for users without the named role' do
+      expect(user.role_name?(role.name)).to be false
+    end
+
+    it 'is false for non-existent role names' do
+      expect(user.role_name?('Some made up name')).to be false
+    end
   end
 
   describe '.from_omniauth' do
