@@ -4,6 +4,14 @@
 class Ability
   include CanCan::Ability
 
+  ROLE_MAPPER = {
+    User => 'User Manager',
+    Role => 'User Manager',
+    Theme => 'Brand Manager',
+    Config => 'System Manager',
+    :all => 'Super Admin'
+  }.freeze
+
   def initialize(user)
     # Define abilities for the user here. For example:
     #
@@ -32,10 +40,15 @@ class Ability
 
     # Allow any user or guest to access the current theme so we can render the expected CSS
     can :read, Theme.current
+
+    # Only authorize non-guest users
     return unless user&.guest == false
 
-    return unless user.roles.map(&:name).include?('Super Admin')
-
-    can :manage, :all
+    ROLE_MAPPER.each do |feature, role|
+      if user.role_name?(role)
+        can :manage, feature
+        can(:read, :dashboard) unless can? :read, :dashboard # avoid duplicate authorizaitons
+      end
+    end
   end
 end
