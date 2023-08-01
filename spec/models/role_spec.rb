@@ -28,4 +28,35 @@ RSpec.describe Role do
     role = FactoryBot.create(:role)
     expect(role.users).to be_empty
   end
+
+  describe '.system_roles' do
+    it 'returns a list of persistent (system) roles' do
+      expect(described_class.system_roles.map(&:class).uniq).to eq [described_class]
+    end
+
+    it 'includes the expected roles' do
+      expect(described_class.system_roles.map(&:name))
+        .to contain_exactly('Super Admin', 'User Manager', 'Brand Manager', 'System Manager')
+    end
+  end
+
+  describe 'a system role' do
+    let(:system_role) { described_class.system_roles.first }
+
+    it 'raises an error on deltion' do
+      expect { system_role.delete }.to raise_error(ActiveRecord::ReadOnlyRecord, /system Role/)
+    end
+
+    it 'cannot be destroyed' do
+      expect { system_role.destroy }.to raise_error(ActiveRecord::ReadOnlyRecord, /marked as readonly/)
+    end
+
+    it 'returns readonly? true' do
+      expect(system_role.readonly?).to be true
+    end
+
+    it 'returns system? true' do
+      expect(system_role.system?).to be true
+    end
+  end
 end

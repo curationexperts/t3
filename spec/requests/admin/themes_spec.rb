@@ -170,6 +170,7 @@ RSpec.describe '/admin/themes' do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested theme' do
+      Theme.current # ensure we have a current theme included in the initial count
       theme = Theme.create! valid_attributes
       expect do
         delete theme_url(theme)
