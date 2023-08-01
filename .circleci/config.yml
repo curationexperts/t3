@@ -36,7 +36,8 @@ jobs:
             # download test reporter as a static binary
                      curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
                      chmod +x ./cc-test-reporter
-      - ruby/install-deps
+      - ruby/install-deps:
+          include-branch-in-cache-key: false
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: bundle exec rake db:setup
