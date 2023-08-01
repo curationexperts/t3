@@ -51,10 +51,14 @@ module Admin
     # DELETE /roles/1 or /roles/1.json
     def destroy
       @role.destroy
-
       respond_to do |format|
         format.html { redirect_to roles_url, notice: 'Role was successfully destroyed.' }
         format.json { head :no_content }
+      end
+    rescue ActiveRecord::ReadOnlyRecord
+      respond_to do |format|
+        format.html { redirect_to @role, alert: 'System Roles cannot be deleted.', status: :unprocessable_entity }
+        format.json { render json: 'System Roles cannot be deleted.', status: :unprocessable_entity }
       end
     end
 

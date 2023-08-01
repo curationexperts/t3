@@ -110,6 +110,14 @@ RSpec.describe '/adim/roles' do
       delete role_url(role)
       expect(response).to redirect_to(roles_url)
     end
+
+    describe 'system roles' do
+      it 'cannot be deleted' do
+        role = Role.system_roles.first
+        delete role_url(role)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
   end
 
   describe 'resctricts access' do
