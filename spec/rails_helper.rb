@@ -8,6 +8,8 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'devise'
 require 'capybara/rspec'
+require 'view_component/test_helpers'
+require 'view_component/system_test_helpers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -69,4 +71,15 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
+
+  # Add support of ViewComponent tests
+  # see: https://viewcomponent.org/guide/testing.html#rspec-configuration
+  config.include ViewComponent::TestHelpers, type: :component
+  config.include ViewComponent::SystemTestHelpers, type: :component
+  config.include Capybara::RSpecMatchers, type: :component
+  config.include Devise::Test::ControllerHelpers, type: :component
+
+  config.before(:each, type: :component) do
+    @request = vc_test_controller.request
+  end
 end
