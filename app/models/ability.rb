@@ -5,11 +5,11 @@ class Ability
   include CanCan::Ability
 
   ROLE_MAPPER = {
+    :all => 'Super Admin',
     User => 'User Manager',
     Role => 'User Manager',
     Theme => 'Brand Manager',
-    Config => 'System Manager',
-    :all => 'Super Admin'
+    Config => 'System Manager'
   }.freeze
 
   def initialize(user)
@@ -41,14 +41,9 @@ class Ability
     # Allow any user or guest to access the current theme so we can render the expected CSS
     can :read, Theme.current
 
-    # Only authorize non-guest users
-    return unless user&.guest == false
-
-    ROLE_MAPPER.each do |feature, role|
-      if user.role_name?(role)
-        can :manage, feature
-        can(:read, :dashboard) unless can? :read, :dashboard # avoid duplicate authorizaitons
-      end
-    end
+    # Assign authorizations based on system roles
+    authorized_resources = ROLE_MAPPER.select { |_resource, role| user&.role_name?(role) }
+    authorized_resources.each_key { |resource| can :manage, resource }
+    can :read, :dashboard if authorized_resources.any?
   end
 end
