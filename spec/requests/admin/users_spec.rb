@@ -86,6 +86,17 @@ RSpec.describe '/admin/users' do
         user.reload
         expect(response).to redirect_to(user_url(user))
       end
+
+      it 'can update role associations', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+        system_role = Role.find_by(name: 'System Manager')
+        user_role = Role.find_by(name: 'User Manager')
+        super_role = Role.find_by(name: 'Super Admin')
+
+        expect(super_admin.roles).to contain_exactly(super_role)
+        patch user_url(super_admin), params: { user: { role_ids: ['', user_role.id.to_s, system_role.id.to_s] } }
+        super_admin.reload
+        expect(super_admin.roles).to contain_exactly(user_role, system_role)
+      end
     end
 
     context 'with invalid parameters' do

@@ -21,8 +21,15 @@ RSpec.describe 'admin/users/new' do
   end
 
   it 'accepts a password' do
+    allow(view).to receive(:action_name).and_return('new')
     render
     expect(rendered).to have_field(id: 'user_password')
+  end
+
+  it 'has checkboxes for available roles' do
+    role_id = "user_role_ids_#{Role.last.id}"
+    render
+    expect(rendered).to have_unchecked_field(role_id)
   end
 
   it 'has a submit button' do
