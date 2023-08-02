@@ -1,6 +1,6 @@
 <%= form_with(model: user) do |form| %>
   <% if user.errors.any? %>
-    <div style="color: red">
+    <div class='user_errors card'>
       <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
       <ul>
@@ -21,9 +21,18 @@
     <%= form.text_field :display_name %>
   </div>
 
-  <div>
+  <% if action_name == 'new' %>
     <%= form.label :password, style: "display: block" %>
     <%= form.password_field :password %>
+  <% end %>
+
+  <div>
+    <%= form.label 'role_ids[]', 'Roles', style: "display: block" %>
+    <%= collection_check_boxes(:user, :role_ids, Role.all, :id, :name) do |b| %>
+      <%= b.check_box %>
+      <%= b.label %>
+      <br>
+    <% end %>
   </div>
 
   <div>
