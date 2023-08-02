@@ -62,7 +62,15 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "t3_production"
 
+  # ActionMailer settings
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.perform_caching = false
+  config.action_mailer.default_url_options = { host: 't3-dev.curationexperts.com', protocol: 'https' }
+
+  config.action_mailer.delivery_method = :ses
+  # Set a default AWS region so ActionMailer knows where to look for SES
+  Aws.config.update({ region: Rails.application.credentials.aws.region })
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
