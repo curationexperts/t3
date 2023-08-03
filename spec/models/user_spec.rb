@@ -5,6 +5,14 @@ RSpec.describe User do
   let(:guest) { FactoryBot.create(:guest) }
   let(:role) { FactoryBot.create(:role) }
 
+  it 'defaults provider to "local"' do
+    expect(described_class.new.provider).to eq 'local'
+  end
+
+  it 'does not change passed provider' do
+    expect(described_class.new(provider: 'imported').provider).to eq 'imported'
+  end
+
   describe '#roles' do
     it 'returns an empty array when initialized' do
       expect(user.roles).to be_empty
@@ -20,7 +28,6 @@ RSpec.describe User do
   describe '#role_name?' do
     it 'is true for users with the named role' do
       user.roles << role
-      user.save!
       expect(user.role_name?(role.name)).to be true
     end
 
