@@ -6,16 +6,19 @@ ruby '3.2.1'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.0.4', '>= 7.0.4.3'
 
-# Blacklight search and discovery engine using Devise for user auth
+# Blacklight search and discovery engine
 gem 'blacklight', '~> 8.0'
 gem 'bootstrap', '5.3.0.alpha3'
+gem 'rsolr', '>= 1.0', '< 3'
+gem 'sassc-rails', '~> 2.1'
+
+# Use Devise + OmniAuth for user authentication
 gem 'devise'
 gem 'devise-guests', '~> 0.8'
+gem 'devise_invitable', '~> 2.0'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
-gem 'rsolr', '>= 1.0', '< 3'
-gem 'sassc-rails', '~> 2.1'
 
 # Implement user authorization within the app
 gem 'cancancan'

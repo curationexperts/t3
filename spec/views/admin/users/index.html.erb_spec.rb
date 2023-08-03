@@ -19,4 +19,9 @@ RSpec.describe 'admin/users/index' do
     render
     expect(rendered).to have_selector('td.display_name', text: users[0].display_name)
   end
+
+  it 'has a link to invite new users' do
+    render
+    expect(rendered).to have_link(:invite_user, href: new_user_invitation_path)
+  end
 end
