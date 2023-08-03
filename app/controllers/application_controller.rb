@@ -7,14 +7,14 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |_exception|
     respond_to do |format|
       if current_user
-        message = 'You are not authorized to access the requested item'
+        file = Rails.public_path.join('422.html')
         status = :unauthorized
       else
-        message = 'The page cannot be found'
+        file = Rails.public_path.join('404.html')
         status = :not_found
       end
       format.json { render nothing: true, status: :not_found }
-      format.html { redirect_to main_app.root_url, alert: message, status: status }
+      format.html { render file: file, status: status }
       format.js   { render nothing: true, status: :not_found }
     end
   end
