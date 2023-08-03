@@ -19,6 +19,11 @@ class User < ApplicationRecord
   # the account.
   self.string_display_key ||= :email
 
+  def initialize(attributes = nil)
+    super
+    self.provider ||= 'local'
+  end
+
   def self.from_omniauth(auth)
     provider = auth.provider
     uid = auth.uid
