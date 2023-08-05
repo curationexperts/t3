@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/users/index' do
-  let(:users) { (1..3).collect { FactoryBot.build(:user) } }
+  let(:users) { (0..3).collect { |i| FactoryBot.build(:user, id: i) } }
 
   before { assign(:users, users) }
 
   it 'renders a list of users' do
     render
-    expect(rendered).to have_selector('tr', count: 4) # users +1 for header row
+    expect(rendered).to have_selector('td.email', count: 4) # four users total
   end
 
   it 'links to the user object' do
@@ -18,6 +18,19 @@ RSpec.describe 'admin/users/index' do
   it 'displays the display_name for each user' do
     render
     expect(rendered).to have_selector('td.display_name', text: users[0].display_name)
+  end
+
+  describe 'password reset links' do
+    example 'for database users' do
+      render
+      expect(rendered).to have_link(id: :password_reset_user_1, href: user_password_reset_path(users[1]))
+    end
+
+    example 'not for other providers' do
+      users[2].provider = 'google'
+      render
+      expect(rendered).not_to have_link(id: :password_reset_user_2)
+    end
   end
 
   it 'has a link to invite new users' do

@@ -37,8 +37,8 @@ class User < ApplicationRecord
       .find_or_create_by!(provider: provider, uid: uid)
   end
 
-  def self.dummy_password
-    Devise.friendly_token(20)
+  def local?
+    provider == 'local'
   end
 
   def role_name?(name)
@@ -47,5 +47,18 @@ class User < ApplicationRecord
 
   def role_names
     @role_names ||= roles.map(&:name)
+  end
+
+  def password_reset
+    if local?
+      send_reset_password_instructions
+    else # Can't reset OmniAuth account passwords
+      errors.add(:base, :remote_password_reset, message: "User must change their password via #{provider.titlecase}.")
+    end
+    errors.empty?
+  end
+
+  def self.dummy_password
+    Devise.friendly_token(20)
   end
 end

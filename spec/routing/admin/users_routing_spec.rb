@@ -18,6 +18,10 @@ RSpec.describe Admin::UsersController do
       expect(get: '/admin/users/1/edit').to route_to('admin/users#edit', id: '1')
     end
 
+    it 'routes to #password_reset' do
+      expect(post: '/admin/users/1/password_reset').to route_to('admin/users#password_reset', id: '1')
+    end
+
     it 'routes to #create' do
       expect(post: '/admin/users').to route_to('admin/users#create')
     end
