@@ -55,6 +55,13 @@ RSpec.describe '/admin/users' do
       post user_password_reset_path(regular_user), headers: { accept: 'application/json' }
       expect(response).to have_http_status(:unprocessable_entity)
     end
+
+    it 'gives an error for OAuth accounts' do
+      regular_user.provider = 'omni_auth_provider'
+      regular_user.save!
+      post user_password_reset_path(regular_user)
+      expect(flash[:alert]).to include 'User must change their password via Omni Auth Provider.'
+    end
   end
 
   describe 'POST /create' do
