@@ -4,6 +4,8 @@ RSpec.describe User do
   let(:user) { FactoryBot.create(:user) }
   let(:guest) { FactoryBot.create(:guest) }
   let(:role) { FactoryBot.create(:role) }
+  let(:local_user) { FactoryBot.create(:user, provider: 'local') }
+  let(:remote_user) { FactoryBot.create(:user, provider: 'google') }
 
   it 'defaults provider to "local"' do
     expect(described_class.new.provider).to eq 'local'
@@ -11,6 +13,41 @@ RSpec.describe User do
 
   it 'does not change passed provider' do
     expect(described_class.new(provider: 'imported').provider).to eq 'imported'
+  end
+
+  describe '#local?' do
+    it 'is true for database (local) accounts' do
+      expect(local_user.local?).to be true
+    end
+
+    it 'is false for non-local accounts' do
+      expect(remote_user.local?).to be false
+    end
+  end
+
+  describe '#password_reset' do
+    context 'with a valid local user' do
+      it 'returns true' do
+        expect(local_user.password_reset).to be true
+      end
+
+      it 'sends an e-mail' do
+        local_user.password_reset
+        mail = ActionMailer::Base.deliveries.last
+        expect(mail.subject).to eq I18n.t('devise.mailer.reset_password_instructions.subject')
+      end
+    end
+
+    context 'with a remote (OminAuth) user' do
+      it 'returns false' do
+        expect(remote_user.password_reset).to be false
+      end
+
+      it 'adds an error to the user' do
+        remote_user.password_reset
+        expect(remote_user.errors.full_messages).to include 'User must change their password via Google.'
+      end
+    end
   end
 
   describe '#roles' do
@@ -41,9 +78,8 @@ RSpec.describe User do
   end
 
   describe '.from_omniauth' do
-    let(:auth) { FactoryBot.build(:google_auth_hash) }
-
     it 'creates a user with attributes from the auth data' do
+      auth = FactoryBot.build(:google_auth_hash)
       user = described_class.from_omniauth(auth)
       expect(user.as_json).to include(
         'email' => 'john@example.com',

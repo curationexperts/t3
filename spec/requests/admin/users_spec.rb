@@ -41,6 +41,22 @@ RSpec.describe '/admin/users' do
     end
   end
 
+  describe 'POST /password/reset', :aggregate_failures do
+    it 'sends reset instructions to the user' do
+      post user_password_reset_path(regular_user)
+      mail = ActionMailer::Base.deliveries.last
+      expect(mail.subject).to eq I18n.t('devise.mailer.reset_password_instructions.subject')
+      expect(regular_user.reload.reset_password_token).not_to be_nil
+    end
+
+    it 'does not send to OAuth accounts' do
+      regular_user.provider = 'omni_auth_provider'
+      regular_user.save!
+      post user_password_reset_path(regular_user), headers: { accept: 'application/json' }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
   describe 'POST /create' do
     context 'with valid parameters' do
       it 'creates a new User' do

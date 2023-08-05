@@ -29,6 +29,7 @@ Rails.application.routes.draw do
 
   scope path: '/admin', module: :admin do
     get :status, to: 'status#index'
+    post 'users/:id/password_reset', to: 'users#password_reset', as: :user_password_reset
     resources :users
     resources :roles
     resources :themes do

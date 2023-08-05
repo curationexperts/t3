@@ -1,7 +1,7 @@
 module Admin
   # Manage Users
   class UsersController < ApplicationController
-    before_action :set_user, only: %i[show edit update destroy]
+    before_action :set_user, only: %i[show edit update destroy password_reset]
     load_and_authorize_resource
 
     # GET /admin/users or /admin/users.json
@@ -58,6 +58,19 @@ module Admin
       end
     end
 
+    # POST /admin/users/1/password_reset
+    def password_reset
+      respond_to do |format|
+        if @user.password_reset
+          format.html { redirect_to users_url, notice: password_reset_successfully }
+          format.json { render :show, status: :ok, location: @user }
+        else
+          format.html { redirect_to users_url, alert: password_reset_failed, status: :unprocessable_entity }
+          format.json { render json: @user.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+
     private
 
     # Use callbacks to share common setup or constraints between actions.
@@ -70,6 +83,16 @@ module Admin
       params.fetch(:user, {})
       params.require(:user).permit(:email, :display_name, :password)
       params.require(:user).permit(:email, :display_name, :password, role_ids: [])
+    end
+
+    # Successfuly reset password message
+    def password_reset_successfully
+      "Password reset e-mail sent to #{@user.email}"
+    end
+
+    # Password reset failure message
+    def password_reset_failed
+      @user.errors.full_messages.join("\n")
     end
   end
 end

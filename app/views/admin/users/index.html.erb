@@ -3,13 +3,17 @@
 <div id="users">
   <table>
     <tr>
-      <th>E-Mail</th>
-      <th>Display Name</th>
-      <th>Roles</th>
+      <th class='email'>E-Mail</th>
+      <th class='provider'>Type</th>
+      <th class='password'>Password</th>
+      <th class='display_name'>Display Name</th>
+      <th class='roles'>Roles</th>
     </tr>
     <% @users.each do |user| %>
       <tr id='<%= dom_id user %>'>
         <td class='email'><%= link_to user.email, user -%></td>
+        <td class='provider'><%= user.provider -%></td>
+        <td class='password'><%= link_to('Send Reset', user_password_reset_path(user), id: dom_id(user, :password_reset), data: { turbo_method: "post" }) if user.local? -%></td>
         <td class='display_name'><%= user.display_name -%></td>
         <td class='roles'><%= user.roles.map(&:name).join(', ') -%></td>
       </tr>
