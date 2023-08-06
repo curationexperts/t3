@@ -44,17 +44,6 @@ module T3
       @autocomplete_path
     end
 
-    def autofocus
-      if @autofocus.nil?
-        blacklight_config.enable_search_bar_autofocus &&
-          controller.is_a?(Blacklight::Catalog) &&
-          controller.action_name == 'index' &&
-          !controller.has_search_parameters?
-      else
-        @autofocus
-      end
-    end
-
     def search_fields
       @search_fields ||= blacklight_config.search_fields.values
                                           .select { |field_def| helpers.should_render_field?(field_def) }
