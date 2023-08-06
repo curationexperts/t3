@@ -241,22 +241,6 @@ class CatalogController < ApplicationController
     # config.autocomplete_suggester = 'mySuggester'
   end
 
-  def self.update_config # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-    configure_blacklight do |config|
-      config.connection_config[:url] = [Config.current.solr_host, Config.current.solr_core].join('/solr/')
-      config.facet_fields = {}
-      config.index_fields = {}
-      config.show_fields = {}
-      Config.current.enabled_fields.each do |f|
-        config.add_facet_field f.solr_field_name, label: f.display_label if f.facetable
-        config.add_index_field f.solr_field_name, label: f.display_label if f.search_results
-        config.add_show_field f.solr_field_name, label: f.display_label if f.item_view
-        config.index.title_field = f.solr_field_name if f.display_label.match(/^Title/)
-      end
-    end
-  end
-
-  # Add dynaically configured fields first, so they appear ahead of any statically
-  # configured fields
-  update_config
+  # Apply any dynamic field configurations from the current configuration record
+  Config.current.update_catalog_controller
 end
