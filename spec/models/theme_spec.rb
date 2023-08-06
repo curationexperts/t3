@@ -1,6 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Theme do
+  let(:theme) { described_class.new }
+
+  describe 'validation' do
+    it 'passes for class defaults' do
+      expect(theme).to be_valid
+    end
+
+    it 'requres a label' do
+      theme.label = nil
+      expect(theme).not_to be_valid
+    end
+
+    it 'requires colors to have hex #RRGGBB format' do
+      theme.header_color = 'white' # css color names are not valid
+      theme.validate
+      expect(theme.errors[:header_color]).to include "'white' is not in hex #RRGGBB format"
+    end
+
+    it 'does not accepts rgba color format' do
+      theme.header_text_color = '#8090ff80' # rgba values are not valid
+      expect(theme).not_to be_valid
+    end
+  end
+
   describe '.current' do
     context 'with no saved themes' do
       before do
@@ -90,13 +114,14 @@ RSpec.describe Theme do
     end
   end
 
-  describe '.main_logo' do
+  describe '#main_logo' do
     it 'is empty on new themes' do
-      expect(described_class.new.main_logo).not_to be_attached
+      expect(theme.main_logo).not_to be_attached
     end
 
-    it 'is a kind of ActiveStorage blob' do
-      expect(described_class.new.main_logo).not_to be_a ActiveStorage::Blob
+    it 'accepts ActiveStorage attachments' do
+      theme.main_logo.attach(fixture_file_upload('sample_logo.png'))
+      expect(theme.main_logo).to be_a ActiveStorage::Attached::One
     end
   end
 end

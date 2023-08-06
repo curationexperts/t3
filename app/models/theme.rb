@@ -18,6 +18,10 @@ class Theme < ApplicationRecord
 
   has_one_attached :main_logo
 
+  validates :label, presence: true
+  validates :header_color, :header_text_color, :background_color, :background_accent_color,
+            format: { with: /\A#[0-9a-f]{6}\z/i, message: "'%<value>s' is not in hex #RRGGBB format" }
+
   before_destroy :confirm_inactive
   after_save :refresh_current
 

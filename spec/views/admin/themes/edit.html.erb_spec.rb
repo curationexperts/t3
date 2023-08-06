@@ -1,16 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/themes/edit' do
-  let(:theme) do
-    Theme.create!(
-      label: 'MyString',
-      site_name: 'MyString',
-      header_color: 'MyString',
-      header_text_color: 'MyString',
-      background_color: 'MyString',
-      background_accent_color: 'MyString'
-    )
-  end
+  let(:theme) { FactoryBot.build(:theme) }
 
   before do
     assign(:theme, theme)

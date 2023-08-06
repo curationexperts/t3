@@ -17,11 +17,7 @@ RSpec.describe '/admin/themes' do
   # Theme. As you add validations to Theme, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { { label: 'Test Theme' } }
-
-  let(:invalid_attributes) do
-    skip 'wait until the class requires some type of validation'
-  end
-
+  let(:invalid_attributes) { { label: nil, header_color: 'white' } }
   let(:super_admin) { FactoryBot.create(:super_admin) }
 
   before { login_as super_admin }
