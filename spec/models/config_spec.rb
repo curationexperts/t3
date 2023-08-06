@@ -124,6 +124,19 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
+  describe '#solr_host_responsive' do
+    it 'returns true if Solr returns a version number' do
+      allow(config).to receive(:fetch_solr_version).and_return('9.2.1')
+      expect(config.solr_host_responsive).to be true
+    end
+
+    it 'returns false if Solr does not give version number', :aggregate_failures do
+      allow(config).to receive(:fetch_solr_version).and_return(nil)
+      expect(config.solr_host_responsive).to be false
+      expect(config.errors.messages[:solr_host]).to include 'did not return a valid Solr version'
+    end
+  end
+
   describe '#available_cores' do
     it 'returns a list of core names' do
       expect(config.available_cores).to contain_exactly('blacklight-core', 'tenejo', 'catalog-core')
@@ -176,6 +189,13 @@ RSpec.describe Config, :aggregate_failures do
       resource_type = config.fields.select { |f| f.solr_field_name.match(/resource_type/) }.first
       expect(resource_type.display_label).to eq 'Resource Type'
     end
+  end
+
+  it 'supports nested fields in forms' do
+    config.fields_attributes = { 'attributes[0]' => { 'solr_field_name' => 'title_tesim', 'solr_suffix' => '*_tesim' },
+                                 'attributes[1]' => { 'solr_field_name' => 'rights_sim', 'solr_suffix' => '*_sim' } }
+    expect(config.fields.count).to eq 2
+    expect(config.fields.first.display_label).to eq 'Title'
   end
 
   describe '.current' do
