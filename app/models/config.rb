@@ -106,13 +106,13 @@ class Config < ApplicationRecord
   private
 
   def blacklight_fields_from_config
-    Blacklight::Configuration.new.tap do |config|
-      enabled_fields.each do |f|
-        config.add_facet_field f.solr_field_name, label: f.display_label if f.facetable
-        config.add_index_field f.solr_field_name, label: f.display_label if f.search_results
-        config.add_show_field f.solr_field_name, label: f.display_label if f.item_view
-      end
+    config = Blacklight::Configuration.new
+    enabled_fields.each do |f|
+      config.add_facet_field f.solr_field_name, label: f.display_label if f.facetable
+      config.add_index_field f.solr_field_name, label: f.display_label if f.search_results
+      config.add_show_field f.solr_field_name, label: f.display_label if f.item_view
     end
+    config
   end
 
   def title_field_from_config
