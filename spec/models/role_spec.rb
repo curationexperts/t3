@@ -59,4 +59,17 @@ RSpec.describe Role do
       expect(system_role.system?).to be true
     end
   end
+
+  describe 'a user created role' do
+    let(:regular_role) { FactoryBot.create(:role) }
+
+    it 'can be deleted', :aggregate_failures do
+      expect { regular_role.delete }.not_to raise_exception
+      expect(regular_role).to be_frozen
+    end
+
+    it 'is not a system role' do
+      expect(regular_role.system?).to be false
+    end
+  end
 end
