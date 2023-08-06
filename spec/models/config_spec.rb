@@ -188,50 +188,9 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
-  context 'with scope-like methods for fields' do
-    before do
-      config.fields = []
-      # NOTE: facetable defaults to `false` so we're turning it on explicity so the
-      # facet test looks like the others
-      5.times { |i| config.fields.push(FieldConfig.new(solr_field_name: "field#{i}", facetable: true)) }
-    end
-
-    describe '#search_fields' do
-      it 'returns fields that should be searched, in order' do
-        config.fields[3].enabled = false
-        config.fields[0].searchable = false
-        expect(config.search_fields.map(&:solr_field_name)).to eq ['field1', 'field2', 'field4']
-      end
-    end
-
-    describe '#facet_fields' do
-      it 'returns fields that should be faceted, in order' do
-        config.fields[1].enabled = false
-        config.fields[2].facetable = false
-        expect(config.facet_fields.map(&:solr_field_name)).to eq ['field0', 'field3', 'field4']
-      end
-    end
-
-    describe '#index_fields' do
-      it 'returns fields that should appear in search results, in order' do
-        config.fields[2].enabled = false
-        config.fields[4].search_results = false
-        expect(config.index_fields.map(&:solr_field_name)).to eq ['field0', 'field1', 'field3']
-      end
-    end
-
-    describe '#show_fields' do
-      it 'returns fields that should appear in the single item view, in order' do
-        config.fields[4].enabled = false
-        config.fields[0].item_view = false
-        expect(config.show_fields.map(&:solr_field_name)).to eq ['field1', 'field2', 'field3']
-      end
-    end
-  end
-
   it 'updates the catalog controller on saves' do
-    allow(CatalogController).to receive(:update_config)
+    allow(config).to receive(:update_catalog_controller)
     config.save!
-    expect(CatalogController).to have_received(:update_config)
+    expect(config).to have_received(:update_catalog_controller)
   end
 end

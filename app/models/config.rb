@@ -30,22 +30,6 @@ class Config < ApplicationRecord
     fields.select { |f| f.enabled }
   end
 
-  def search_fields
-    enabled_fields.select { |f| f.searchable }
-  end
-
-  def facet_fields
-    enabled_fields.select { |f| f.facetable }
-  end
-
-  def index_fields
-    enabled_fields.select { |f| f.search_results }
-  end
-
-  def show_fields
-    enabled_fields.select { |f| f.item_view }
-  end
-
   def verified?
     solr_version.present?
   end
@@ -109,7 +93,33 @@ class Config < ApplicationRecord
     end
   end
 
-  def update_catalog_controller
-    CatalogController.update_config
+  def update_catalog_controller # rubocop:disable Metrics/AbcSize
+    CatalogController.configure_blacklight do |config|
+      config.connection_config[:url] = solr_connection_from_config
+      config.facet_fields = blacklight_fields_from_config.facet_fields
+      config.index_fields = blacklight_fields_from_config.index_fields
+      config.show_fields = blacklight_fields_from_config.show_fields
+      config.index.title_field = title_field_from_config
+    end
+  end
+
+  private
+
+  def blacklight_fields_from_config
+    config = Blacklight::Configuration.new
+    enabled_fields.each do |f|
+      config.add_facet_field f.solr_field_name, label: f.display_label if f.facetable
+      config.add_index_field f.solr_field_name, label: f.display_label if f.search_results
+      config.add_show_field f.solr_field_name, label: f.display_label if f.item_view
+    end
+    config
+  end
+
+  def title_field_from_config
+    enabled_fields.select { |f| f.display_label.match(/^Title/) }.last&.solr_field_name
+  end
+
+  def solr_connection_from_config
+    "#{solr_host}/solr/#{solr_core}"
   end
 end
