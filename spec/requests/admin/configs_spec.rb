@@ -94,6 +94,21 @@ RSpec.describe '/admin/configs' do
       end
     end
 
+    context 'with valid host and core' do
+      let(:step_attributes) do
+        { setup_step: 'core', solr_host: 'http://localhost:8983', solr_verison: '9.2.1', solr_core: 'tenejo' }
+      end
+
+      it 'saves the new config' do
+        expect { post configs_url, params: { config: step_attributes } }.to change(Config, :count).by(1)
+      end
+
+      it 'redirects to the newly created config' do
+        post configs_url, params: { config: step_attributes }
+        expect(response).to redirect_to Config.last
+      end
+    end
+
     context 'with valid parameters' do
       it 'creates a new Config' do
         expect do

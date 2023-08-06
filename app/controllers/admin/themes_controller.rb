@@ -51,14 +51,10 @@ module Admin
 
     # PATCH /themes/1/activate or /themes/1/activate.json
     def activate
+      @theme.activate! # always succeeds and returns itself
       respond_to do |format|
-        if @theme.activate!
-          format.html { redirect_to theme_url(@theme) }
-          format.json { render :show, status: :ok, location: @theme }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @theme.errors, status: :unprocessable_entity }
-        end
+        format.html { redirect_to theme_url(@theme) }
+        format.json { render :show, status: :ok, location: @theme }
       end
     end
 
