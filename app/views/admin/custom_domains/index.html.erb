@@ -1,0 +1,24 @@
+<h1>Custom domains</h1>
+
+<div id='default_domain'>
+  <h2>Default Host</h2>
+  <p>default domain name and certificate info goes here...</p>
+</div>
+
+<div id="custom_domains">
+  <h2>Additional Domains</h2>
+  <table>
+    <tr>
+      <th class='host'>Host Name</th>
+      <th class='delete'></th>
+    </tr>
+    <% @custom_domains.each do |custom_domain| %>
+      <tr id='<%= dom_id custom_domain %>'>
+        <td class='host'><%= custom_domain.host -%></td>
+        <td class='delete'><%= button_to('Delete', custom_domain, method: :delete, id: dom_id(custom_domain, :delete), class: 'btn btn-danger btn-sm') -%></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<%= link_to "New custom domain", new_custom_domain_path, id: 'new_domain', class: 'btn btn-primary btn-sm' %>

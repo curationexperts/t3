@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       patch 'activate', on: :member
     end
     resources :configs
+    resources :custom_domains, except: %i[edit update show]
   end
 
   # When app is firt booted and no Solr config exists, use this as the application root

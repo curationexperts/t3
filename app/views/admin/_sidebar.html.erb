@@ -25,6 +25,11 @@
           <%= link_to t('t3.admin.configs'), configs_path, class: 'nav-link' + active_controller_class('configs') %>
         </li>
       <% end %>
+      <% if can? :read, CustomDomain %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.custom_domains'), custom_domains_path, class: 'nav-link' + active_controller_class('custom_domains') %>
+        </li>
+      <% end %>
     </ul>
   </nav>
 <% end -%>
