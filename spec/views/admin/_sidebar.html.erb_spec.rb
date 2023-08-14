@@ -67,4 +67,18 @@ RSpec.describe 'admin/_sidebar' do
       expect(rendered).not_to have_link(href: configs_path)
     end
   end
+
+  describe 'domains link' do
+    it 'renders for authorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, CustomDomain).and_return(true)
+      render
+      expect(rendered).to have_link(href: custom_domains_path)
+    end
+
+    it 'is hidden from unauthorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, CustomDomain).and_return(false)
+      render
+      expect(rendered).not_to have_link(href: custom_domains_path)
+    end
+  end
 end
