@@ -34,8 +34,7 @@ class Certificate
   end
 
   def host_can_be_resolved
-    return unless host&.match? DOMAIN_PATTERN
-    return if Resolv.getaddress(host).present?
+    host&.match?(DOMAIN_PATTERN) && Resolv.getaddress(host).present?
   rescue Resolv::ResolvError
     errors.add(:host, :unresolvable, message: 'can not be resolved via DNS')
   end
