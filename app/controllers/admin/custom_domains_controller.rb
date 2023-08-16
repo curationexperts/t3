@@ -1,16 +1,12 @@
 module Admin
   # Manage custom domain names for the application
   class CustomDomainsController < ApplicationController
-    # before_action :set_custom_domain, only: %i[show edit update destroy]
     load_and_authorize_resource
 
     # GET /admin/custom_domains or /admin/custom_domains.json
     def index
       @custom_domains = CustomDomain.all
     end
-
-    # GET /admin/custom_domains/1 or /admin/custom_domains/1.json
-    def show; end
 
     # GET /admin/custom_domains/new
     def new
@@ -50,11 +46,6 @@ module Admin
     end
 
     private
-
-    # Use callbacks to share common setup or constraints between actions.
-    def set_custom_domain
-      @custom_domain = Admin::CustomDomain.find(params[:id])
-    end
 
     # Only allow a list of trusted parameters through.
     def custom_domain_params
