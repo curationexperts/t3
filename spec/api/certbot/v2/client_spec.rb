@@ -54,16 +54,17 @@ RSpec.describe Certbot::V2::Client do
       update_partial:
         <<~STDOUT,
           Saving debug log to /var/log/letsencrypt/letsencrypt.log
-          Renewing an existing certificate for 3-dev.example.com and 2 more domains
+          Renewing an existing certificate for t3-dev.example.com and 2 more domains
 
           Certbot failed to authenticate some domains (authenticator: apache). The Certificate Authority reported these problems:
-            Domain: 3-dev.example.com
-            Type:   dns
-            Detail: DNS problem: NXDOMAIN looking up A for 3-dev.example.com - check that a DNS record exists for this domain; DNS problem: NXDOMAIN looking up AAAA for 3-dev.example.com - check that a DNS record exists for this domain
+              Domain: demo.tenejo.com
+              Type:   unauthorized
+              Detail: 50.16.172.231: Invalid response from https://demo.tenejo.com/.well-known/acme-challenge/sxzTJOsdmDKfInk7chxPpYj_9HWjEkEbInNP5ZFKTcY: 404
 
-          Hint: The Certificate Authority failed to verify the temporary Apache configuration changes made by Certbot. Ensure that the listed domains point to this Apache server and that it is accessible from the internet.
+          Hint: The Certificate Authority failed to verify the temporary Apache configuration changes made by Certbot.#{' '}
+          Ensure that the listed domains point to this Apache server and that it is accessible from the internet.
 
-          Unable to obtain a certificate with every requested domain. Retrying without: 3-dev.example.com
+          Unable to obtain a certificate with every requested domain. Retrying without: demo.tenejo.com
 
           Successfully received certificate.
           Certificate is saved at: /etc/letsencrypt/live/t3.application/fullchain.pem
@@ -97,7 +98,7 @@ RSpec.describe Certbot::V2::Client do
 
   before do
     # stub certbot certinfo calls
-    allow(Open3).to receive(:capture2).with(Certbot::V2::Client::CERTBOT_READ).and_return([certbot_stdout, status])
+    allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_READ).and_return([certbot_stdout, status])
   end
 
   describe '.default_host' do
@@ -152,7 +153,7 @@ RSpec.describe Certbot::V2::Client do
     before do
       # stub certbot certificate returning 2 domains, then 3 domains
       allow(Open3)
-        .to receive(:capture2)
+        .to receive(:capture2e)
         .with(Certbot::V2::Client::CERTBOT_READ)
         .and_return(
           [certbot_captures[:certificates2], status_successful],
@@ -163,8 +164,8 @@ RSpec.describe Certbot::V2::Client do
     context 'when certbot certonly returns without error' do
       before do
         # stub a successful call to 'certbot certonly'
-        allow(Open3).to receive(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                                anything).and_return([certbot_captures[:update_success], status])
+        allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
+                                                 anything).and_return([certbot_captures[:update_success], status])
       end
 
       it 'updates the domains on the certificate' do
@@ -179,13 +180,13 @@ RSpec.describe Certbot::V2::Client do
       it 'calls certbot update' do
         cert_client = described_class.new
         cert_client.add_host('t3.example.com')
-        expect(Open3).to have_received(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
+        expect(Open3).to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
       end
 
       it 'does nothing when the host is nil' do
         cert_client = described_class.new
         cert_client.add_host(nil)
-        expect(Open3).not_to have_received(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+        expect(Open3).not_to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
       end
     end
 
@@ -193,7 +194,7 @@ RSpec.describe Certbot::V2::Client do
       before do
         # stub certbot exiting with error (invalid domain name)
         allow(Open3)
-          .to receive(:capture2)
+          .to receive(:capture2e)
           .with(Certbot::V2::Client::CERTBOT_UPDATE,
                 { stdin_data: 't3-dev.example.com,t3.university.edu,foo-tenejo-com' })
           .and_return([certbot_captures[:update_error], status_failed])
@@ -210,7 +211,7 @@ RSpec.describe Certbot::V2::Client do
       before do
         # stub certbot unable to verify one of three domains (host validation failure)
         allow(Open3)
-          .to receive(:capture2)
+          .to receive(:capture2e)
           .with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
           .and_return([certbot_captures[:update_partial], status_successful])
       end
@@ -218,7 +219,7 @@ RSpec.describe Certbot::V2::Client do
       it 'passes the failure reason' do
         cert_client = described_class.new
         cert_client.add_host('3-dev.example.com')
-        expect(cert_client.last_error).to include 'check that a DNS record exists for this domain'
+        expect(cert_client.last_error).to include 'the listed domains point to this Apache server'
       end
     end
   end
@@ -227,7 +228,7 @@ RSpec.describe Certbot::V2::Client do
     before do
       # stub certbot certificate returning 3 domains, then 2 domains
       allow(Open3)
-        .to receive(:capture2)
+        .to receive(:capture2e)
         .with(Certbot::V2::Client::CERTBOT_READ)
         .and_return(
           [certbot_captures[:certificates3], status_successful],
@@ -237,8 +238,8 @@ RSpec.describe Certbot::V2::Client do
 
     context 'when certbot certonly returns without error' do
       before do
-        allow(Open3).to receive(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                                anything).and_return([certbot_captures[:update_success], status])
+        allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
+                                                 anything).and_return([certbot_captures[:update_success], status])
       end
 
       it 'updates the domains' do
@@ -253,13 +254,13 @@ RSpec.describe Certbot::V2::Client do
       it 'calls certbot update' do
         cert_client = described_class.new
         cert_client.remove_host('t3.university.edu')
-        expect(Open3).to have_received(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
+        expect(Open3).to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
       end
 
       it 'does nothing when the host is not in the existing certificate' do
         cert_client = described_class.new
         cert_client.remove_host('my-host.example.com')
-        expect(Open3).not_to have_received(:capture2).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+        expect(Open3).not_to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
       end
     end
 
@@ -267,7 +268,7 @@ RSpec.describe Certbot::V2::Client do
       before do
         # stub a certbot non-zero exit and error message
         allow(Open3)
-          .to receive(:capture2)
+          .to receive(:capture2e)
           .with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
           .and_return([certbot_captures[:update_error], status_failed])
       end

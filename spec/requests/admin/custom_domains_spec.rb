@@ -14,6 +14,7 @@ RSpec.describe '/admin/custom_domains' do
     # Stub DNS requests to isolate external services
     allow(Resolv).to receive(:getaddress).and_return('10.10.0.1')
     login_as super_admin
+    allow(Certbot::V2::Client).to receive(:new).and_return(Certbot::V2::TestClient.new)
   end
 
   describe 'GET /index' do
