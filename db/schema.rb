@@ -69,6 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_190525) do
     t.string "host"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["host"], name: "index_custom_domains_on_host", unique: true
   end
 
   create_table "roles", force: :cascade do |t|
