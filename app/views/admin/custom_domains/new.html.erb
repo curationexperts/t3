@@ -7,7 +7,7 @@
 
       <ul>
         <% @custom_domain.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+          <li><%= simple_format(error.full_message, wrapper_tag: 'div') %></li>
         <% end %>
       </ul>
     </div>
