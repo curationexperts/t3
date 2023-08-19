@@ -65,13 +65,16 @@ module Certbot
 
       # call certbot to update the list of domains (i.e. subject alternative names)
       def update_hosts(new_hosts)
+        Rails.logger.warn("Calling Certbot with: #{CERTBOT_UPDATE + new_hosts}")
         response, status = Open3.capture2e(CERTBOT_UPDATE, stdin_data: new_hosts)
+        Rails.logger.warn("Certbot returned: \n#{response}")
         @last_error = extract_errors(response, status)
         load_certificate
       end
 
       # call certbot to return a certificate summary
       def load_certificate
+        Rails.logger.info("Calling Certbot with: #{CERTBOT_READ}")
         cert_summary, status = Open3.capture2e(CERTBOT_READ)
 
         @domains = extract_domains(cert_summary)
