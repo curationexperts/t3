@@ -67,8 +67,8 @@ RSpec.describe CustomDomain do
 
     example 'checks certbot errors' do
       # stub certbot returning a partial update error
-      allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                               anything).and_return([auth_failure, success])
+      allow(Open3).to receive(:capture2e)
+        .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE)).and_return([auth_failure, success])
       d1 = described_class.new(host: 'demo.tenejo.com')
       d1.save
       expect(d1.errors.where(:host, :certificate)).to be_present
@@ -78,8 +78,9 @@ RSpec.describe CustomDomain do
   describe '#save' do
     before do
       # stub certbot returning a partial update error
-      allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                               anything).and_return([auth_failure, success])
+      allow(Open3).to receive(:capture2e)
+        .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
+        .and_return([auth_failure, success])
     end
 
     it 'calls certbot with the hostname' do
