@@ -164,8 +164,9 @@ RSpec.describe Certbot::V2::Client do
     context 'when certbot certonly returns without error' do
       before do
         # stub a successful call to 'certbot certonly'
-        allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                                 anything).and_return([certbot_captures[:update_success], status])
+        allow(Open3).to receive(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
+          .and_return([certbot_captures[:update_success], status])
       end
 
       it 'updates the domains on the certificate' do
@@ -180,13 +181,15 @@ RSpec.describe Certbot::V2::Client do
       it 'calls certbot update' do
         cert_client = described_class.new
         cert_client.add_host('t3.example.com')
-        expect(Open3).to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
+        expect(Open3).to have_received(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE)).once
       end
 
       it 'does nothing when the host is nil' do
         cert_client = described_class.new
         cert_client.add_host(nil)
-        expect(Open3).not_to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+        expect(Open3).not_to have_received(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
       end
     end
 
@@ -195,8 +198,7 @@ RSpec.describe Certbot::V2::Client do
         # stub certbot exiting with error (invalid domain name)
         allow(Open3)
           .to receive(:capture2e)
-          .with(Certbot::V2::Client::CERTBOT_UPDATE,
-                { stdin_data: 't3-dev.example.com,t3.university.edu,foo-tenejo-com' })
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
           .and_return([certbot_captures[:update_error], status_failed])
       end
 
@@ -212,7 +214,7 @@ RSpec.describe Certbot::V2::Client do
         # stub certbot unable to verify one of three domains (host validation failure)
         allow(Open3)
           .to receive(:capture2e)
-          .with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
           .and_return([certbot_captures[:update_partial], status_successful])
       end
 
@@ -238,8 +240,9 @@ RSpec.describe Certbot::V2::Client do
 
     context 'when certbot certonly returns without error' do
       before do
-        allow(Open3).to receive(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE,
-                                                 anything).and_return([certbot_captures[:update_success], status])
+        allow(Open3).to receive(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
+          .and_return([certbot_captures[:update_success], status])
       end
 
       it 'updates the domains' do
@@ -254,13 +257,15 @@ RSpec.describe Certbot::V2::Client do
       it 'calls certbot update' do
         cert_client = described_class.new
         cert_client.remove_host('t3.university.edu')
-        expect(Open3).to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything).once
+        expect(Open3).to have_received(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE)).once
       end
 
       it 'does nothing when the host is not in the existing certificate' do
         cert_client = described_class.new
         cert_client.remove_host('my-host.example.com')
-        expect(Open3).not_to have_received(:capture2e).with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+        expect(Open3).not_to have_received(:capture2e)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
       end
     end
 
@@ -269,7 +274,7 @@ RSpec.describe Certbot::V2::Client do
         # stub a certbot non-zero exit and error message
         allow(Open3)
           .to receive(:capture2e)
-          .with(Certbot::V2::Client::CERTBOT_UPDATE, anything)
+          .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
           .and_return([certbot_captures[:update_error], status_failed])
       end
 
