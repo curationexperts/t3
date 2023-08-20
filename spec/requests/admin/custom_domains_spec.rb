@@ -6,6 +6,7 @@ RSpec.describe '/admin/custom_domains' do
   # adjust the attributes here as well.
   let(:valid_attributes) { { host: 'my-host.example.com' } }
   let(:invalid_attributes) { { host: 'not_a_valid_domain' } }
+  let(:test_cert) { Certbot::V2::TestClient.new(domains: ['my-host.example.com'], not_after: 10.minutes.from_now) }
 
   let(:super_admin)  { FactoryBot.create(:super_admin) }
   let(:regular_user) { FactoryBot.create(:user) }
@@ -14,7 +15,7 @@ RSpec.describe '/admin/custom_domains' do
     # Stub DNS requests to isolate external services
     allow(Resolv).to receive(:getaddress).and_return('10.10.0.1')
     login_as super_admin
-    allow(Certbot::V2::Client).to receive(:new).and_return(Certbot::V2::TestClient.new)
+    allow(Certbot::V2::Client).to receive(:new).and_return(test_cert)
   end
 
   describe 'GET /index' do
@@ -76,12 +77,10 @@ RSpec.describe '/admin/custom_domains' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) { { host: 'new-domain.example.com' } }
-
       it 'updates the requested custom_domain' do
         custom_domain = CustomDomain.create! valid_attributes
         expect do
-          patch custom_domain_url(custom_domain), params: { custom_domain: new_attributes }
+          patch custom_domain_url(custom_domain), params: { custom_domain: { host: 'invalid-domain.example.com' } }
         end.to raise_exception(ActionController::RoutingError)
       end
     end
