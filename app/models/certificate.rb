@@ -25,6 +25,14 @@ class Certificate
     x509cert.subject.to_a.find { |e| e[0] = 'CN' }[1]
   end
 
+  # return the value of any subject alternate names
+  def subject_alt_names
+    @subject_alt_names ||=
+      x509cert.extensions.find { |e| e.oid == 'subjectAltName' }.value.scan(DOMAIN_PATTERN).flatten
+    # Alternate implementation
+    # x509cert.extensions.find { |e| e.oid == 'subjectAltName' }.value.split(', ').map { |h| h.sub('DNS:', '') }
+  end
+
   private
 
   def fetch_cert(host)

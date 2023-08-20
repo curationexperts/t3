@@ -93,5 +93,10 @@ RSpec.describe Certificate, :aggregate_failures do
       cert = described_class.new(host: 'host.example.com')
       expect(cert.subject_cn).to eq 'test.example.com'
     end
+
+    it 'extracts #subject_alt_names' do
+      cert = described_class.new(host: 'host.example.com')
+      expect(cert.subject_alt_names).to eq ['host.example.com', 'text.example.com']
+    end
   end
 end
