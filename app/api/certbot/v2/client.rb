@@ -69,7 +69,7 @@ module Certbot
         response, status = Open3.capture2e(CERTBOT_UPDATE + new_hosts)
         Rails.logger.warn("Certbot returned: \n#{response}")
         @last_error = extract_errors(response, status)
-        load_certificate
+        load_certificate && @last_error.blank?
       end
 
       # call certbot to return a certificate summary
@@ -113,33 +113,27 @@ module Certbot
       end
     end
 
-    # Test class that makes no calls to external inerfaces
+    # Test class that makes no calls to external interfaces
     # Accessor methods allow setting dummy values for all
-    # instance variables
-    class TestClient
+    # instance variables as required for testing
+    class TestClient < Client
       attr_accessor :hosts, :not_after, :last_error, :valid
 
-      def initialize(hosts: [], not_after: Time.current, last_error: nil, valid: true)
-        @hosts = hosts
+      def initialize(domains: [], not_after: Time.current, last_error: nil, valid: true)
+        super()
+        @domains = domains
         @not_after = not_after
         @last_error = last_error
         @valid = valid
       end
 
-      def valid?
-        !!valid
-      end
+      private
 
-      def invalid?
-        !valid
-      end
+      def load_certificate; end
 
-      def add_host(host)
-        @hosts = hosts << host
-      end
-
-      def remove_host(host)
-        @hosts = hosts - [host]
+      def update_hosts(new_hosts)
+        Rails.logger.warn("TEST CLIENT: would have called Certbot with: #{CERTBOT_UPDATE + new_hosts}")
+        @hosts = new_hosts
       end
     end
   end
