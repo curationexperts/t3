@@ -17,6 +17,7 @@ RSpec.describe CustomDomain do
   before do
     # stub certbot api calls
     allow(Certbot::V2::Client).to receive(:new).and_return(test_cert)
+    allow(Resolv).to receive(:getaddress).and_return('10.10.0.1')
   end
 
   it 'has a host attribute' do
@@ -36,6 +37,19 @@ RSpec.describe CustomDomain do
       d1 = described_class.new(host: 't3.example.com')
       d1.valid?
       expect(d1.errors.where(:host, :taken)).to be_present
+    end
+
+    example 'checks domain name format' do
+      d1 = described_class.new(host: 'invalid-name-tenejo-com')
+      d1.valid?
+      expect(d1.errors.where(:host, :format)).to be_present
+    end
+
+    example 'checks DNS resoultion' do
+      allow(Resolv).to receive(:getaddress).and_raise(Resolv::ResolvError)
+      d1 = described_class.new(host: 'unresolvable.tenejo.com')
+      d1.valid?
+      expect(d1.errors.where(:host, :unresolvable)).to be_present
     end
 
     example 'checks certbot setup' do
