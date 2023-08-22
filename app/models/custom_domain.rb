@@ -22,6 +22,8 @@ class CustomDomain < ApplicationRecord
   # e.g. an improperly formatted host can never be resolved
   # and an unresolvable host can never be authenticated by certbot
   #
+  # Error priority: (:base) :certbot, (:host) :format, :taken, :unresolvable, :certificate
+  #
   # @return boolean True if domain passes all validations
   def domain_setup_ok?
     certbot_ok? && format_valid? && host_unique? && host_resolvable? && certificate_ok?
