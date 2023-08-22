@@ -23,10 +23,6 @@ RSpec.describe 'admin/custom_domains/new' do
   end
 
   describe 'shows errors for' do
-    before do
-      allow(Certbot::V2::Client).to receive(:new).and_return(Certbot::V2::TestClient.new)
-    end
-
     example ':format' do
       custom_domain.errors.add(:host, :format)
       render

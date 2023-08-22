@@ -10,7 +10,7 @@ RSpec.describe 'admin/custom_domains/index' do
     expect(rendered).to have_selector('td.host', count: 3)
   end
 
-  it 'has links to delte each domain' do
+  it 'has links to delete each domain' do
     render
     expect(rendered).to have_button('delete_custom_domain_3')
   end

@@ -6,7 +6,6 @@ RSpec.describe '/admin/custom_domains' do
   # adjust the attributes here as well.
   let(:valid_attributes) { { host: 'my-host.example.com' } }
   let(:invalid_attributes) { { host: 'not_a_valid_domain' } }
-  let(:test_cert) { Certbot::V2::TestClient.new(domains: ['my-host.example.com'], not_after: 10.minutes.from_now) }
 
   let(:super_admin)  { FactoryBot.create(:super_admin) }
   let(:regular_user) { FactoryBot.create(:user) }
@@ -15,7 +14,6 @@ RSpec.describe '/admin/custom_domains' do
     # Stub DNS requests to isolate external services
     allow(Resolv).to receive(:getaddress).and_return('10.10.0.1')
     login_as super_admin
-    allow(Certbot::V2::Client).to receive(:new).and_return(test_cert)
   end
 
   describe 'GET /index' do

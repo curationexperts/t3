@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe CustomDomain do
   let(:domain) { described_class.new }
-  let(:test_cert) { Certbot::V2::TestClient.new(domains: ['my-host.example.com'], not_after: 10.minutes.from_now) }
   let(:auth_failure) do
     <<~STDOUT
       Certbot failed to authenticate some domains (authenticator: apache). The Certificate Authority reported these problems:
@@ -15,8 +14,6 @@ RSpec.describe CustomDomain do
   end
 
   before do
-    # stub certbot api calls
-    allow(Certbot::V2::Client).to receive(:new).and_return(test_cert)
     allow(Resolv).to receive(:getaddress).and_return('10.10.0.1')
   end
 
@@ -47,17 +44,17 @@ RSpec.describe CustomDomain do
     end
 
     example 'checks certbot setup' do
-      # stub certbot failing to read a local certificate
-      test_cert.valid = false
       d1 = described_class.new(host: 'demo.tenejo.com')
+      # simulate certbot failing to read a local certificate
+      d1.certbot_client.valid = false
       d1.valid?
       expect(d1.errors.where(:base, :certbot)).to be_present
     end
 
     example 'checks certbot errors' do
-      # stub certbot returning a partial update error
-      test_cert.last_error = auth_failure
       d1 = described_class.new(host: 'demo.tenejo.com')
+      # simulate certbot returning a partial update error
+      d1.certbot_client.last_error = auth_failure
       d1.save
       expect(d1.errors.where(:host, :certificate)).to be_present
     end
@@ -72,19 +69,18 @@ RSpec.describe CustomDomain do
     end
 
     context 'with certbot failures' do
-      before do
-        # stub certbot returning a partial update error
-        test_cert.last_error = auth_failure
-      end
-
       it 'returns false', :aggregate_failures do
         domain.host = 'demo.tenejo.com'
+        # simulate certbot returning a partial update error
+        domain.certbot_client.last_error = auth_failure
         expect(domain.save).to be false
         expect(domain.errors).not_to be_nil
       end
 
       it 'adds an error to the domain object' do
         domain.host = 'demo.tenejo.com'
+        # simulate certbot returning a partial update error
+        domain.certbot_client.last_error = auth_failure
         domain.save
         expect(domain.errors.where(:host, :certificate)).to be_present
       end
