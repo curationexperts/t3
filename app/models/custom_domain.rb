@@ -9,8 +9,8 @@ class CustomDomain < ApplicationRecord
   end
 
   def update_certificate
-    success = certbot_client.add_host(host)
-    raise ActiveRecord::RecordInvalid unless success
+    certbot_client.add_host(host)
+    raise ActiveRecord::RecordInvalid unless valid?
   end
 
   private
