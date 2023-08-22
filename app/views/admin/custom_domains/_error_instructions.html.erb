@@ -1,7 +1,7 @@
 <% if @custom_domain.errors.any? %>
   <% other_errors = @custom_domain.errors.select{|e| e.attribute != :host}  %>
   <div class='errors'>
-    <h2><%= pluralize(other_errors.count, "error") %> prohibited this domain from being saved:</h2>
+    <h2><%= pluralize(@custom_domain.errors.count, "error") %> prohibited this domain from being saved:</h2>
 
     <ul>
       <% other_errors.each do |error| %>
@@ -13,9 +13,8 @@
     <% if @custom_domain.errors.where(:host, :format).present? %>
       <div id='format'>
         <p>The name you have supplied is incorrectly formatted.  Please check that you've entered the name
-        correctly.  Domain names have a host name followed by a period followed by zero or more sub-domain
-        names each separated by a period, followed by a a domain name and a top-level domain (e.g. .com, .org.
-          or .edu)</p>
+        correctly.  Domain names consist of a number of domain segments separated by periods and ending with
+          a top-level domain like .com, .org. or .edu</p>
 
         <p>Examples:<br>
         <pre>
@@ -32,10 +31,10 @@
     <% elsif @custom_domain.errors.where(:host, :unresolvable).present? %>
       <div id='unresolvable'>
         <p>The name you have supplied cannot be resolved using DNS.  Please make sure that you have added the
-          name as a CNAME entry pointing to <%= Certbot::V2::TestClient.default_host %> in your DNS zone.)</p>
-        <p>Examples:<br>
+          name as a CNAME entry pointing to <em><%= Certbot::V2::Client.default_host %></em> in your DNS zone.</p>
+        <p>Example:<br>
         <pre>
-    <%= @custom_domain.host.split('.').first %> CNAME <%= Certbot::V2::TestClient.default_host %>
+    <%= @custom_domain.host.split('.').first %> CNAME <%= Certbot::V2::Client.default_host %>
         </pre></p>
       </div>
 
