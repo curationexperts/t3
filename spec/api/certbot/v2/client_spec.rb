@@ -103,6 +103,7 @@ RSpec.describe Certbot::V2::Client do
 
   describe '.default_host' do
     it 'returns the hostname configured on the server' do
+      described_class.instance_variable_set(:@default_host, nil)
       allow(described_class).to receive(:`).with('hostname -f').and_return("fqdn.example.com\n")
 
       expect(described_class.default_host).to eq 'fqdn.example.com'

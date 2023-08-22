@@ -21,14 +21,12 @@ RSpec.describe 'admin/custom_domains/index' do
   end
 
   it 'displays the default domain' do
-    pending 'certificate implementation'
     render
-    expect(rendered).to have_selector('default_domain', text: 't3.curationexperts.com')
+    expect(rendered).to have_selector('#default_host')
   end
 
   it 'displays the certificate expiration' do
-    pending 'certificate implementation'
     render
-    expect(rendered).to have_selector('not_valid_after', text: '3 days from now')
+    expect(rendered).to have_selector('#not_valid_after')
   end
 end
