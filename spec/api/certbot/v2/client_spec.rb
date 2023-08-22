@@ -122,7 +122,7 @@ RSpec.describe Certbot::V2::Client do
       let(:certbot_stdout) { certbot_captures[:unexpected] }
 
       it 'returns a non-valid client' do
-        expect(described_class.new).not_to be_valid
+        expect(described_class.new).to be_invalid
       end
     end
 
@@ -130,7 +130,7 @@ RSpec.describe Certbot::V2::Client do
       let(:status) { status_failed }
 
       it 'returns a non-valid client' do
-        expect(described_class.new).not_to be_valid
+        expect(described_class.new).to be_invalid
       end
     end
   end
