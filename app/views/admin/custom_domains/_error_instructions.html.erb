@@ -25,7 +25,7 @@
 
     <% elsif @custom_domain.errors.where(:host, :taken).present? %>
       <div id='taken'>
-        <p>The name you have supplied is already being used.</p>
+        <p>The name you have supplied is already being used.)</p>
       </div>
 
     <% elsif @custom_domain.errors.where(:host, :unresolvable).present? %>
@@ -40,7 +40,7 @@
 
     <% elsif @custom_domain.errors.where(:host, :certificate).present? %>
       <div id='certificate'>
-        <p>Certbot was unable to register your domain with Let's Encrypt.  The certbot error message was:<br>
+        <p>Certbot was unable to register your domain with Let's Encrypt.  The error message was:<br>
         <pre>
 <%= @custom_domain.certbot_client.last_error %>
         </pre></p>
