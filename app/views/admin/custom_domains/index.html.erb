@@ -2,11 +2,29 @@
 
 <div id='default_domain'>
   <h2>Default Host</h2>
-  <p>default domain name and certificate info goes here...</p>
+  <% default_host = Certbot::V2::Client.default_host %>
+  <table>
+    <tr>
+      <td class='label'>Default Host:</td>
+      <td class='value' id='default_host'><%= default_host %></td>
+    </tr>
+    <tr>
+      <td class='label'>URL:</td>
+      <td class='value'><%= link_to root_url(host: default_host) %></td>
+    </tr>
+    <tr>
+      <td class='label'>Cert Expires:</td>
+      <td class='value' id='not_valid_after'><%= CustomDomain.new.certbot_client.not_after %></td>
+    </tr>
+  </table>
 </div>
 
+<br>
 <div id="custom_domains">
   <h2>Additional Domains</h2>
+  <p>To access your site via a custom domain name, you need to add the host name in your institution's
+    dns with a CNAME pointing to the default host listed above.  Once you've updated your DNS, add the domain as
+    a new custom domain usig the button below.</p>
   <table>
     <tr>
       <th class='host'>Host Name</th>
