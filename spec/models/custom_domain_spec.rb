@@ -10,6 +10,8 @@ RSpec.describe CustomDomain do
         Detail: 50.16.172.231: Invalid response from https://demo.tenejo.com/.well-known/acme-challenge/sxzTJOsdmDKfInk7chxPpYj_9HWjEkEbInNP5ZFKTcY: 404
 
       Hint: The Certificate Authority failed to verify the temporary Apache configuration changes made by Certbot. Ensure that the listed domains point to this Apache server and that it is accessible from the internet.
+
+      Unable to obtain a certificate with every requested domain. Retrying without: demo.tenejo.com
     STDOUT
   end
 
@@ -79,8 +81,8 @@ RSpec.describe CustomDomain do
 
       it 'adds an error to the domain object' do
         domain.host = 'demo.tenejo.com'
-        # simulate certbot returning a partial update error
-        domain.certbot_client.last_error = auth_failure
+        # simulate domain passing initial validation on save, then failing after certbot update_hosts
+        allow(domain.certbot_client).to receive(:last_error).and_return(nil, auth_failure)
         domain.save
         expect(domain.errors.where(:host, :certificate)).to be_present
       end

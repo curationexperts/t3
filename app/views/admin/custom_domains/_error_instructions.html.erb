@@ -25,7 +25,7 @@
 
     <% elsif @custom_domain.errors.where(:host, :taken).present? %>
       <div id='taken'>
-        <p>The name you have supplied is already being used.)</p>
+        <p>The name you have supplied is already being used.</p>
       </div>
 
     <% elsif @custom_domain.errors.where(:host, :unresolvable).present? %>

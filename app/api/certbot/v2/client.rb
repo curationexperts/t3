@@ -69,7 +69,7 @@ module Certbot
         response, status = Open3.capture2e(CERTBOT_UPDATE + new_hosts)
         Rails.logger.warn("Certbot returned: \n#{response}")
         @last_error = extract_errors(response, status)
-        load_certificate && @last_error.blank?
+        load_certificate && last_error.blank?
       end
 
       # call certbot to return a certificate summary

@@ -4,7 +4,7 @@ module Certbot
     # Accessor methods allow setting dummy values for all
     # instance variables as required for testing
     class TestClient < Client
-      attr_accessor :hosts, :not_after, :last_error, :valid
+      attr_accessor :domains, :not_after, :last_error, :valid
 
       def initialize(domains: [], not_after: 1.day.from_now, last_error: nil, valid: true)
         super()
@@ -16,11 +16,14 @@ module Certbot
 
       private
 
-      def load_certificate; end
-
       def update_hosts(new_hosts)
         Rails.logger.warn("TEST CLIENT: would have called Certbot with: #{CERTBOT_UPDATE + new_hosts}")
-        @hosts = new_hosts
+        @domains = new_hosts
+        load_certificate && last_error.blank?
+      end
+
+      def load_certificate
+        valid?
       end
     end
   end
