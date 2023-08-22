@@ -112,29 +112,5 @@ module Certbot
         end
       end
     end
-
-    # Test class that makes no calls to external interfaces
-    # Accessor methods allow setting dummy values for all
-    # instance variables as required for testing
-    class TestClient < Client
-      attr_accessor :hosts, :not_after, :last_error, :valid
-
-      def initialize(domains: [], not_after: Time.current, last_error: nil, valid: true)
-        super()
-        @domains = domains
-        @not_after = not_after
-        @last_error = last_error
-        @valid = valid
-      end
-
-      private
-
-      def load_certificate; end
-
-      def update_hosts(new_hosts)
-        Rails.logger.warn("TEST CLIENT: would have called Certbot with: #{CERTBOT_UPDATE + new_hosts}")
-        @hosts = new_hosts
-      end
-    end
   end
 end

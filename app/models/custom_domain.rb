@@ -5,7 +5,7 @@ class CustomDomain < ApplicationRecord
   before_save :update_certificate
 
   def certbot_client
-    @certbot_client ||= Certbot::V2::Client.new
+    @certbot_client ||= Rails.env.production? ? Certbot::V2::Client.new : Certbot::V2::TestClient.new
   end
 
   def update_certificate
