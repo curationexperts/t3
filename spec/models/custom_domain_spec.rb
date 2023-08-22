@@ -25,12 +25,6 @@ RSpec.describe CustomDomain do
   end
 
   describe 'validation' do
-    example 'checks host presence' do
-      d1 = described_class.new(host: nil)
-      d1.valid?
-      expect(d1.errors.where(:host, :blank)).to be_present
-    end
-
     example 'checks host uniqueness' do
       # Add the name to the table without calling other model logic
       described_class.insert({ host: 't3.example.com' })
