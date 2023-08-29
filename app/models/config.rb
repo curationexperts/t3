@@ -1,10 +1,17 @@
 # Data object for Solr and Field configuration
-class Config < ApplicationRecord
+class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
+  DEFAULT_CONFIG = { solr_host: 'http://localhost:8983',
+                     solr_core: 'blacklight-core',
+                     solr_version: 'checked',
+                     fields: [] }.freeze
+
   validates :solr_host, presence: true
   validate  :solr_host_responsive, on: :create
   validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
 
+  before_create :check_for_existing
+  before_destroy :check_for_existing
   after_commit :update_catalog_controller
 
   attribute :fields, FieldConfig::ListType.new, default: -> { [] }
@@ -23,7 +30,7 @@ class Config < ApplicationRecord
   end
 
   def self.current
-    Config.order('updated_at').last || Config.new
+    Config.first || Config.create(DEFAULT_CONFIG)
   end
 
   def enabled_fields
@@ -121,5 +128,9 @@ class Config < ApplicationRecord
 
   def solr_connection_from_config
     "#{solr_host}/solr/#{solr_core}"
+  end
+
+  def check_for_existing
+    raise ActiveRecord::RecordInvalid if Config.count >= 1
   end
 end
