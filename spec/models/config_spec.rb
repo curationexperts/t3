@@ -29,6 +29,55 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
+  describe 'is a singleton that' do
+    it 'has a valid factory' do
+      expect(FactoryBot.build(:config)).to be_valid
+    end
+
+    it 'does not allow another record to be created' do
+      FactoryBot.create(:config)
+      second_config = FactoryBot.build(:config)
+
+      expect(second_config.save).to be_falsey
+    end
+
+    it 'does not allow destruction of the record' do
+      config = FactoryBot.create(:config)
+
+      expect do
+        config.destroy
+      end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
+  describe '.current' do
+    context 'when a configuration record exists' do
+      it 'returns it' do
+        config = FactoryBot.create(:config)
+
+        expect(described_class.current).to eq(config)
+      end
+    end
+
+    context "when a configuration doesn't yet exist" do
+      it 'creates and returns a new one' do
+        config = described_class.current
+
+        expect(config).to be_a(described_class)
+      end
+
+      it 'returns a valid default config' do
+        expect(described_class.current).to be_valid
+      end
+    end
+  end
+
+  it 'updates the catalog controller on saves' do
+    allow(config).to receive(:update_catalog_controller)
+    config.save!
+    expect(config).to have_received(:update_catalog_controller)
+  end
+
   it 'validates' do
     expect(config).to be_valid
   end
@@ -191,26 +240,17 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
+  it 'persists changes to nested fields' do
+    config = FactoryBot.create(:config_with_fields)
+    config.fields.first.display_label = 'Changed'
+    config.save
+    expect(described_class.current.fields.first.display_label).to eq 'Changed'
+  end
+
   it 'supports nested fields in forms' do
     config.fields_attributes = { 'attributes[0]' => { 'solr_field_name' => 'title_tesim', 'solr_suffix' => '*_tesim' },
                                  'attributes[1]' => { 'solr_field_name' => 'rights_sim', 'solr_suffix' => '*_sim' } }
     expect(config.fields.count).to eq 2
     expect(config.fields.first.display_label).to eq 'Title'
-  end
-
-  describe '.current' do
-    it 'returns the most recently modified Conifg' do
-      earliest_config = FactoryBot.create(:config, solr_core: 'first')
-      latest_config = FactoryBot.create(:config, solr_core: 'second')
-      expect(described_class.current).to eq latest_config
-      earliest_config.touch
-      expect(described_class.current).to eq earliest_config
-    end
-  end
-
-  it 'updates the catalog controller on saves' do
-    allow(config).to receive(:update_catalog_controller)
-    config.save!
-    expect(config).to have_received(:update_catalog_controller)
   end
 end

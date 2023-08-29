@@ -42,158 +42,58 @@ RSpec.describe '/admin/configs' do
     login_as super_admin
   end
 
-  describe 'GET / (/index)' do
+  describe 'GET /admin/config/show' do
     it 'renders a successful response' do
-      Config.create! valid_attributes
-      get configs_url
+      get config_url
       expect(response).to be_successful
     end
   end
 
-  describe 'GET /configs/show' do
+  describe 'GET /admin/config/edit' do
     it 'renders a successful response' do
-      config = Config.create! valid_attributes
-      get config_url(config)
+      get edit_config_url
       expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /new' do
-    it 'renders a successful response' do
-      get new_config_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'GET /edit' do
-    it 'renders a successful response' do
-      config = Config.create! valid_attributes
-      get edit_config_url(config)
-      expect(response).to be_successful
-    end
-  end
-
-  describe 'POST /create' do
-    context 'with valid host only' do
-      let(:test_host) { 'http://localhost:8983' }
-
-      it 'verifies the host' do
-        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
-        config = controller.view_assigns['config']
-        expect(config.solr_version).not_to be_nil
-      end
-
-      it 'responds succesfully' do
-        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
-        expect(response).to have_http_status(:accepted)
-      end
-
-      it 'renders the updated new form with solr_version populated' do
-        post configs_url, params: { config: { setup_step: 'host', solr_host: test_host } }
-        expect(response.body).to include 'value="9.2.1"'
-      end
-    end
-
-    context 'with valid host and core' do
-      let(:step_attributes) do
-        { setup_step: 'core', solr_host: 'http://localhost:8983', solr_verison: '9.2.1', solr_core: 'tenejo' }
-      end
-
-      it 'saves the new config' do
-        expect { post configs_url, params: { config: step_attributes } }.to change(Config, :count).by(1)
-      end
-
-      it 'redirects to the newly created config' do
-        post configs_url, params: { config: step_attributes }
-        expect(response).to redirect_to Config.last
-      end
-    end
-
-    context 'with valid parameters' do
-      it 'creates a new Config' do
-        expect do
-          post configs_url, params: { config: valid_attributes }
-        end.to change(Config, :count).by(1)
-      end
-
-      it 'redirects to the created config' do
-        post configs_url, params: { config: valid_attributes }
-        expect(response).to redirect_to(config_url(Config.last))
-      end
-    end
-
-    context 'with invalid parameters' do
-      it 'does not create a new Config' do
-        expect do
-          post configs_url, params: { config: invalid_attributes }
-        end.not_to change(Config, :count)
-      end
-
-      it 'renders a response with "accepted" status (i.e. to display the "new" template)' do
-        post configs_url, params: { config: invalid_attributes }
-        expect(response).to have_http_status(:accepted)
-      end
     end
   end
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        { fields: [{ solr_field_name: 'index_field1', display_label: 'Label' },
-                   { solr_field_name: 'another_index_field', display_label: 'Another Label' }] }
+        { fields_attributes: { '0' => { solr_field_name: 'index_field1', display_label: 'Label' },
+                               '1' => { solr_field_name: 'another_index_field', display_label: 'Another Label' } } }
       end
 
       it 'updates the requested config' do
-        config = Config.create! valid_attributes
-        patch config_url(config), params: { config: new_attributes }
-        config.reload
-        skip('Add assertions for updated state')
+        expect { patch config_url, params: { config: new_attributes } }
+          .to change { Config.current.fields.map(&:display_label) }
+          .from(['Title', 'Identifier'])
+          .to(['Label', 'Another Label'])
       end
 
       it 'redirects to the config' do
-        config = Config.create! valid_attributes
-        patch config_url(config), params: { config: new_attributes }
-        config.reload
-        expect(response).to redirect_to(config_url(config))
+        patch config_url, params: { config: new_attributes }
+        expect(response).to redirect_to(config_url)
       end
     end
 
     context 'with invalid parameters' do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        config = Config.create! valid_attributes
-        patch config_url(config), params: { config: invalid_attributes }
+        patch config_url, params: { config: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
-    end
-  end
-
-  describe 'DELETE /destroy' do
-    it 'destroys the requested config' do
-      config = Config.create! valid_attributes
-      expect do
-        delete config_url(config)
-      end.to change(Config, :count).by(-1)
-    end
-
-    it 'redirects to the configs list' do
-      config = Config.create! valid_attributes
-      delete config_url(config)
-      expect(response).to redirect_to(configs_url)
     end
   end
 
   describe 'resctricts access' do
     example 'for guest users' do
       logout
-      Config.create! valid_attributes
-      get configs_url
+      get config_url
       expect(response).to be_not_found
     end
 
     example 'for non-admin users' do
       login_as regular_user
-      Config.create! valid_attributes
-      get configs_url
+      get config_url
       expect(response).to be_unauthorized
     end
   end

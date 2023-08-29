@@ -11,7 +11,7 @@ RSpec.describe 'admin/configs/edit' do
   end
 
   it 'renders the edit config form', :aggregate_failures do
-    assert_select 'form[action=?][method=?]', config_path(config), 'post'
+    assert_select 'form[action=?][method=?]', config_path, 'post'
     expect(rendered).to have_field('config[solr_host]', disabled: true)
     expect(rendered).to have_field('config[solr_core]', disabled: true)
   end

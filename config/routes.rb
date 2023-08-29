@@ -35,7 +35,7 @@ Rails.application.routes.draw do
     resources :themes do
       patch 'activate', on: :member
     end
-    resources :configs
+    resource :config, only: %i[show edit update]
     resources :custom_domains, except: %i[edit update show]
     get 'profile', to: 'users#edit', as: :edit_user_registration
   end
