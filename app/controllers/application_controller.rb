@@ -18,4 +18,13 @@ class ApplicationController < ActionController::Base
       format.js   { render nothing: true, status: :not_found }
     end
   end
+
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) ||
+      if can? :read, :dashboard
+        status_url
+      else
+        super
+      end
+  end
 end
