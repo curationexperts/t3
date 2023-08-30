@@ -82,4 +82,8 @@ RSpec.configure do |config|
   config.before(:each, type: :component) do
     @request = vc_test_controller.request
   end
+
+  config.before(:each, type: :system) do
+    driven_by(:rack_test)
+  end
 end
