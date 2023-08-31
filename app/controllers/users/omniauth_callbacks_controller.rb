@@ -2,7 +2,7 @@ module Users
   # Authentication callback controller for third-party authenticaion
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def google
-      user = User.from_omniauth(auth)
+      user = User.from_omniauth(auth, token)
 
       if user.persisted?
         sign_in_and_redirect user, event: :authentication
@@ -21,7 +21,11 @@ module Users
     private
 
     def auth
-      @auth ||= request.env['omniauth.auth']
+      request.env['omniauth.auth']
+    end
+
+    def token
+      request.env.dig('omniauth.params', 'invitation_token')
     end
   end
 end
