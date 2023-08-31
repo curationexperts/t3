@@ -19,7 +19,14 @@ RSpec.describe CustomLayoutHelper do
       expect(helper.show_dashboard?).to be true
     end
 
-    it 'returns false for non-Admin views' do
+    it 'returns true for User views' do
+      # Devise controllers are all under the 'User' namespace
+      # and should be displayed wih the dashboard sidebar
+      allow(controller.class).to receive(:module_parent_name).and_return('Users')
+      expect(helper.show_dashboard?).to be true
+    end
+
+    it 'returns false for other views' do
       allow(controller.class).to receive(:module_parent_name).and_return('Blacklight')
       expect(helper.show_dashboard?).to be false
     end

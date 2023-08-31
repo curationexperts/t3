@@ -6,7 +6,7 @@ module CustomLayoutHelper
   # Convenience function for rendering dashboard views
   # True whenever our controller sits under the Admin:: namespace
   def show_dashboard?
-    controller.class.module_parent_name == 'Admin'
+    ['Admin', 'Users'].include? controller.class.module_parent_name
   end
 
   ##
