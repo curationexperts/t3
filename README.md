@@ -11,9 +11,9 @@ BUILD: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/curationexperts/
 * Provide visual, browser-based tools to configure and manage data models
 
 ### Current Dependencies
-* Rails 3.2.1
-* Ruby 7.0.4
-* Blacklight 8.0
+* Ruby 3.2.1
+* Rails 7.0.7
+* Blacklight 8.0.1
 * Solr 9.2.1
 * Postgres 
 
