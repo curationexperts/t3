@@ -1,6 +1,11 @@
 module Users
-  # Subclass with restrictions on which users can invite others
+  # Subclass of devise_invitable invitations controller that
+  # - Restricts which users can invite others
+  # - Allows additional parameters when creating invited users
+  # - Redirects to the user dashboard after issuing an invite
   class InvitationsController < Devise::InvitationsController
+    before_action :configure_permitted_parameters
+
     def authenticate_inviter!
       return unless cannot? :create, User
 
@@ -13,6 +18,12 @@ module Users
 
     def after_invite_path_for(_inviter, _invitee)
       users_path
+    end
+
+    protected
+
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.permit(:invite, keys: [:display_name, { role_ids: [] }])
     end
   end
 end

@@ -13,6 +13,17 @@ RSpec.describe 'Users::InvitationsController' do
       end.to change(User, :count).by(1)
     end
 
+    it 'can set display name' do
+      post user_invitation_path, params: { user: { email: 'invitee@example.org', display_name: 'Last, First' } }
+      expect(User.last.display_name).to eq 'Last, First'
+    end
+
+    it 'can set user roles' do
+      post user_invitation_path,
+           params: { user: { email: 'invitee@example.org', role_ids: [Role.last.id, Role.second.id] } }
+      expect(Role.second.users).to include User.last
+    end
+
     it 'sends an invitation e-mail', :aggregate_failures do
       post user_invitation_path, params: { user: { email: 'invitee@example.org' } }
       mail = ActionMailer::Base.deliveries.last
