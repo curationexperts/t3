@@ -20,6 +20,12 @@ RSpec.describe 'admin/users/index' do
     expect(rendered).to have_selector('td.display_name', text: users[0].display_name)
   end
 
+  it 'displays the last login for users' do
+    users[2].current_sign_in_at = (12.days + 4.hours).ago
+    render
+    expect(rendered).to have_selector('span.login_timestamp', text: '12 days ago')
+  end
+
   describe 'password reset links' do
     example 'for database users' do
       render
