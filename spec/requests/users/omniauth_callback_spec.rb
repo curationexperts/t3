@@ -4,6 +4,11 @@ RSpec.describe 'Users::OmniauthCallbacksController' do
   before do
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:google] = FactoryBot.build(:google_auth_hash)
+
+    # Stub user persistence
+    user = FactoryBot.build(:user)
+    allow(user).to receive(:persisted?).and_return(true)
+    allow(User).to receive(:find_by).and_return(user)
   end
 
   after do
@@ -19,7 +24,7 @@ RSpec.describe 'Users::OmniauthCallbacksController' do
     end
 
     it 'redirects to signin on failed authentication', :aggregate_failures do
-      # simulate failed login
+      # simulate failed authentication
       # see: https://github.com/omniauth/omniauth/wiki/Integration-Testing#mocking-failure
       OmniAuth.config.mock_auth[:google] = :invalid_credentials
 

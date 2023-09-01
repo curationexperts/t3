@@ -24,19 +24,6 @@ class User < ApplicationRecord
     self.provider ||= 'local'
   end
 
-  def self.from_omniauth(auth)
-    provider = auth.provider
-    uid = auth.uid
-    email = auth.info.email
-    display_name = auth.info.name
-
-    # Only permit users from curationexperts.com
-    # return nil unless email =~ /@curationexperts.com\z/
-
-    create_with(email: email, password: dummy_password, display_name: display_name)
-      .find_or_create_by!(provider: provider, uid: uid)
-  end
-
   def local?
     provider == 'local'
   end
@@ -58,7 +45,29 @@ class User < ApplicationRecord
     errors.empty?
   end
 
-  def self.dummy_password
-    Devise.friendly_token(20)
+  def self.from_omniauth(auth, token = nil)
+    new_user_from_token(token, auth) || existing_user_from_auth(auth) || invalid_user
   end
+
+  def self.new_user_from_token(token, auth)
+    return unless token
+
+    user = User.find_by_invitation_token(token, false)
+    user.update(email: auth.info.email,
+                display_name: auth.info.name,
+                provider: auth.provider,
+                uid: auth.uid)
+    user
+  end
+  private_class_method :new_user_from_token
+
+  def self.existing_user_from_auth(auth)
+    find_by(provider: auth.provider, uid: auth.uid)
+  end
+  private_class_method :existing_user_from_auth
+
+  def self.invalid_user
+    User.new.tap { |u| u.errors.add(:base, :unauthorized_account) }
+  end
+  private_class_method :invalid_user
 end
