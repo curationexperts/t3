@@ -31,4 +31,12 @@ RSpec.describe 'Login' do
     click_on 'Log in'
     expect(page).to have_current_path root_path
   end
+
+  it 'sets current_sign_in_at', :aggregate_failures do
+    visit new_user_session_path
+    fill_in 'user_email', with: user.email
+    fill_in 'user_password', with: 'password'
+    click_on 'Log in'
+    expect(user.reload.current_sign_in_at).to be_within(1.second).of(Time.now.utc)
+  end
 end

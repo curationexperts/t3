@@ -24,6 +24,16 @@ RSpec.describe User do
     end
   end
 
+  describe '#current_sign_in_at' do
+    it 'is nil for new users' do
+      expect(described_class.new.current_sign_in_at).to be_nil
+    end
+
+    it 'can be set' do
+      expect(user).to respond_to(:current_sign_in_at=)
+    end
+  end
+
   describe '#password_reset' do
     let(:local_user) { FactoryBot.create(:user, provider: 'local') }
 
