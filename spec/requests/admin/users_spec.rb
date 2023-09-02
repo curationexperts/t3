@@ -132,17 +132,24 @@ RSpec.describe '/admin/users' do
   end
 
   describe 'DELETE /destroy' do
-    it 'destroys the requested admin_user' do
+    it 'deactivates the requested user', :aggregate_failures do
       user = User.create! valid_attributes
       expect do
         delete user_url(user)
-      end.to change(User, :count).by(-1)
+      end.not_to change(User, :count)
+      expect(user.reload.deactivated_at).to be_within(1.second).of(Time.now.utc)
     end
 
     it 'redirects to the users list' do
       user = User.create! valid_attributes
       delete user_url(user)
       expect(response).to redirect_to(users_url)
+    end
+
+    it 'clears any invitations' do
+      user = User.invite!(email: 'new_user@example.com')
+      delete user_url(user)
+      expect(user.reload.invited_to_sign_up?).to be false
     end
   end
 

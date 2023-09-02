@@ -50,6 +50,11 @@ RSpec.describe UserHelper do
       expect(status_badge(user)).to match(/invited/)
     end
 
+    it 'returns "deactivated" for deactivated users' do
+      user.deactivated_at = 2.months.ago
+      expect(status_badge(user)).to match(/deactivated/)
+    end
+
     it 'returns "active" for users who have logged in at least once' do
       user.sign_in_count = 1
       user.current_sign_in_at = 2.months.ago

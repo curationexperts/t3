@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_01_145428) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_02_161139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -135,6 +135,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_01_145428) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
+    t.datetime "deactivated_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"

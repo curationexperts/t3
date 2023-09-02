@@ -2,6 +2,12 @@
 
 <div id="<%= dom_id @user %>">
   <p>
+    <strong>Status:</strong>
+    <span class='user_status'><%= status_badge(@user) %></span>
+  </p>
+
+
+  <p>
     <strong>E-Mail:</strong>
     <span class='user_email'><%= @user.email %></span>
   </p>
@@ -26,5 +32,5 @@
   <%= link_to "Edit this user", edit_user_path(@user) %> |
   <%= link_to "Back to users", users_path %>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
+  <%= button_to("Deactivate this user", @user, method: :delete, class: 'btn btn-danger btn-sm') if @user.active_for_authentication? %>
 </div>

@@ -24,6 +24,19 @@ class User < ApplicationRecord
     self.provider ||= 'local'
   end
 
+  # Deactivate the user and clear any outstanding invitations
+  # Deactivation should be persisted even if the user is invalid,
+  # so we user update_attribute to skip validations before save
+  def deactivate
+    self.invitation_token = nil
+    update_attribute(:deactivated_at, Time.now.utc) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  # do not permit deactivated users to login
+  def active_for_authentication?
+    super && !deactivated_at
+  end
+
   def local?
     provider == 'local'
   end

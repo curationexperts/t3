@@ -18,6 +18,11 @@ RSpec.describe 'admin/users/show' do
     expect(rendered).to have_selector('.user_display_name', text: user.display_name)
   end
 
+  it 'displays the user status' do
+    render
+    expect(rendered).to have_selector('.user_status', text: 'unknown')
+  end
+
   it 'displays any associated roles' do
     render
     expect(rendered).to have_selector('.user_roles', text: user.roles.first)
