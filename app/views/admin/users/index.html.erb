@@ -10,6 +10,7 @@
       <th class='provider'>Type</th>
       <th class='pw_reset'>Password</th>
       <th class='roles'>Roles</th>
+      <th class='deactivate'>Deactivate</th>
     </tr>
     <% @users.each do |user| %>
       <tr id='<%= dom_id user %>'>
@@ -20,6 +21,7 @@
         <td class='provider'><%= user.provider -%></td>
         <td class='pw_reset'><%= link_to('Send Reset', user_password_reset_path(user), id: dom_id(user, :password_reset), data: { turbo_method: "post" }) if user.local? -%></td>
         <td class='roles'><%= user.roles.map(&:name).join(', ') -%></td>
+        <td class='deactivate'><%= button_to('Deactivate', user, method: :delete, id: dom_id(user, :delete), class: 'btn btn-danger btn-sm') if user.active_for_authentication? -%></td>
       </tr>
     <% end %>
   </table>

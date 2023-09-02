@@ -50,10 +50,10 @@ module Admin
 
     # DELETE /admin/users/1 or /admin/users/1.json
     def destroy
-      @user.destroy
+      @user.deactivate
 
       respond_to do |format|
-        format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
+        format.html { redirect_to users_url, notice: 'User was successfully deactivated.' }
         format.json { head :no_content }
       end
     end

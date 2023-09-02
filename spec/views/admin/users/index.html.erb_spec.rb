@@ -44,6 +44,22 @@ RSpec.describe 'admin/users/index' do
     end
   end
 
+  describe 'deactivation links' do
+    example 'appear for active users', :aggregate_failures do
+      render
+      within "form[@action='#{user_path(users[1])}']" do
+        expect(rendered).to have_selector('#delete_user_1')
+        expect(rendered).to have_input('_method', value: 'delete')
+      end
+    end
+
+    example 'are not provided for inactive users' do
+      users[2].deactivated_at = 1.week.ago
+      render
+      expect(rendered).not_to have_selector('#delete_user_2')
+    end
+  end
+
   it 'has a link to invite new users' do
     render
     expect(rendered).to have_link(:invite_user, href: new_user_invitation_path)

@@ -11,6 +11,19 @@ RSpec.describe User do
     expect(described_class.new(provider: 'imported').provider).to eq 'imported'
   end
 
+  describe '#deactivate' do
+    it 'marks the user as deactivated' do
+      user.deactivate
+      expect(user.deactivated_at?).to be true
+    end
+
+    it 'disables authentication', :aggregate_failures do
+      expect(user.active_for_authentication?).to be true
+      user.deactivate
+      expect(user.active_for_authentication?).to be false
+    end
+  end
+
   describe '#local?' do
     let(:local_user) { FactoryBot.create(:user, provider: 'local') }
     let(:remote_user) { FactoryBot.create(:user, provider: 'google') }
