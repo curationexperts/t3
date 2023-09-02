@@ -9,12 +9,14 @@ module UserHelper
   # Human friendly formatter for Time-compatible values
   def duration(timestamp)
     return tag.span('never', class: 'login_timestamp empty') unless timestamp
+    return tag.span('n/a', class: 'login_timestamp empty') unless timestamp.try(:to_time)
 
+    tag.span(duration_text(timestamp), class: 'login_timestamp', datetime: timestamp.iso8601)
+  end
+
+  def duration_text(timestamp)
     suffix = timestamp.future? ? ' from now' : ' ago'
-    duration_text = time_ago_in_words(timestamp) + suffix
-    tag.span(duration_text, class: 'login_timestamp', datetime: timestamp.iso8601)
-  rescue StandardError
-    tag.span('n/a', class: 'login_timestamp empty')
+    time_ago_in_words(timestamp) + suffix
   end
 
   def status_badge(user)
