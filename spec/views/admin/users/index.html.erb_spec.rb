@@ -26,6 +26,11 @@ RSpec.describe 'admin/users/index' do
     expect(rendered).to have_selector('span.login_timestamp', text: '12 days ago')
   end
 
+  it 'displays the user state' do
+    render
+    expect(rendered).to have_selector('span.user_state', text: 'unknown')
+  end
+
   describe 'password reset links' do
     example 'for database users' do
       render
