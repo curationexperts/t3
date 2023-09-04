@@ -88,4 +88,13 @@ RSpec.describe CustomDomain do
       end
     end
   end
+
+  describe '#destroy' do
+    it 'calls certbot with the hostname' do
+      allow(domain.certbot_client).to receive(:remove_host)
+      domain.host = 'demo.tenejo.com'
+      domain.destroy
+      expect(domain.certbot_client).to have_received(:remove_host).with('demo.tenejo.com')
+    end
+  end
 end

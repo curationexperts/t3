@@ -2,18 +2,25 @@
 class CustomDomain < ApplicationRecord
   validate :domain_setup_ok?
 
-  before_save :update_certificate
+  before_save :add_host_to_certificate
+  before_destroy :remove_host_from_certificate
 
   def certbot_client
     @certbot_client ||= Rails.env.production? ? Certbot::V2::Client.new : Certbot::V2::TestClient.new
   end
 
-  def update_certificate
+  private
+
+  # Update the primary certificate to refelect newly added domains
+  def add_host_to_certificate
     certbot_client.add_host(host)
     raise ActiveRecord::RecordInvalid unless valid?
   end
 
-  private
+  # Update the primary certificate to reflect newly removed domains
+  def remove_host_from_certificate
+    certbot_client.remove_host(host)
+  end
 
   # Checks whether a certificate can be generated for the domain
   #
