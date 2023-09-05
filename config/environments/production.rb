@@ -66,7 +66,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = true
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: 't3-dev.curationexperts.com', protocol: 'https' }
+  config.action_mailer.default_url_options = { host: `hostname -f`, protocol: 'https' }
 
   config.action_mailer.delivery_method = :ses
   # Set a default AWS region so ActionMailer knows where to look for SES
