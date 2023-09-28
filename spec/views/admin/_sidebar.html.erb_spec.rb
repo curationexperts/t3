@@ -54,6 +54,20 @@ RSpec.describe 'admin/_sidebar' do
     end
   end
 
+  describe 'blueprints link' do
+    it 'renders for authorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Blueprint).and_return(true)
+      render
+      expect(rendered).to have_link(href: blueprints_path)
+    end
+
+    it 'is hidden from unauthorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Blueprint).and_return(false)
+      render
+      expect(rendered).not_to have_link(href: blueprints_path)
+    end
+  end
+
   describe 'config link' do
     it 'renders for authorized users' do
       allow(view.controller.current_ability).to receive(:can?).with(:read, Config).and_return(true)

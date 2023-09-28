@@ -73,6 +73,10 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Config)).to be true
       end
 
+      it 'can manage Blueprints' do
+        expect(authz.can?(:manage, Blueprint)).to be true
+      end
+
       it 'can read dashboard status' do
         expect(authz.can?(:read, :dashboard)).to be true
       end
@@ -91,10 +95,10 @@ RSpec.describe Ability do
       end
 
       it 'can manage multiple features', :aggregate_failures do
-        expect(authz.can?(:read, :dashboard)).to be true
         expect(authz.can?(:manage, User)).to be true
         expect(authz.can?(:manage, Config)).to be true
         expect(authz.can?(:manage, Theme)).to be false
+        expect(authz.can?(:manage, Blueprint)).to be true
       end
 
       it 'can read dashboard status' do

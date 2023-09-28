@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     post 'users/:id/password_reset', to: 'users#password_reset', as: :user_password_reset
     resources :users
     resources :roles
+    resources :blueprints
     resources :themes do
       patch 'activate', on: :member
     end
