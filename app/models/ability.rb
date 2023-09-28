@@ -9,7 +9,8 @@ class Ability
     User => 'User Manager',
     Role => 'User Manager',
     Theme => 'Brand Manager',
-    Config => 'System Manager'
+    Config => 'System Manager',
+    Blueprint => 'System Manager'
   }.freeze
 
   def initialize(user)

@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render partial: 'blueprint', object: @blueprint %>
+
+<div>
+  <%= link_to "Edit this blueprint", edit_blueprint_path(@blueprint) %> |
+  <%= link_to "Back to blueprints", blueprints_path %>
+
+  <%= button_to "Destroy this blueprint", @blueprint, method: :delete %>
+</div>
