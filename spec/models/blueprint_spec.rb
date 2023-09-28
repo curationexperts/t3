@@ -7,6 +7,7 @@ RSpec.describe Blueprint, :aggregate_failures do
     it 'cannot be blank' do
       expect(blueprint).not_to be_valid
       expect(blueprint.errors.where(:name, :blank)).to be_present
+      expect(blueprint.errors.where(:name, :invalid)).not_to be_present
     end
 
     it 'must be unique' do
