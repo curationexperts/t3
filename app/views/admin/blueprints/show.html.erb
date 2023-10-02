@@ -1,10 +1,46 @@
-<p style="color: green"><%= notice %></p>
+<div id="<%= dom_id @blueprint %>">
+  <h1 class='blueprint_name'><%= @blueprint.name %></h1>
+  <h4>Blueprint</h4>
 
-<%= render partial: 'blueprint', object: @blueprint %>
+  <div id="blueprint_fields">
+    <table>
+      <thead>
+      <tr>
+        <th class='field_number'>Order</th>
+        <th class='display_label'>Label</th>
+        <th class='solr_field_name'>Solr Field Name</th>
+        <th class='searchable'>Searchable</th>
+        <th class='facetable'>Facetable</th>
+        <th class='search_results'>Search <br/>Results</th>
+        <th class='item_view'>Item <br/>View</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @blueprint.fields.each_with_index do |field, index| %>
+        <tr id=<%= "field_config_#{index}" %>>
+          <td class='field_number'><%= index + 1 %></td>
+          <td class='display_label'><%= field.display_label %></td>
+          <td class='solr_field_name'><%= field.solr_field_name %></td>
+          <td class='searchable'><span class="bi <%= field.searchable ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
+          <td class='facetable'><span class="bi <%= field.facetable ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
+          <td class='search_results'><span class="bi <%= field.search_results ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
+          <td class='item_view'><span class="bi <%= field.item_view ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
+        </tr>
+      <% end %>
 
-<div>
-  <%= link_to "Edit this blueprint", edit_blueprint_path(@blueprint) %> |
-  <%= link_to "Back to blueprints", blueprints_path %>
+      </tbody>
+    </table>
+  </div>
 
-  <%= button_to "Destroy this blueprint", @blueprint, method: :delete %>
+  <div class='blueprint_actions'>
+    <%= link_to edit_blueprint_path(@blueprint), id: dom_id(@blueprint, :edit), class: 'btn btn-success' do %>
+      <span class='btn-label bi bi-pencil-square'>Edit</span>
+    <% end %>
+    <%= link_to blueprints_path, id: 'blueprints_index', class: 'btn btn-primary' do %>
+      <span class='btn-label bi bi-list-task'>Back to Blueprints</span>
+    <% end %>
+    <%= button_to @blueprint, method: :delete, id: dom_id(@blueprint, :delete), class: 'btn btn-danger', form_class: 'blueprint_delete' do %>
+      <span class="btn-label bi bi-trash">Delete</span>
+    <% end %>
+  </div>
 </div>

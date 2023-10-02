@@ -1,0 +1,47 @@
+#dashboard-content {
+  margin-top: 1.5rem;
+}
+
+#blueprint_fields {
+  th, td {
+    padding-right: 1rem;
+  }
+  th {
+    vertical-align: bottom;
+  }
+  tr {
+    height: 2.5rem;
+  }
+}
+
+.display_label {
+  width: 15rem;
+}
+
+.solr_field_name {
+  width: 13rem;
+}
+
+.field_number, .searchable, .facetable, .search_results, .item_view {
+  text-align: center;
+}
+
+button, a {
+  span.btn-label.bi::before{
+    padding-right: 0.5rem;
+  }
+}
+
+div.blueprint_actions {
+  margin-top: 1.5rem;
+  .btn {
+    margin-right: 1rem;
+  }
+  .blueprint_delete {
+    float: right;
+  }
+}
+
+#blueprints #add_blueprint {
+  margin-top: 1.5rem;
+}

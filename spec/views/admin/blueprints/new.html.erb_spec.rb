@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/blueprints/new' do
+  let(:blueprint) { Blueprint.new(fields: FieldConfig.new) }
+
   before do
-    assign(:blueprint, Blueprint.new)
+    assign(:blueprint, blueprint)
   end
 
   it 'renders new blueprint form' do
@@ -11,6 +13,7 @@ RSpec.describe 'admin/blueprints/new' do
   end
 
   it 'accepts a name' do
+    allow(controller).to receive(:action_name).and_return('new')
     render
     expect(rendered).to have_field(id: 'blueprint_name')
   end
