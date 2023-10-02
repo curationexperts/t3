@@ -1,14 +1,41 @@
-<p style="color: green"><%= notice %></p>
-
 <h1>Blueprints</h1>
 
 <div id="blueprints">
-  <% @blueprints.each do |blueprint| %>
-    <%= render partial: 'blueprint', object: blueprint %>
-    <p>
-      <%= link_to "Show this blueprint", blueprint %>
-    </p>
-  <% end %>
+  <table>
+    <thead>
+      <tr>
+        <th class='blueprint_name'>Name</th>
+        <th class="blueprint_actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @blueprints.each do |blueprint| %>
+      <tr>
+        <td class='blueprint_name'><%= blueprint.name %></td>
+        <td class='blueprint_actions'>
+          <%= link_to blueprint, id: dom_id(blueprint, :view), class: 'btn btn-sm btn-primary' do %>
+            <span class='btn-label bi bi-file-earmark-ruled'>View</span>
+          <% end %>
+          <%= link_to edit_blueprint_path(blueprint), id: dom_id(blueprint, :edit), class: 'btn btn-sm btn-success' do %>
+            <span class='btn-label bi bi-pencil-square'>Edit</span>
+          <% end %>
+          <%= button_to blueprint, method: :delete, id: dom_id(blueprint, :delete), class: 'btn btn-sm btn-danger' do %>
+            <span class="btn-label bi bi-trash">Delete</span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class='blueprint_name'>
+          <%= link_to new_blueprint_path, id: 'add_blueprint', class: 'btn btn-outline-primary'  do %>
+            <span class="btn-label bi bi-plus-square">New Blueprint</span>
+          <% end %>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
 
-<%= link_to "New blueprint", new_blueprint_path %>
+
