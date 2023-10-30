@@ -20,6 +20,17 @@ RSpec.describe Ability do
       it 'restricts dashboard' do
         expect(authz.can?(:read, :dashboard)).to be false
       end
+
+      it 'restricts access to admin models', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+        # this should be a relatively exhaustive list of
+        # models and keywords that should enforce some for of authroization restrictions
+        expect(authz.can?(:read, User)).to be false
+        expect(authz.can?(:read, Role)).to be false
+        expect(authz.can?(:read, Theme)).to be false
+        expect(authz.can?(:read, Config)).to be false
+        expect(authz.can?(:read, Blueprint)).to be false
+        expect(authz.can?(:read, Ingest)).to be false
+      end
     end
 
     describe 'as Super Admin' do
@@ -77,6 +88,10 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Blueprint)).to be true
       end
 
+      it 'can manage Ingests' do
+        expect(authz.can?(:manage, Ingest)).to be true
+      end
+
       it 'can read dashboard status' do
         expect(authz.can?(:read, :dashboard)).to be true
       end
@@ -99,6 +114,7 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Config)).to be true
         expect(authz.can?(:manage, Theme)).to be false
         expect(authz.can?(:manage, Blueprint)).to be true
+        expect(authz.can?(:manage, Ingest)).to be true
       end
 
       it 'can read dashboard status' do

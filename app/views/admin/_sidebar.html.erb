@@ -25,6 +25,11 @@
           <%= link_to t('t3.admin.blueprints'), blueprints_path, class: 'nav-link' + active_controller_class('blueprints') %>
         </li>
       <% end %>
+      <% if can? :read, Ingest %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.ingests'), ingests_path, class: 'nav-link' + active_controller_class('ingests') %>
+        </li>
+      <% end %>
       <% if can? :read, Config %>
         <li class='nav-item'>
           <%= link_to t('t3.admin.configs'), config_path, class: 'nav-link' + active_controller_class('configs') %>

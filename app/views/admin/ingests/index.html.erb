@@ -1,0 +1,23 @@
+<h1>Ingests</h1>
+
+<div id="ingests">
+  <% @ingests.each do |ingest| %>
+    <div id="<%= dom_id ingest %>">
+      <p>
+        <strong>User:</strong>
+        <%= ingest.user_id %>
+      </p>
+
+      <p>
+        <strong>Status:</strong>
+        <%= ingest.status %>
+      </p>
+
+    </div>
+    <p>
+      <%= link_to "Show this ingest", ingest %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New ingest", new_ingest_path %>
