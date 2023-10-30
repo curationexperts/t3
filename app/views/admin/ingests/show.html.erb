@@ -1,0 +1,21 @@
+<h1>Ingest <%= @ingest.id %></h1>
+
+<div id="<%= dom_id @ingest %>">
+  <p>
+    <strong>User:</strong>
+    <%= @ingest.user_id %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= @ingest.status %>
+  </p>
+
+</div>
+
+<div>
+  <%= link_to "Edit this ingest", edit_ingest_path(@ingest) %> |
+  <%= link_to "Back to ingests", ingests_path %>
+
+  <%= button_to "Destroy this ingest", @ingest, method: :delete %>
+</div>
