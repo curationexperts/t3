@@ -26,6 +26,7 @@ module Admin
 
       status = @ingest.save
       render_response_for(status)
+      ImportJob.perform_later(@ingest) if status
     end
 
     # PATCH/PUT /ingests/1 or /ingests/1.json

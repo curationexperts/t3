@@ -74,4 +74,34 @@ RSpec.describe Ingest do
       expect(ingest.errors.where(:manifest, :missing)).to be_empty
     end
   end
+
+  describe '#check_manifest' do
+    let(:invalid_manifest) { Rack::Test::UploadedFile.new('spec/fixtures/files/sample_logo.png', 'image/png') }
+
+    it 'validates the attachment contains JSON' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.manifest_format
+      # The factory attaches a json manifest
+      expect(ingest.errors.where(:manifest, :file_format)).to be_empty
+    end
+
+    it 'adds an error for non json manifests' do
+      ingest = FactoryBot.build(:ingest, manifest: invalid_manifest)
+      ingest.manifest_format
+      expect(ingest.errors.where(:manifest, :file_format)).to be_present
+    end
+
+    it 'sets the size from the manifest' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.manifest_format
+      expect(ingest.size).to eq 2
+    end
+
+    it 'gets called on save' do
+      ingest = FactoryBot.build(:ingest)
+      allow(ingest).to receive(:manifest_format)
+      ingest.save
+      expect(ingest).to have_received(:manifest_format)
+    end
+  end
 end
