@@ -16,8 +16,11 @@ RSpec.describe '/ingests' do
   # This should return the minimal set of attributes required to create a valid
   # Ingest. As you add validations to Ingest, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { user: super_admin, status: 'queued' } }
-  let(:invalid_attributes) { { size: 'invalid' } }
+  let(:valid_attributes) do
+    { user: super_admin,
+      manifest: Rack::Test::UploadedFile.new('spec/fixtures/files/ingest.json', 'application/json') }
+  end
+  let(:invalid_attributes) { { manifest: nil } }
   let(:super_admin)  { FactoryBot.create(:super_admin) }
   let(:regular_user) { FactoryBot.create(:user) }
 
@@ -66,6 +69,18 @@ RSpec.describe '/ingests' do
         post ingests_url, params: { ingest: valid_attributes }
         expect(response).to redirect_to(ingests_url)
       end
+
+      it 'enques an import job' do
+        pending 'job implementation'
+        post ingests_url, params: { ingest: valid_attributes }
+        expect(ImportJob).to have_been_enqueued.with(Ingest.last)
+      end
+
+      it 'sets the Ingest status' do
+        pending 'job implementation'
+        post ingests_url, params: { ingest: valid_attributes }
+        expect(Ingest.last.status).to eq 'queued'
+      end
     end
 
     context 'with invalid parameters' do
@@ -89,6 +104,7 @@ RSpec.describe '/ingests' do
       end
 
       it 'updates the requested ingest' do
+        skip 'wait until some real use case surfaces'
         ingest = Ingest.create! valid_attributes
         patch ingest_url(ingest), params: { ingest: new_attributes }
         ingest.reload

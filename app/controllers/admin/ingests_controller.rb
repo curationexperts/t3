@@ -48,7 +48,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def ingest_params
-      params.require(:ingest).permit(:user_id, :status, :size)
+      params.require(:ingest).permit(:manifest)
     end
 
     # Render success or failure for create and update actions

@@ -1,0 +1,90 @@
+{
+  "response": {
+    "docs": [
+      {
+        "has_model_ssim": [
+          "Publication"
+        ],
+        "title_tesim": [
+          "Redundant Haptic Protocol: Synthesizing the virtual feed"
+        ],
+        "resource_type_tesim": [
+          "Research Paper"
+        ],
+        "creator_tesim": [
+          "Ayşe, Imogen",
+          "Prescott, Lemuel."
+        ],
+        "publisher_tesim": [
+          "Data Curation Experts"
+        ],
+        "license_tesim": [
+          "https://creativecommons.org/licenses/by-nc/4.0/"
+        ],
+        "date_created_tesim": [
+          "1991-07"
+        ],
+        "identifier_tesim": [
+          "http://boehm.test/rashad/d906:e7f2:721c:2972:37d9:66c6:c436:9cea"
+        ],
+        "member_of_collections_ssim": [
+          "Staff Reports"
+        ],
+        "member_of_collection_ids_ssim": [
+          "s7526c45q"
+        ],
+        "file_set_ids_ssim": [
+          "cf95jb559"
+        ],
+        "visibility_ssi": "open",
+        "admin_set_tesim": [
+          "Entire Collection"
+        ],
+        "title_ssi": "Redundant Haptic Protocol: Synthesizing the virtual feed",
+        "date_created_ssi": "1991-01"
+      },
+      {
+        "has_model_ssim": [
+          "Publication"
+        ],
+        "title_tesim": [
+          "Admiral of the Black Fathom: Landlubber's & Scallywags"
+        ],
+        "resource_type_tesim": [
+          "Oral History"
+        ],
+        "creator_tesim": [
+          "Nutlee, Halbert",
+          "Johnson, Kendall C."
+        ],
+        "publisher_tesim": [
+          "Data Curation Experts"
+        ],
+        "license_tesim": [
+          "https://creativecommons.org/licenses/by-nc/4.0/"
+        ],
+        "date_created_tesim": [
+          "2004-03"
+        ],
+        "identifier_tesim": [
+          "http://boehm.test/rashad/f38e:7a8e:2c60:6881:5c38:71a8:e6f9:6ab1"
+        ],
+        "member_of_collections_ssim": [
+          "Hitory"
+        ],
+        "member_of_collection_ids_ssim": [
+          "s7526c45q"
+        ],
+        "file_set_ids_ssim": [
+          "cf95jb559"
+        ],
+        "visibility_ssi": "open",
+        "admin_set_tesim": [
+          "Entire Collection"
+        ],
+        "title_ssi": "Admiral of the Black Fathom: Landlubber's & Scallywags",
+        "date_created_ssi": "2004-03"
+      }
+    ]
+  }
+}
