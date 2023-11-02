@@ -71,13 +71,11 @@ RSpec.describe '/ingests' do
       end
 
       it 'enques an import job' do
-        pending 'job implementation'
         post ingests_url, params: { ingest: valid_attributes }
         expect(ImportJob).to have_been_enqueued.with(Ingest.last)
       end
 
       it 'sets the Ingest status' do
-        pending 'job implementation'
         post ingests_url, params: { ingest: valid_attributes }
         expect(Ingest.last.status).to eq 'queued'
       end

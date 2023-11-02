@@ -86,4 +86,9 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by(:rack_test)
   end
+
+  config.after(:suite) do
+    # Delete any ActiveStorage blobs saved during tests
+    FileUtils.rm_rf(Dir.glob("#{ActiveStorage::Blob.service.root}/*"))
+  end
 end
