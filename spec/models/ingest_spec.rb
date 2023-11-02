@@ -49,4 +49,29 @@ RSpec.describe Ingest do
       expect(ingest.errors.where(:size, :not_an_integer)).to be_present
     end
   end
+
+  describe '#manifest' do
+    it 'is an ActiveStorage attachment' do
+      ingest = described_class.new
+      expect(ingest.manifest).to be_a ActiveStorage::Attached::One
+    end
+
+    it 'is empty on initialization' do
+      ingest = described_class.new
+      expect(ingest.manifest).not_to be_attached
+    end
+
+    it 'is required for validation' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.manifest.purge
+      ingest.validate
+      expect(ingest.errors.where(:manifest, :missing)).to be_present
+    end
+
+    it 'is added by the factory' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.validate
+      expect(ingest.errors.where(:manifest, :missing)).to be_empty
+    end
+  end
 end

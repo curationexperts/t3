@@ -1,6 +1,28 @@
 <h1>New ingest</h1>
 
-<%= render "form", ingest: @ingest %>
+<% ingest = @ingest %>
+<%= form_with(model: ingest) do |form| %>
+  <% if ingest.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(ingest.errors.count, "error") %> prohibited this ingest from being saved:</h2>
+
+      <ul>
+        <% ingest.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :manifest, style: "display: block" %>
+    <%= form.file_field :manifest %>
+  </div>
+
+  <div>
+    <%= form.submit class: 'btn btn-primary' %>
+  </div>
+<% end %>
 
 <br>
 

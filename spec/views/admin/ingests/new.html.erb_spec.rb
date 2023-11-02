@@ -2,16 +2,21 @@ require 'rails_helper'
 
 RSpec.describe 'admin/ingests/new' do
   before do
-    assign(:ingest, FactoryBot.build(:ingest))
+    assign(:ingest, Ingest.new)
   end
 
   it 'renders new ingest form' do
     render
+    expect(rendered).to have_selector("form[@action='#{ingests_path}']")
+  end
 
-    assert_select 'form[action=?][method=?]', ingests_path, 'post' do
-      assert_select 'input[name=?]', 'ingest[user_id]'
+  it 'accepts manifest file' do
+    render
+    expect(rendered).to have_field(id: 'ingest_manifest')
+  end
 
-      assert_select 'input[name=?]', 'ingest[status]'
-    end
+  it 'has a submit button' do
+    render
+    expect(rendered).to have_button(type: 'submit')
   end
 end
