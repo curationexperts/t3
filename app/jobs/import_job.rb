@@ -32,6 +32,6 @@ class ImportJob < ApplicationJob
   end
 
   def process_record(_doc)
-    sleep(5)
+    sleep(1)
   end
 end

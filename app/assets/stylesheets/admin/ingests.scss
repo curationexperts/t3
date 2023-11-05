@@ -1,0 +1,44 @@
+#ingests td {
+  padding-right: 1rem;
+}
+
+.status {
+  width: 15rem;
+}
+
+.status_badge {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  border-radius: 0.2rem;
+  border-color: darkslategray;
+  border-width: 2px;
+  border-style: solid;
+  color: white;
+  background-color: dimgray;
+  &.queued {
+    color: darkslateblue;
+    background-color: lightsteelblue;
+  }
+  &.processing {
+    color: white;
+    background-color: darkslateblue;
+  }
+  &.completed {
+    color: white;
+    background-color: darkolivegreen;
+  }
+  &.errored {
+    color: white;
+    background-color: brown;
+  }
+  .status_increment {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: black;
+    background-color: lightsteelblue;
+    width: 100%;
+    text-align: center;
+  }
+}

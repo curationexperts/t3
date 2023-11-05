@@ -1,14 +1,37 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/ingests/index' do
-  before do
-    assign(:ingests, FactoryBot.build_list(:ingest, 2))
-  end
+  let(:ingests) { (1..3).collect { |i| FactoryBot.build(:ingest, id: i) } }
+
+  before { assign(:ingests, ingests) }
 
   it 'renders a list of ingests' do
     render
-    cell_selector = 'div>p'
-    assert_select cell_selector, text: Regexp.new('User'), count: 2
-    assert_select cell_selector, text: Regexp.new('Status'), count: 2
+    expect(rendered).to have_selector('td.owner', count: 3)
+  end
+
+  it 'links to the individual batch' do
+    render
+    expect(rendered).to have_link('view', href: url_for(ingests[1]))
+  end
+
+  it 'links to the manifest' do
+    render
+    expect(rendered).to have_selector('td.manifest a', text: ingests[1].manifest.filename)
+  end
+
+  it 'displays the display_name for each owner' do
+    render
+    expect(rendered).to have_selector('td.owner', text: ingests[0].user.display_name)
+  end
+
+  it 'displays the ingest status' do
+    render
+    expect(rendered).to have_selector('td.status', text: 'initialized', count: 3)
+  end
+
+  it 'has a link to create a new ingest' do
+    render
+    expect(rendered).to have_link(:new_ingest, href: new_ingest_path)
   end
 end
