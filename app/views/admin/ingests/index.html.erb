@@ -1,23 +1,44 @@
 <h1>Ingests</h1>
 
 <div id="ingests">
-  <% @ingests.each do |ingest| %>
-    <div id="<%= dom_id ingest %>">
-      <p>
-        <strong>User:</strong>
-        <%= ingest.user_id %>
-      </p>
-
-      <p>
-        <strong>Status:</strong>
-        <%= ingest.status %>
-      </p>
-
-    </div>
-    <p>
-      <%= link_to "Show this ingest", ingest %>
-    </p>
-  <% end %>
+  <table>
+    <thead>
+      <tr>
+        <th class='batch_id'>Job</th>
+        <th class='owner'>Owner</th>
+        <th class='manifest'>Manifest</th>
+        <th class='status'>Status</th>
+      </tr>
+    </thead>
+    <tbody><% @ingests.each do |ingest| %>
+      <tr>
+        <td class='batch_id'><%= ingest.id %> <%= link_to 'view', url_for(ingest) %> </td>
+        <td class='owner'><%= ingest.user.display_name %></td>
+        <td class='manifest'><%= link_to ingest.manifest.filename, rails_blob_path(ingest.manifest, disposition: "attachment") %></td>
+        <td class='status'><%= progress_bar(ingest.processed, ingest.size, ingest.status) %></td>
+      </td>
+    <% end %></tbody>
+    <tfoot>
+      <tr>
+        <th class='batch_id'>Job</th>
+        <th class='owner'>Owner</th>
+        <th class='manifest'>Manifest</th>
+        <th class='status'>Status</th>
+      </tr>
+    </tfoot>
+  </table>
 </div>
 
-<%= link_to "New ingest", new_ingest_path %>
+<%= link_to "Submit new batch", new_ingest_path, id: 'new_ingest', class: 'btn btn-secondary btn-sm' %>
+
+<!--Hack to get job processing updates-->
+<!--TODO: Use Turbo streams for status badge updates-->
+<% if @ingests.map(&:status).include?('processing') %>
+  <script>
+      function autoRefresh() {
+          window.location = window.location.href;
+      }
+      setInterval('autoRefresh()', 2000);
+  </script>
+<% end %>
+

@@ -5,7 +5,7 @@ module Admin
 
     # GET /ingests or /ingests.json
     def index
-      @ingests = Ingest.all
+      @ingests = Ingest.order(created_at: :desc)
     end
 
     # GET /ingests/1 or /ingests/1.json
