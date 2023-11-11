@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Blueprint, :aggregate_failures do
   let(:blueprint) { described_class.new }
 
+  it 'initializes a default instance' do
+    expect(described_class.where(name: 'Default')).to exist
+  end
+
   describe 'name' do
     it 'cannot be blank' do
       expect(blueprint).not_to be_valid

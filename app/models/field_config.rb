@@ -14,6 +14,10 @@ class FieldConfig
   attribute :search_results, :boolean, default: true
   attribute :item_view, :boolean, default: true
 
+  # TODO: add data types
+  # see https://github.com/curationexperts/t3/blob/45a218ddae2a9637a0e387f9ae9dfb29329cdf6a/app/models/field.rb
+  # and JSON.parse(ActiveRecord::Type.registry.to_json)['registrations'].map{|r| r['name']}.compact.sort
+
   def initialize(*)
     super
     self.display_label ||= suggested_label

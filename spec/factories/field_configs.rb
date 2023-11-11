@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :field_config do
-    display_label { Faker::Lorem.word.capitalize }
+    sequence(:display_label) { |n| "field_#{n}" }
     solr_suffix { '*_tsi' }
-    solr_field_name { display_label.downcase + solr_suffix[1, 10] }
+    solr_field_name { display_label.downcase + solr_suffix.delete_prefix('*') }
     enabled { true }
     searchable { true }
     facetable { true }
