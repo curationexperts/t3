@@ -4,16 +4,40 @@ RSpec.describe ImportJob do
   let(:ingest) { FactoryBot.create(:ingest) }
   let(:job) { described_class.new(ingest) }
 
-  before do
-    # stub calls to sleep in tests
-    # TODO: remove this when a full implementation of #process_reocrd is implemented
-    allow(job).to receive(:sleep)
-  end
+  describe '#process_record', :solr do
+    let(:doc) do
+      {
+        'has_model_ssim' => ['Book'],
+        'title_tesi' => 'Anna Karenina',
+        'author_tesim' => ['Tolstoy, Lev Nikolayevich', 'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
+        'date_isi' => 1878
+      }
+    end
 
-  it 'has a real implementation of #process_record' do
-    pending 'remove when a real #process_record method is implemented'
-    job.perform_now
-    expect(job).not_to have_received(:sleep)
+    before do
+      stub_solr
+      Blueprint.create(name: 'Book',
+                       fields: [
+                         FieldConfig.new(solr_field_name: 'title_tesi', solr_suffix: '*_tesi'),
+                         FieldConfig.new(solr_field_name: 'author_tesim', solr_suffix: '*_tesim'),
+                         FieldConfig.new(solr_field_name: 'date_isi', solr_suffix: '*_isi')
+                       ])
+    end
+
+    it 'gets called once for each item in the manifest' do
+      allow(job).to receive(:process_record)
+      job.perform_now
+      expect(job).to have_received(:process_record).exactly(2).times
+    end
+
+    it 'creates a new Item' do
+      expect { job.process_record(doc) }.to change(Item, :count).by(1)
+    end
+
+    it 'maps metadata according to the blueprint' do
+      job.process_record(doc)
+      expect(Item.last.to_solr).to include(**doc.except('has_model_ssim'))
+    end
   end
 
   it 'requires an Ingest instance' do
@@ -50,6 +74,7 @@ RSpec.describe ImportJob do
   end
 
   it 'updates the ingest record processed record count', :aggregate_failures do
+    allow(job).to receive(:process_record)
     expect(ingest.processed).to eq 0
     job.perform_now
     ingest.reload

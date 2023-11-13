@@ -10,6 +10,7 @@ require 'devise'
 require 'capybara/rspec'
 require 'view_component/test_helpers'
 require 'view_component/system_test_helpers'
+require 'suspport/solr_stub'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -85,6 +86,10 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system) do
     driven_by(:rack_test)
+  end
+
+  config.before do
+    config.include SolrStub, :solr
   end
 
   config.after(:suite) do

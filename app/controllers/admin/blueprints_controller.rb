@@ -1,5 +1,5 @@
 module Admin
-  # Manage user roles and authorizations
+  # Manage data model definitions
   class BlueprintsController < ApplicationController
     load_and_authorize_resource
     before_action :check_for_empty_fields, only: :edit

@@ -31,7 +31,15 @@ class ImportJob < ApplicationJob
     end
   end
 
-  def process_record(_doc)
-    sleep(1)
+  def process_record(doc)
+    blueprint_name = doc['has_model_ssim']&.first
+    blueprint = Blueprint.find_by(name: blueprint_name)
+    blueprint ||= Blueprint.find_by(name: 'Default') # TODO: remove when more blueprint functionality exists
+    d2 = {}
+    doc.each do |key, value|
+      new_key = blueprint.fields.find { |f| f.solr_field_name == key }&.display_label || key
+      d2[new_key] = value
+    end
+    Item.create(blueprint: blueprint, description: d2)
   end
 end

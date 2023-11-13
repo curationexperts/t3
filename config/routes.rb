@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get :status, to: 'status#index'
     post 'users/:id/password_reset', to: 'users#password_reset', as: :user_password_reset
     resources :ingests
+    resources :items
     resources :users
     resources :roles
     resources :blueprints

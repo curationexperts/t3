@@ -1,0 +1,13 @@
+<h1>New item</h1>
+
+<% if @blueprint %>
+  <%= render "form", item: @item, blueprint: @blueprint %>
+<% else %>
+  <%= render "choose_blueprint", item: @item, blueprint: @blueprint %>
+<% end %>
+
+<br>
+
+<div>
+  <%= link_to "Back to items", items_path %>
+</div>
