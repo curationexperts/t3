@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     resources :users
     resources :roles
     resources :blueprints
+    resources :fields
     resources :themes do
       patch 'activate', on: :member
     end

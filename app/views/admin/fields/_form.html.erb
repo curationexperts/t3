@@ -1,0 +1,89 @@
+<%= form_with(model: field, id: 'field_form') do |form| %>
+  <% if field.errors.any? %>
+    <div class="form_row validation_errors">
+      <div class="column">
+        <h2><%= pluralize(field.errors.count, "error") %> prohibited this field from being saved:</h2>
+
+        <ul>
+          <% field.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <fieldset <%= 'disabled' if controller.action_name == 'show' -%>>
+    <div class="form_row">
+      <div class="column-1">
+        <%= form.label :name, style: "display: block" %>
+        <%= form.text_field :name %>
+      </div>
+      <div class="column-2">
+        <div>
+          <%= form.label :data_type, style: "display: block" %>
+          <%= form.select :data_type, Field.data_types.keys %>
+        </div>
+
+        <div>
+          <%= form.check_box :multiple %>
+          <%= form.label :multiple %>
+        </div>
+      </div>
+      <div class="column-3">
+        <%= form.label :source_field, style: "display: block" %>
+        <%= form.text_field :source_field %>
+      </div>
+    </div>
+
+    <div class="form_row">
+      <div class="column-1">
+        <div class='form_group'>State</div>
+        <div>
+          <%= form.check_box :active %>
+          <%= form.label :active %>
+        </div>
+
+        <div>
+          <%= form.check_box :required %>
+          <%= form.label :required %>
+        </div>
+      </div>
+      <div class="column-2">
+        <div class='form_group'>Show In</div>
+        <div>
+          <%= form.check_box :list_view %>
+          <%= form.label :list_view %>
+        </div>
+
+        <div>
+          <%= form.check_box :item_view %>
+          <%= form.label :item_view %>
+        </div>
+      </div>
+      <div class="column-3">
+        <div class='form_group'>Should be</div>
+        <div>
+          <%= form.check_box :searchable %>
+          <%= form.label :searchable %>
+        </div>
+
+        <div>
+          <%= form.check_box :facetable %>
+          <%= form.label :facetable %>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <% if controller.action_name == 'show' -%>
+    <div class="form_row">
+      <%= link_to "Edit this field", edit_field_path(@field), class: 'btn btn-secondary btn-sm' %>
+    </div>
+    <br>
+  <% else %>
+    <div class="form_row">
+      <%= form.submit %>
+    </div>
+  <% end %>
+<% end %>

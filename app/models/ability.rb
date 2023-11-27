@@ -11,6 +11,7 @@ class Ability
     Theme => 'Brand Manager',
     Config => 'System Manager',
     Blueprint => 'System Manager',
+    Field => 'System Manager',
     Ingest => 'System Manager'
   }.freeze
 

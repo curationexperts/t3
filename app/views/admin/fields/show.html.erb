@@ -1,0 +1,7 @@
+<h1>Field Configuration</h1>
+<%= render 'form', field: @field %>
+
+<div>
+  <%= link_to "Back to fields", fields_path, class: 'btn btn-link', style: 'margin-left: -1rem;' %>
+  <%= button_to "Destroy this field", @field, method: :delete, class: 'btn btn-outline-danger btn-sm' %>
+</div>
