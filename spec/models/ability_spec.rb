@@ -29,6 +29,7 @@ RSpec.describe Ability do
         expect(authz.can?(:read, Theme)).to be false
         expect(authz.can?(:read, Config)).to be false
         expect(authz.can?(:read, Blueprint)).to be false
+        expect(authz.can?(:read, Field)).to be false
         expect(authz.can?(:read, Ingest)).to be false
       end
     end
@@ -88,6 +89,10 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Blueprint)).to be true
       end
 
+      it 'can manage Fields' do
+        expect(authz.can?(:manage, Field)).to be true
+      end
+
       it 'can manage Ingests' do
         expect(authz.can?(:manage, Ingest)).to be true
       end
@@ -111,7 +116,7 @@ RSpec.describe Ability do
 
       it 'can manage multiple features', :aggregate_failures do
         expect(authz.can?(:manage, User)).to be true
-        expect(authz.can?(:manage, Config)).to be true
+        expect(authz.can?(:manage, Role)).to be true
         expect(authz.can?(:manage, Theme)).to be false
         expect(authz.can?(:manage, Blueprint)).to be true
         expect(authz.can?(:manage, Ingest)).to be true

@@ -1,0 +1,78 @@
+.validation_errors {
+  color: red;
+  ul {
+    margin-left: 0.5rem;
+  }
+}
+
+.field_with_errors {
+  input[type=text] {
+    border-color: red;
+    border-style: solid;
+  }
+}
+
+#field_form {
+  .form_row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .column-1 {
+    flex-basis: 12rem;
+    min-width: 12rem;
+  }
+
+  .column-2 {
+    flex-basis: 6rem;
+    min-width: 6rem;
+  }
+
+  .column-3 {
+    flex-basis: 12rem;
+    min-width: min-content;
+  }
+
+  select {
+    height: 1.9rem;
+  }
+}
+
+#fields {
+  thead {
+    border-color: color-mix(in srgb, var(--bs-body-bg) 50%, white);;
+    border-style: solid;
+    border-bottom-width: medium;
+  }
+
+  tfoot {
+    border-color: color-mix(in srgb, var(--bs-body-bg) 50%, white);;
+    border-style: solid;
+    border-top-width: medium;
+  }
+
+  thead, tfoot {
+    color: var(--bs-body-bg);
+    background-color: color-mix(in srgb, var(--bs-body-bg) 50%, black);
+  }
+  tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--bs-body-bg) 50%, white);
+  }
+
+  .name {
+    min-width: 15rem;
+  }
+
+  .data_type {
+    min-width: 10rem;
+  }
+
+  .source_field {
+    min-width: 15rem;
+  }
+
+  .settings {
+    min-width: 20rem;
+  }
+}
