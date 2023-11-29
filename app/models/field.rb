@@ -3,7 +3,7 @@
 class Field < ApplicationRecord
   enum data_type: {
     string: 1, # consider 'exact',  'literal', or 'verbatim' as type or type prefix
-    text: 2,
+    text_en: 2,
     integer: 3,
     float: 4,
     date: 5,
@@ -12,7 +12,7 @@ class Field < ApplicationRecord
 
   TYPE_TO_SOLR = {
     'string' => 's',
-    'text' => 'te',
+    'text_en' => 'te',
     'integer' => 'lt',
     'float' => 'dbt',
     'date' => 'dt',
@@ -53,7 +53,7 @@ class Field < ApplicationRecord
   end
 
   def solr_facet_field
-    @solr_facet_field ||= data_type == 'text' ? solr_field.gsub('_tesi', '_si') : solr_field
+    @solr_facet_field ||= data_type == 'text_en' ? solr_field.gsub('_tesi', '_si') : solr_field
   end
 
   private

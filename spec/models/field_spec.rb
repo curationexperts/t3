@@ -90,12 +90,12 @@ RSpec.describe Field do
     end
 
     it 'accepts defined types' do
-      expect { field.data_type = 'text' }.not_to raise_exception
+      expect { field.data_type = 'text_en' }.not_to raise_exception
     end
 
     it 'casts to a string when read' do
-      field.data_type = :text
-      expect(field.data_type).to eq 'text'
+      field.data_type = :text_en
+      expect(field.data_type).to eq 'text_en'
     end
 
     it 'has a class method to return valid values' do
@@ -125,7 +125,7 @@ RSpec.describe Field do
     end
 
     it 'uses english token rules for text' do
-      field.data_type = 'text'
+      field.data_type = 'text_en'
       expect(field.solr_suffix).to match(/\A_te[sim]+\z/)
     end
 
@@ -150,7 +150,7 @@ RSpec.describe Field do
 
     it 'replaces dashes and spaces in the name with underscores' do
       field.name = 'Additional co-authors'
-      field.data_type = 'text'
+      field.data_type = 'text_en'
       field.multiple = true
       expect(field.solr_field).to eq 'additional_co_authors_tesim'
     end
@@ -176,12 +176,12 @@ RSpec.describe Field do
     end
 
     it 'does not tokenize text fields' do
-      field.data_type = 'text'
+      field.data_type = 'text_en'
       expect(field.solr_facet_field).to match(/_si\z/)
     end
 
     it 'respects multiple value fields' do
-      field.data_type = 'text'
+      field.data_type = 'text_en'
       field.multiple = true
       expect(field.solr_facet_field).to match(/_sim\z/)
     end
