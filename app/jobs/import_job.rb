@@ -35,11 +35,11 @@ class ImportJob < ApplicationJob
     blueprint_name = doc['has_model_ssim']&.first
     blueprint = Blueprint.find_by(name: blueprint_name)
     blueprint ||= Blueprint.find_by(name: 'Default') # TODO: remove when more blueprint functionality exists
-    d2 = {}
+    description = {}
     doc.each do |key, value|
-      new_key = blueprint.fields.find { |f| f.solr_field_name == key }&.display_label || key
-      d2[new_key] = value
+      new_key = blueprint.fields.find { |f| f.source_field == key }&.name || key
+      description[new_key] = value
     end
-    Item.create(blueprint: blueprint, description: d2)
+    Item.create(blueprint: blueprint, description: description)
   end
 end

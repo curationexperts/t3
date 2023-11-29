@@ -203,6 +203,13 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
+  describe '#fields' do
+    it 'defaults to all active fields' do
+      FactoryBot.create_list(:field, 2)
+      expect(config.fields).to match_array Field.active
+    end
+  end
+
   describe '#available_fields' do
     it 'returns a list of fields indexed in the core' do
       config.solr_core = 'tenejo'
@@ -225,32 +232,20 @@ RSpec.describe Config, :aggregate_failures do
 
     it 'has the same number of elements as the solr index' do
       config.populate_fields
-      expect(config.fields.count).to eq config.available_fields.count
+      # facet fields are de-duplicated by populate_fields
+      deduped_field_count = config.available_fields.count - config.fields.select { |f| f.facetable }.count
+      expect(config.fields.count).to eq deduped_field_count
     end
 
-    it 'populates "fields" with a list of FieldConfig objects' do
+    it 'populates "fields" with a list of Field objects' do
       config.populate_fields
-      expect(config.fields.map(&:class).uniq).to eq [FieldConfig]
+      expect(config.fields.map(&:class).uniq).to eq [Field]
     end
 
     it 'adds a suggested label in the initial list' do
       config.populate_fields
-      resource_type = config.fields.select { |f| f.solr_field_name.match(/resource_type/) }.first
-      expect(resource_type.display_label).to eq 'Resource Type'
+      resource_type = config.fields.select { |f| f.solr_field.match(/resource_type/) }.first
+      expect(resource_type.name).to eq 'Resource Type'
     end
-  end
-
-  it 'persists changes to nested fields' do
-    config = FactoryBot.create(:config_with_fields)
-    config.fields.first.display_label = 'Changed'
-    config.save
-    expect(described_class.current.fields.first.display_label).to eq 'Changed'
-  end
-
-  it 'supports nested fields in forms' do
-    config.fields_attributes = { 'attributes[0]' => { 'solr_field_name' => 'title_tesim', 'solr_suffix' => '*_tesim' },
-                                 'attributes[1]' => { 'solr_field_name' => 'rights_sim', 'solr_suffix' => '*_sim' } }
-    expect(config.fields.count).to eq 2
-    expect(config.fields.first.display_label).to eq 'Title'
   end
 end

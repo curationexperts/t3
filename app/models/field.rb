@@ -30,6 +30,8 @@ class Field < ApplicationRecord
 
   after_save :clear_solr_field
 
+  scope :active, -> { where(active: true) }
+
   # If we call render directly on a Field object, e.g. `render field`,
   # we need to explicitly define the partial path because we have
   # namespaced the views and controller under Admin, but not the model itself.

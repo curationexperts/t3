@@ -4,17 +4,17 @@ RSpec.describe Item do
   let(:new_item) { described_class.new }
   let(:basic_description) do
     {
-      'title' => 'One Hundred Years of Solitute',
-      'author' => 'Márquez, Gabriel García',
-      'date' => '1967'
+      'Title' => 'One Hundred Years of Solitute',
+      'Author' => ['Márquez, Gabriel García'],
+      'Date' => '1967'
     }
   end
   let(:solr_doc) do
     {
-      'blueprint_ssi' => /basic_blueprint/,
+      'blueprint_ssi' => 'Sample Blueprint',
       'title_tesi' => 'One Hundred Years of Solitute',
-      'author_tesim' => 'Márquez, Gabriel García',
-      'date_isi' => '1967'
+      'author_tesim' => ['Márquez, Gabriel García'],
+      'date_ltsi' => '1967'
     }
   end
 
@@ -25,7 +25,7 @@ RSpec.describe Item do
 
     it 'accepts JSON' do
       new_item.description = basic_description.as_json
-      expect(new_item.description['date']).to eq '1967'
+      expect(new_item.description['Date']).to eq '1967'
     end
   end
 
@@ -47,9 +47,16 @@ RSpec.describe Item do
   end
 
   describe '#to_solr' do
+    let(:blueprint) { FactoryBot.build(:blueprint, name: 'Sample Blueprint') }
+    let(:new_item) { described_class.new(blueprint: blueprint, description: basic_description.as_json) }
+
     it 'generates a solr document' do
-      new_item.description = basic_description.as_json
-      new_item.blueprint = FactoryBot.build(:blueprint_with_basic_fields)
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Title', data_type: 'text_en'),
+         FactoryBot.build(:field, name: 'Author', data_type: 'text_en', multiple: true),
+         FactoryBot.build(:field, name: 'Date', data_type: 'integer')]
+      )
+
       expect(new_item.to_solr).to include(solr_doc)
     end
 
@@ -57,12 +64,29 @@ RSpec.describe Item do
       item = FactoryBot.build(:populated_item, id: 'placeholder_id')
       expect(item.to_solr['id']).to eq item.id
     end
+
+    it 'generates facetable versions of tokenized fields' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Author', data_type: 'text_en', facetable: true, multiple: true)]
+      )
+
+      expect(new_item.to_solr).to include({ 'author_tesim' => ['Márquez, Gabriel García'],
+                                            'author_sim' => ['Márquez, Gabriel García'] })
+    end
+
+    it 'skips faceting text fields when not specified' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Author', data_type: 'text_en', facetable: false, multiple: true)]
+      )
+
+      expect(new_item.to_solr).not_to include('author_sim')
+    end
   end
 
   it 'saves successfully' do
     # Stub solr calls which are tested elsewhere
     allow(new_item).to receive(:update_index)
-    new_item.blueprint = FactoryBot.build(:blueprint_with_basic_fields)
+    new_item.blueprint = FactoryBot.build(:blueprint)
     new_item.description = basic_description.as_json
     expect { new_item.save! }.to change(described_class, :count).by(1)
   end
@@ -90,10 +114,10 @@ RSpec.describe Item do
     end
 
     it 'saves any unsaved changes' do
-      item.description['title'] = 'An Updated Title'
+      item.description['Title'] = 'An Updated Title'
       item.update_index
       item.reload
-      expect(item.description['title']).to eq 'An Updated Title'
+      expect(item.description['Title']).to eq 'An Updated Title'
     end
   end
 end

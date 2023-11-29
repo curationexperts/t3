@@ -23,24 +23,24 @@
   <div id="blueprint_fields">
     <table>
       <tr>
-        <th class='field_number'>Order</th>
-        <th class='display_label'>Label</th>
-        <th class='solr_field_name'>Solr Field Name</th>
+        <th class='name'>Name</th>
+        <th class='solr_field'>Solr Field</th>
         <th class='searchable'>Searchable</th>
         <th class='facetable'>Facetable</th>
-        <th class='search_results'>Search <br/>Results</th>
+        <th class='list_view'>List <br/>View</th>
         <th class='item_view'>Item <br/>View</th>
         <th class='field_action'>Actions</th>
       </tr>
 
-      <%= form.fields_for :fields do |field_form| %>
+      <%# form.fields_for :fields do |field_form| %>
+      <% blueprint.fields.each do |field| %>
+      <%= form.fields_for 'fields[]', field do |field_form| %>
         <tr>
-          <td class='field_number'><%= field_form.index + 1 %></td>
-          <td class='display_label'><%= field_form.text_field :display_label %></td>
-          <td class='solr_field_name'><%= field_form.text_field :solr_field_name %></td>
+          <td class='name'><%= field_form.text_field :name %></td>
+          <td class='solr_field_name'><%= field_form.text_field :solr_field %></td>
           <td class='searchable'><%= field_form.check_box :searchable %></td>
           <td class='facetable'><%= field_form.check_box :facetable %></td>
-          <td class='search_results'><%= field_form.check_box :search_results %></td>
+          <td class='list_view'><%= field_form.check_box :list_view %></td>
           <td class='item_view'><%= field_form.check_box :item_view %></td>
           <td class='field_action'>
             <%= form.button 'Delete', type: 'submit', name: 'manage_field[delete_field]', value: field_form.index, class: 'btn btn-sm btn-outline-danger' do %>
@@ -49,6 +49,7 @@
           </td>
         </tr>
       <% end %>
+        <% end %>
       <tr>
         <td class='field_number'></td>
         <td class='field_action'>

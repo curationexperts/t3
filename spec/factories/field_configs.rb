@@ -6,7 +6,7 @@ FactoryBot.define do
     enabled { true }
     searchable { true }
     facetable { true }
-    search_results { true }
+    list_view { true }
     item_view { true }
   end
 end

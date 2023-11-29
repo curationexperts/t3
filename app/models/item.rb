@@ -17,15 +17,15 @@ class Item < ApplicationRecord
   end
 
   def to_solr
-    doc = []
-    doc << ['blueprint_ssi', blueprint.name]
-    doc << ['id', id]
+    doc = { 'blueprint_ssi' => blueprint.name, 'id' => id }
     blueprint.fields.each do |field|
-      label = field.solr_field_name
-      value = description[field.display_label]
-      doc << [label, value]
+      solr_field = field.solr_field
+      solr_facet = field.solr_facet_field
+      value = description[field.name]
+      doc[solr_field] = value
+      doc[solr_facet] = value if field.facetable
     end
-    doc.to_h
+    doc
   end
 
   private

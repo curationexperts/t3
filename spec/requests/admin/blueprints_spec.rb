@@ -93,37 +93,6 @@ RSpec.describe '/admin/blueprints' do
       end
     end
 
-    context 'with nested field parameters' do
-      let(:field_attributes) do
-        { fields_attributes: { '0' => { display_label: 'Title', solr_field_name: 'title_tesim' },
-                               '1' => { display_label: 'Keywords', solr_field_name: 'keyword_ssim', facetable: 1 } } }
-      end
-
-      it 'updates the fields attribute', :aggregate_failures do
-        blueprint = Blueprint.create! valid_attributes
-        patch blueprint_url(blueprint), params: { blueprint: field_attributes }
-        blueprint.reload
-        expect(blueprint.fields.count).to eq 2
-        expect(blueprint.fields[1].facetable).to be true
-      end
-
-      it 'can add a field', :aggregate_failures do
-        blueprint = Blueprint.create! valid_attributes
-        patch blueprint_url(blueprint),
-              params: { blueprint: field_attributes, manage_field: { add_field: 'add_field' } }
-        # Fields 0 and 1 come from fields_attributes, so we should get field 2 from the add_field parameter
-        expect(response.body).to match 'id="blueprint_fields_attributes_2_display_label"'
-      end
-
-      it 'can delete a field', :aggregate_failures do
-        blueprint = Blueprint.create! valid_attributes
-        patch blueprint_url(blueprint), params: { blueprint: field_attributes, manage_field: { delete_field: '0' } }
-        expect(response.body).not_to match 'id="blueprint_fields_attributes_1_display_label"'
-        expect(response.body).to match 'id="blueprint_fields_attributes_0_display_label"'
-        expect(response.body).to match 'value="Keywords"'
-      end
-    end
-
     context 'with invalid parameters' do
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
         blueprint = Blueprint.create! valid_attributes

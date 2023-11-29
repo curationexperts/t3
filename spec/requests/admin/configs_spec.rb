@@ -36,7 +36,7 @@ RSpec.describe '/admin/configs' do
       { 'lucene' => { 'solr-spec-version' => '9.2.1' } }
     )
 
-    FactoryBot.create(:config_with_fields)
+    FactoryBot.create(:config)
 
     # Login as a privleged user
     login_as super_admin
@@ -58,16 +58,13 @@ RSpec.describe '/admin/configs' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        { fields_attributes: { '0' => { solr_field_name: 'index_field1', display_label: 'Label' },
-                               '1' => { solr_field_name: 'another_index_field', display_label: 'Another Label' } } }
-      end
+      let(:new_attributes) { { solr_core: 'new_core' } }
 
       it 'updates the requested config' do
         expect { patch config_url, params: { config: new_attributes } }
-          .to change { Config.current.fields.map(&:display_label) }
-          .from(['Title', 'Identifier'])
-          .to(['Label', 'Another Label'])
+          .to change { Config.current.solr_core }
+          .from('blacklight-core')
+          .to('new_core')
       end
 
       it 'redirects to the config' do
