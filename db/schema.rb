@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_24_004649) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_30_022951) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,7 +46,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_24_004649) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "fields", default: []
     t.index ["name"], name: "index_blueprints_on_name", unique: true
   end
 
@@ -65,7 +64,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_24_004649) do
   create_table "configs", force: :cascade do |t|
     t.string "solr_host"
     t.string "solr_core"
-    t.jsonb "fields"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "solr_version"

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'admin/blueprints/show' do
   let(:fields) { (0..2).collect { |i| FactoryBot.build(:field, id: i) } }
-  let(:blueprint) { FactoryBot.create(:blueprint, fields: fields) }
+  let(:blueprint) { FactoryBot.create(:blueprint) }
 
   before do
     assign(:blueprint, blueprint)
