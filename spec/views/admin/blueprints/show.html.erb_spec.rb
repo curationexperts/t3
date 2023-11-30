@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/blueprints/show' do
-  let(:fields) { (0..2).map { FactoryBot.build(:field_config) } }
+  let(:fields) { (0..2).collect { |i| FactoryBot.build(:field, id: i) } }
   let(:blueprint) { FactoryBot.create(:blueprint, fields: fields) }
 
   before do
     assign(:blueprint, blueprint)
+    allow(blueprint).to receive(:fields).and_return(fields)
   end
 
   it 'displays the blueprint name' do
@@ -15,6 +16,6 @@ RSpec.describe 'admin/blueprints/show' do
 
   it 'displays the blueprint fields' do
     render
-    expect(rendered).to have_selector('#blueprint_fields .display_label', text: fields[1].display_label)
+    expect(rendered).to have_selector('#blueprint_fields .name', text: fields[1].name)
   end
 end

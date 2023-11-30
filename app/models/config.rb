@@ -14,27 +14,22 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
   before_destroy :check_for_existing
   after_commit :update_catalog_controller
 
-  attribute :fields, FieldConfig::ListType.new, default: -> { [] }
-
   enum setup_step: {
     host: %i[solr_host solr_version],
     core: [:solr_core],
     fields: [:fields]
   }
 
-  # Emulate #accepts_nested_attributes_for behavior
-  def fields_attributes=(attributes)
-    self.fields = attributes.map do |_i, field_params|
-      FieldConfig.new(field_params)
-    end
-  end
-
   def self.current
     Config.first || Config.create(DEFAULT_CONFIG)
   end
 
+  def fields
+    Field.all.order(:created_at)
+  end
+
   def enabled_fields
-    fields.select { |f| f.enabled }
+    Field.active.order(:created_at)
   end
 
   def verified?
@@ -95,8 +90,10 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def populate_fields
     return unless fields.empty? && solr_host.present? && solr_core.present?
 
-    self.fields = available_fields.map do |name, config|
-      FieldConfig.new(solr_field_name: name, solr_suffix: config['dynamicBase'])
+    available_fields.map do |solr_field, config|
+      name = infer_name(solr_field, config)
+      field = Field.where(name: name).first_or_initialize
+      update_settings(field, name, config)
     end
   end
 
@@ -115,15 +112,15 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def blacklight_fields_from_config
     config = Blacklight::Configuration.new
     enabled_fields.each do |f|
-      config.add_facet_field f.solr_field_name, label: f.display_label if f.facetable
-      config.add_index_field f.solr_field_name, label: f.display_label if f.search_results
-      config.add_show_field f.solr_field_name, label: f.display_label if f.item_view
+      config.add_facet_field f.solr_field, label: f.name if f.facetable
+      config.add_index_field f.solr_field, label: f.name if f.list_view
+      config.add_show_field f.solr_field, label: f.name if f.item_view
     end
     config
   end
 
   def title_field_from_config
-    enabled_fields.select { |f| f.display_label.match(/^Title/) }.last&.solr_field_name
+    enabled_fields.select { |f| f.name.match(/^Title/) }.last&.solr_field
   end
 
   def solr_connection_from_config
@@ -132,5 +129,17 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def check_for_existing
     raise ActiveRecord::RecordInvalid if Config.count >= 1
+  end
+
+  def infer_name(solr_field, config)
+    solr_field.delete_suffix(config['dynamicBase'].to_s.delete_prefix('*'))&.titleize&.strip
+  end
+
+  def update_settings(field, name, config)
+    field.update!(
+      data_type: config['type'],
+      multiple: config['schema'].include?('M'),
+      facetable: Field.exists?(name: name)
+    )
   end
 end

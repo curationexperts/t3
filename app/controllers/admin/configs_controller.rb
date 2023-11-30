@@ -35,7 +35,7 @@ module Admin
       params.require(:config).permit(:setup_step, :solr_host, :solr_version, :solr_core,
                                      fields_attributes: %i[
                                        solr_field_name enabled display_label
-                                       searchable facetable search_results item_view
+                                       searchable facetable list_view item_view
                                      ])
     end
   end

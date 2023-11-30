@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/blueprints/edit' do
-  let(:fields) { (0..2).map { FactoryBot.build(:field_config) } }
-  let(:blueprint) { FactoryBot.create(:blueprint, fields: fields) }
+  let(:fields) { (0..2).collect { |i| FactoryBot.build(:field, id: i) } }
+  let(:blueprint) { FactoryBot.create(:blueprint) }
 
   before do
     assign(:blueprint, blueprint)
     allow(controller).to receive(:action_name).and_return('edit')
+    allow(blueprint).to receive(:fields).and_return(fields)
   end
 
   it 'renders new blueprint form' do
@@ -27,8 +28,8 @@ RSpec.describe 'admin/blueprints/edit' do
   describe 'fields', :aggregate_failures do
     it 'displays inputs and values for each field' do
       render
-      expect(rendered).to have_field('blueprint_fields_attributes_0_display_label', with: fields[0].display_label)
-      expect(rendered).to have_field('blueprint_fields_attributes_2_display_label', with: fields[2].display_label)
+      expect(rendered).to have_field('blueprint_fields_0_name', with: fields[0].name)
+      expect(rendered).to have_field('blueprint_fields_2_name', with: fields[2].name)
     end
 
     it 'has a button to add a field' do

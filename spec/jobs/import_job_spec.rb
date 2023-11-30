@@ -16,12 +16,7 @@ RSpec.describe ImportJob do
 
     before do
       stub_solr
-      Blueprint.create(name: 'Book',
-                       fields: [
-                         FieldConfig.new(solr_field_name: 'title_tesi', solr_suffix: '*_tesi'),
-                         FieldConfig.new(solr_field_name: 'author_tesim', solr_suffix: '*_tesim'),
-                         FieldConfig.new(solr_field_name: 'date_isi', solr_suffix: '*_isi')
-                       ])
+      Blueprint.create(name: 'Book')
     end
 
     it 'gets called once for each item in the manifest' do
@@ -35,8 +30,15 @@ RSpec.describe ImportJob do
     end
 
     it 'maps metadata according to the blueprint' do
+      FactoryBot.create(:field, name: 'Title', data_type: 'text_en', source_field: 'title_tesi')
+      FactoryBot.create(:field, name: 'Author', data_type: 'text_en', multiple: true, source_field: 'author_tesim')
+      FactoryBot.create(:field, name: 'Date', data_type: 'integer', source_field: 'date_isi')
+
       job.process_record(doc)
-      expect(Item.last.to_solr).to include(**doc.except('has_model_ssim'))
+      expect(Item.last.description).to include('Title' => 'Anna Karenina',
+                                               'Author' => ['Tolstoy, Lev Nikolayevich',
+                                                            'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
+                                               'Date' => 1878)
     end
   end
 

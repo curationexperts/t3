@@ -11,9 +11,7 @@ Rails.application.config.after_initialize do
         .find_or_create_by(name: 'System Manager')
   end
 
-  if ActiveRecord::Base.connection.table_exists? 'blueprints'
-    Blueprint.create_with(fields: []).find_or_create_by(name: 'Default')
-  end
+  Blueprint.find_or_create_by(name: 'Default') if ActiveRecord::Base.connection.table_exists? 'blueprints'
 rescue ActiveRecord::NoDatabaseError
   # database doesn't exist, don't try to do this yet
 end

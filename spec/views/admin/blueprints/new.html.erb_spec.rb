@@ -1,10 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/blueprints/new' do
-  let(:blueprint) { Blueprint.new(fields: FieldConfig.new) }
+  let(:blueprint) { Blueprint.new }
 
   before do
     assign(:blueprint, blueprint)
+    allow(blueprint).to receive(:fields).and_return(
+      [FactoryBot.build(:field, name: 'Title', data_type: 'text_en'),
+       FactoryBot.build(:field, name: 'Author', data_type: 'text_en', multiple: true),
+       FactoryBot.build(:field, name: 'Date', data_type: 'integer')]
+    )
   end
 
   it 'renders new blueprint form' do

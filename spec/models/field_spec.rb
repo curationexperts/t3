@@ -39,6 +39,14 @@ RSpec.describe Field do
     end
   end
 
+  describe 'has defined scopes:' do
+    example 'active' do
+      active_fields = FactoryBot.create_list(:field, 2)
+      FactoryBot.create(:field, active: false)
+      expect(described_class.active).to match_array active_fields
+    end
+  end
+
   describe '#name' do
     it 'must have a value' do
       field.name = nil

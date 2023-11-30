@@ -6,29 +6,43 @@
     <table>
       <thead>
       <tr>
-        <th class='field_number'>Order</th>
-        <th class='display_label'>Label</th>
-        <th class='solr_field_name'>Solr Field Name</th>
-        <th class='searchable'>Searchable</th>
-        <th class='facetable'>Facetable</th>
-        <th class='search_results'>Search <br/>Results</th>
-        <th class='item_view'>Item <br/>View</th>
+        <th class="name">Name</th>
+        <th class="data_type">Data Type</th>
+        <th class="source_field">Source</th>
+        <th class="settings">Settings</th>
+        <th class="solr_field">Indexes to</th>
       </tr>
       </thead>
       <tbody>
-      <% @blueprint.fields.each_with_index do |field, index| %>
-        <tr id=<%= "field_config_#{index}" %>>
-          <td class='field_number'><%= index + 1 %></td>
-          <td class='display_label'><%= field.display_label %></td>
-          <td class='solr_field_name'><%= field.solr_field_name %></td>
-          <td class='searchable'><span class="bi <%= field.searchable ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
-          <td class='facetable'><span class="bi <%= field.facetable ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
-          <td class='search_results'><span class="bi <%= field.search_results ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
-          <td class='item_view'><span class="bi <%= field.item_view ? 'bi-check-square-fill' : 'bi-square' %>"></span></td>
+      <% @blueprint.fields.each do |field| %>
+        <tr>
+          <td class="name"><%= link_to field.name, field -%></td>
+          <td class="data_type"><%= field.data_type -%><%= ' (multiple)' if field.multiple -%></td>
+          <td class="source_field"><%= field.source_field -%></td>
+          <td class="settings">
+            <% settings = field.active ? ['active'] : ['disabled'] %>
+            <% settings << ['required'] if field.required %>
+            <% settings << ['list view'] if field.list_view %>
+            <% settings << ['item view'] if field.item_view %>
+            <% settings << ['searchable'] if field.searchable %>
+            <% settings << ['facetable'] if field.facetable %>
+            <%= settings.join(', ') -%>
+
+          </td>
+          <td class="solr_field"><%= field.solr_field %></td>
         </tr>
       <% end %>
 
       </tbody>
+      <tfoot>
+      <tr>
+        <th class="name">Name</th>
+        <th class="data_type">Data Type</th>
+        <th class="source_field">Source</th>
+        <th class="settings">Settings</th>
+        <th class="solr_field">Indexes to</th>
+      </tr>
+      </tfoot>
     </table>
   </div>
 

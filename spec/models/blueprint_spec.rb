@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Blueprint, :aggregate_failures do
   let(:blueprint) { described_class.new }
 
+  it 'has a vaild factory' do
+    expect(FactoryBot.build(:blueprint)).to be_valid
+  end
+
   it 'initializes a default instance' do
     expect(described_class.where(name: 'Default')).to exist
   end
@@ -29,28 +33,9 @@ RSpec.describe Blueprint, :aggregate_failures do
   end
 
   describe 'fields' do
-    it 'defaults to an empty list' do
-      expect(described_class.new.fields).to eq []
-    end
-
-    it 'validates when empty' do
-      blueprint.name = FactoryBot.attributes_for(:blueprint)[:name]
-      blueprint.fields = []
-      expect(blueprint).to be_valid
-    end
-
-    it 'may contain FieldConfig objects' do
-      blueprint.name = FactoryBot.attributes_for(:blueprint)[:name]
-      blueprint.fields << FactoryBot.build(:field_config)
-      expect(blueprint).to be_valid
-    end
-
-    it 'can be persisted' do
-      fields = [FactoryBot.build(:field_config), FactoryBot.build(:field_config), FactoryBot.build(:field_config)]
-      blueprint = FactoryBot.create(:blueprint, fields: fields)
-      persisted = described_class.find(blueprint.id)
-      expect(persisted.fields.count).to eq 3
-      expect(persisted.fields.map(&:class).uniq).to eq [FieldConfig]
+    it 'defaults to all active fields' do
+      FactoryBot.create_list(:field, 2)
+      expect(blueprint.fields).to match_array Field.active
     end
   end
 end

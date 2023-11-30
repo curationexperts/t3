@@ -11,31 +11,6 @@
   <%= @config.solr_core %>
 </div>
 
-<table id='field_configs'>
-  <thead><tr>
-    <td class='name'>Solr Field</td>
-    <td class='enabled'>Enabled</td>
-    <td class='label'>Label</td>
-<!--    <td class='search'>Search</td>-->
-    <td class='facet'>Facet</td>
-    <td class='index'>List</td>
-    <td class='show'>Item</td>
-  </tr></thead>
-  <tbody>
-  <% @config.fields.each_with_index do |field, i| %>
-    <tr id="<%= "fields_row_#{i}" -%>">
-      <td class='name'><%= field.solr_field_name -%></td>
-      <td class='enabled'><%= check_box_tag "fields[#{i}][enabled]", 'yes', field.enabled, disabled: true -%></td>
-      <td class='label'><%= field.display_label -%></td>
-<!--      <td class='search'><%#= check_box_tag "fields[#{i}][searchable]", 'yes', field.searchable, disabled: true -%></td>-->
-      <td class='facet'><%= check_box_tag "fields[#{i}][facetable]", 'yes', field.facetable, disabled: true -%></td>
-      <td class='index'><%= check_box_tag "fields[#{i}][search_results]", 'yes', field.search_results, disabled: true -%></td>
-      <td class='show'><%= check_box_tag "fields[#{i}][item_view]", 'yes', field.item_view, disabled: true -%></td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
-
 <div>
   <%= link_to "Edit this config", edit_config_path(@config) %> |
 </div>

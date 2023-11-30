@@ -11,7 +11,7 @@ class FieldConfig
   attribute :enabled, :boolean, default: true
   attribute :searchable, :boolean, default: true
   attribute :facetable, :boolean, default: false
-  attribute :search_results, :boolean, default: true
+  attribute :list_view, :boolean, default: true
   attribute :item_view, :boolean, default: true
 
   # TODO: add data types

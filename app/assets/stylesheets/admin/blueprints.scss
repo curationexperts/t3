@@ -14,15 +14,15 @@
   }
 }
 
-.display_label {
+.name {
   width: 15rem;
 }
 
-.solr_field_name {
+.solr_field {
   width: 13rem;
 }
 
-.field_number, .searchable, .facetable, .search_results, .item_view {
+.field_number, .searchable, .facetable, .list_view, .item_view {
   text-align: center;
 }
 

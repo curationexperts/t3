@@ -10,7 +10,7 @@ RSpec.describe FieldConfig, :aggregate_failures do
       'display_label',
       'searchable',
       'facetable',
-      'search_results',
+      'list_view',
       'item_view'
     ]
   end
@@ -37,9 +37,9 @@ RSpec.describe FieldConfig, :aggregate_failures do
       expect(new_field.facetable).to be false
     end
 
-    it 'coerces "search_results" to boolean' do
-      new_field.search_results = 0
-      expect(new_field.search_results).to be false
+    it 'coerces "list_view" to boolean' do
+      new_field.list_view = 0
+      expect(new_field.list_view).to be false
     end
 
     it 'coerces "item_view" to boolean' do
@@ -62,7 +62,7 @@ RSpec.describe FieldConfig, :aggregate_failures do
     end
 
     it 'displays the field in search results' do
-      expect(new_field.search_results).to be true
+      expect(new_field.list_view).to be true
     end
 
     it 'displays the field in single item views' do
@@ -121,7 +121,7 @@ RSpec.describe FieldConfig, :aggregate_failures do
                                                 'display_label' => 'Title',
                                                 'enabled' => true,
                                                 'searchable' => true,
-                                                'search_results' => true,
+                                                'list_view' => true,
                                                 'item_view' => true,
                                                 'facetable' => false
                                               })
