@@ -228,7 +228,7 @@ RSpec.describe Config, :aggregate_failures do
   end
 
   describe '#populate_fields' do
-    let(:config) { FactoryBot.build(:config, solr_host: 'http://localhost:8983', solr_core: 'tenejo', fields: []) }
+    let(:config) { FactoryBot.build(:config, solr_host: 'http://localhost:8983', solr_core: 'tenejo') }
 
     it 'has the same number of elements as the solr index' do
       config.populate_fields

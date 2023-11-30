@@ -2,8 +2,7 @@
 class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DEFAULT_CONFIG = { solr_host: 'http://localhost:8983',
                      solr_core: 'blacklight-core',
-                     solr_version: 'checked',
-                     fields: [] }.freeze
+                     solr_version: 'checked' }.freeze
 
   validates :solr_host, presence: true
   validate  :solr_host_responsive, on: :create
