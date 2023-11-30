@@ -5,6 +5,7 @@ RSpec.describe 'Catalog Config' do
     [{ name: 'Title', data_type: 'text_en', list_view: true, item_view: true },
      { name: 'Identifier',  data_type: 'string',  list_view: true,  item_view: true },
      { name: 'Description', data_type: 'text_en', list_view: false, item_view: true, multiple: true },
+     { name: 'Creator',     data_type: 'text_en', list_view: true,  item_view: true, multiple: true, facetable: true },
      { name: 'Keywords',    data_type: 'string',  list_view: false, item_view: true, multiple: true, facetable: true },
      { name: 'Usage Notes', data_type: 'text_en', list_view: false, item_view: true, multiple: true }]
   end
@@ -27,7 +28,8 @@ RSpec.describe 'Catalog Config' do
     index_fields = CatalogController.blacklight_config.index_fields.map { |_k, v| [v.field, v.label] }
     expect(index_fields).to eq([
                                  ['title_tesi', 'Title'],
-                                 ['identifier_ssi', 'Identifier']
+                                 ['identifier_ssi', 'Identifier'],
+                                 ['creator_tesim', 'Creator']
                                ])
   end
 
@@ -38,6 +40,7 @@ RSpec.describe 'Catalog Config' do
                                 ['title_tesi', 'Title'],
                                 ['identifier_ssi', 'Identifier'],
                                 ['description_tesim', 'Description'],
+                                ['creator_tesim', 'Creator'],
                                 ['keywords_ssim', 'Keywords'],
                                 ['usage_notes_tesim', 'Usage Notes']
                               ])
@@ -47,6 +50,7 @@ RSpec.describe 'Catalog Config' do
     # Get the name => lable pairs from the catalog controller
     show_fields = CatalogController.blacklight_config.facet_fields.map { |_k, v| [v.field, v.label] }
     expect(show_fields).to eq([
+                                ['creator_sim', 'Creator'],
                                 ['keywords_ssim', 'Keywords']
                               ])
   end

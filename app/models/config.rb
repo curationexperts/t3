@@ -111,7 +111,7 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def blacklight_fields_from_config
     config = Blacklight::Configuration.new
     enabled_fields.each do |f|
-      config.add_facet_field f.solr_field, label: f.name if f.facetable
+      config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
       config.add_index_field f.solr_field, label: f.name if f.list_view
       config.add_show_field f.solr_field, label: f.name if f.item_view
     end
