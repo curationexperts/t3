@@ -65,7 +65,7 @@ RSpec.describe Item do
       expect(item.to_solr['id']).to eq item.id
     end
 
-    it 'generates facetable versions of tokenized fields' do
+    it 'generates facetable versions of tokenized fields (e.g. text_en)' do
       allow(blueprint).to receive(:fields).and_return(
         [FactoryBot.build(:field, name: 'Author', data_type: 'text_en', facetable: true, multiple: true)]
       )
@@ -74,7 +74,7 @@ RSpec.describe Item do
                                             'author_sim' => ['Márquez, Gabriel García'] })
     end
 
-    it 'skips faceting text fields when not specified' do
+    it 'skips faceting tokenized fields when not specified' do
       allow(blueprint).to receive(:fields).and_return(
         [FactoryBot.build(:field, name: 'Author', data_type: 'text_en', facetable: false, multiple: true)]
       )
@@ -110,7 +110,7 @@ RSpec.describe Item do
       allow(item).to receive(:save)
       item.update_index
       expect(solr_client).to have_received(:update)
-        .with(hash_including(data: { add: { doc: item.to_solr } }.to_json))
+        .with(hash_including(data: { add: { doc: item.to_solr } }.to_json, params: { commit: true }))
     end
 
     it 'saves any unsaved changes' do
@@ -118,6 +118,28 @@ RSpec.describe Item do
       item.update_index
       item.reload
       expect(item.description['Title']).to eq 'An Updated Title'
+    end
+  end
+
+  describe '#delete_index', :solr do
+    let(:item) { FactoryBot.build(:populated_item, id: 123) }
+    let(:solr_client) { RSolr::Client.new(nil) }
+
+    # Fake a minimal Solr server
+    before do
+      stub_solr
+    end
+
+    it 'gets called when destroying an item' do
+      allow(item).to receive(:delete_index)
+      item.destroy
+      expect(item).to have_received(:delete_index)
+    end
+
+    it 'sends a delete update to solr' do
+      item.destroy
+      expect(solr_client).to have_received(:update)
+        .with(hash_including(data: { delete: { id: item.id } }.to_json, params: { commit: true }))
     end
   end
 end

@@ -3,17 +3,24 @@ class Item < ApplicationRecord
   belongs_to :blueprint
 
   after_save :update_index
+  after_destroy_commit :delete_index
 
   def to_partial_path
     "admin/#{super}"
   end
 
   def update_index
-    save if changed?
+    save if changed? # ensure we're indexing the stored version of the item
     document = to_solr
-    solr_connection.update params: {}, data: { add: { doc: document } }.to_json,
-                           headers: { 'Content-Type' => 'application/json' }
-    solr_connection.update params: {}, data: { commit: {} }.to_json, headers: { 'Content-Type' => 'application/json' }
+    solr_connection.update data: { add: { doc: document } }.to_json,
+                           headers: { 'Content-Type' => 'application/json' },
+                           params: { commit: true }
+  end
+
+  def delete_index
+    solr_connection.update data: { delete: { id: id } }.to_json,
+                           headers: { 'Content-Type' => 'application/json' },
+                           params: { commit: true }
   end
 
   def to_solr
