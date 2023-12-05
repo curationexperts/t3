@@ -62,7 +62,9 @@ RSpec.describe Certificate, :aggregate_failures do
   end
 
   it 'errors on NET::HTTP exceptions' do
-    allow(TCPSocket).to receive(:open).and_raise(Net::OpenTimeout)
+    # stub the resolution call for a non-live host
+    allow(Resolv).to receive(:getaddress).and_return('127.0.0.1')
+    allow(Net::HTTP).to receive(:start).and_raise(Net::HTTPError)
 
     cert = described_class.new(host: 'host.example.com')
     expect(cert).not_to be_valid
