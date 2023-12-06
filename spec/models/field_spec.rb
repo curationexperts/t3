@@ -207,4 +207,48 @@ RSpec.describe Field do
       expect(field.solr_facet_field).not_to eq memo
     end
   end
+
+  describe '#save' do
+    it 'updates the blacklight configuration' do
+      allow(field).to receive(:update_catalog_controller)
+      field.save!
+      expect(field).to have_received(:update_catalog_controller)
+    end
+  end
+
+  describe '#update_catalog_controller' do
+    let(:sample_fields) do
+      [FactoryBot.build(:field, name: 'field1', list_view: true, item_view: true, facetable: false),
+       FactoryBot.build(:field, name: 'field2', list_view: true, item_view: false, facetable: true),
+       FactoryBot.build(:field, name: 'field3', list_view: false, item_view: true, facetable: true)]
+    end
+
+    before do
+      # Clear the catalog configuration
+      CatalogController.blacklight_config = Blacklight::Configuration.new
+      # Stub Fields.active and Fields.active.order
+      relation = described_class.where(id: nil) # empty relation
+      allow(relation).to receive(:records).and_return(sample_fields)
+      allow(relation).to receive(:order).and_return(sample_fields)
+      allow(described_class).to receive(:active).and_return(relation)
+    end
+
+    it 'updates index fields', :aggregate_failures do
+      expect { field.send(:update_catalog_controller) }
+        .to change { CatalogController.blacklight_config.index_fields.values.map(&:label) }
+        .from([]).to(['field1', 'field2'])
+    end
+
+    it 'updates show fields', :aggregate_failures do
+      expect { field.send(:update_catalog_controller) }
+        .to change { CatalogController.blacklight_config.show_fields.values.map(&:label) }
+        .from([]).to(['field1', 'field3'])
+    end
+
+    it 'updates facet fields', :aggregate_failures do
+      expect { field.send(:update_catalog_controller) }
+        .to change { CatalogController.blacklight_config.facet_fields.values.map(&:label) }
+        .from([]).to(['field2', 'field3'])
+    end
+  end
 end
