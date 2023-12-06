@@ -29,6 +29,7 @@ class Field < ApplicationRecord
   validates :data_type, presence: true
 
   after_save :clear_solr_field
+  after_save :update_catalog_controller
 
   scope :active, -> { where(active: true) }
 
@@ -63,5 +64,29 @@ class Field < ApplicationRecord
   def clear_solr_field
     @solr_field = nil
     @solr_facet_field = nil
+  end
+
+  def update_catalog_controller
+    CatalogController.configure_blacklight do |config|
+      active_fields = blacklight_fields_from_config
+      config.facet_fields = active_fields.facet_fields
+      config.index_fields = active_fields.index_fields
+      config.show_fields = active_fields.show_fields
+      config.index.title_field = title_field_from_config
+    end
+  end
+
+  def blacklight_fields_from_config
+    config = Blacklight::Configuration.new
+    Field.active.each do |f|
+      config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
+      config.add_index_field f.solr_field, label: f.name if f.list_view
+      config.add_show_field f.solr_field, label: f.name if f.item_view
+    end
+    config
+  end
+
+  def title_field_from_config
+    Field.active.select { |f| f.name.match(/^Title/) }.last&.solr_field
   end
 end
