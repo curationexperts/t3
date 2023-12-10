@@ -1,5 +1,5 @@
 # Data object for Solr and Field configuration
-class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Config < ApplicationRecord
   DEFAULT_CONFIG = { solr_host: 'http://localhost:8983',
                      solr_core: 'blacklight-core',
                      solr_version: 'checked' }.freeze
@@ -86,16 +86,6 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
     true
   end
 
-  def populate_fields
-    return unless fields.empty? && solr_host.present? && solr_core.present?
-
-    available_fields.map do |solr_field, config|
-      name = infer_name(solr_field, config)
-      field = Field.where(name: name).first_or_initialize
-      update_settings(field, name, config)
-    end
-  end
-
   def update_catalog_controller # rubocop:disable Metrics/AbcSize
     CatalogController.configure_blacklight do |config|
       config.connection_config[:url] = solr_connection_from_config
@@ -128,17 +118,5 @@ class Config < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def check_for_existing
     raise ActiveRecord::RecordInvalid if Config.count >= 1
-  end
-
-  def infer_name(solr_field, config)
-    solr_field.delete_suffix(config['dynamicBase'].to_s.delete_prefix('*'))&.titleize&.strip
-  end
-
-  def update_settings(field, name, config)
-    field.update!(
-      data_type: config['type'],
-      multiple: config['schema'].include?('M'),
-      facetable: Field.exists?(name: name)
-    )
   end
 end
