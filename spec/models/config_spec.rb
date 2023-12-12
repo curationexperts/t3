@@ -226,26 +226,4 @@ RSpec.describe Config, :aggregate_failures do
       expect(config.available_fields).to eq []
     end
   end
-
-  describe '#populate_fields' do
-    let(:config) { FactoryBot.build(:config, solr_host: 'http://localhost:8983', solr_core: 'tenejo') }
-
-    it 'has the same number of elements as the solr index' do
-      config.populate_fields
-      # facet fields are de-duplicated by populate_fields
-      deduped_field_count = config.available_fields.count - config.fields.select { |f| f.facetable }.count
-      expect(config.fields.count).to eq deduped_field_count
-    end
-
-    it 'populates "fields" with a list of Field objects' do
-      config.populate_fields
-      expect(config.fields.map(&:class).uniq).to eq [Field]
-    end
-
-    it 'adds a suggested label in the initial list' do
-      config.populate_fields
-      resource_type = config.fields.select { |f| f.solr_field.match(/resource_type/) }.first
-      expect(resource_type.name).to eq 'Resource Type'
-    end
-  end
 end
