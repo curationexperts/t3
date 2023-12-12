@@ -96,6 +96,10 @@ class Config < ApplicationRecord
     end
   end
 
+  def self.solr_connection
+    CatalogController.blacklight_config.repository.connection
+  end
+
   private
 
   def blacklight_fields_from_config
