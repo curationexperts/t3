@@ -121,6 +121,30 @@ RSpec.describe Item do
     end
   end
 
+  describe '.reindex_all', :solr do
+    let(:solr_client) { RSolr::Client.new(nil) }
+
+    # Fake a minimal Solr server
+    before do
+      stub_solr
+    end
+
+    it 'calls solr update for each item', :aggregate_failures do
+      allow(solr_client).to receive(:update)
+      FactoryBot.create_list(:populated_item, 2)
+      described_class.reindex_all
+      expect(solr_client).to have_received(:update)
+        .with(hash_including(data: /add/)).exactly(2 * described_class.count).times # create + reindex = 2x
+    end
+
+    it 'sends a commit at the end' do
+      allow(solr_client).to receive(:commit)
+      FactoryBot.create_list(:populated_item, 2)
+      described_class.reindex_all
+      expect(solr_client).to have_received(:commit)
+    end
+  end
+
   describe '#delete_index', :solr do
     let(:item) { FactoryBot.build(:populated_item, id: 123) }
     let(:solr_client) { RSolr::Client.new(nil) }

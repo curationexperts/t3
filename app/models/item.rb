@@ -9,18 +9,25 @@ class Item < ApplicationRecord
     "admin/#{super}"
   end
 
-  def update_index
+  def update_index(commit: true)
     save if changed? # ensure we're indexing the stored version of the item
     document = to_solr
-    solr_connection.update data: { add: { doc: document } }.to_json,
-                           headers: { 'Content-Type' => 'application/json' },
-                           params: { commit: true }
+    Config.solr_connection.update data: { add: { doc: document } }.to_json,
+                                  headers: { 'Content-Type' => 'application/json' },
+                                  params: { commit: commit }
   end
 
   def delete_index
-    solr_connection.update data: { delete: { id: id } }.to_json,
-                           headers: { 'Content-Type' => 'application/json' },
-                           params: { commit: true }
+    Config.solr_connection.update data: { delete: { id: id } }.to_json,
+                                  headers: { 'Content-Type' => 'application/json' },
+                                  params: { commit: true }
+  end
+
+  def self.reindex_all
+    Item.all.find_each do |item|
+      item.update_index(commit: false)
+    end
+    Config.solr_connection.commit
   end
 
   def to_solr
@@ -33,11 +40,5 @@ class Item < ApplicationRecord
       doc[solr_facet] = value if field.facetable
     end
     doc
-  end
-
-  private
-
-  def solr_connection
-    @solr_connection ||= CatalogController.blacklight_config.repository.connection
   end
 end
