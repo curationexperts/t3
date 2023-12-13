@@ -145,6 +145,31 @@ RSpec.describe Item do
     end
   end
 
+  describe '.delete_orphans', :solr do
+    let(:solr_client) { RSolr::Client.new(nil) }
+    let(:items) { FactoryBot.create_list(:item, 3) }
+
+    # Fake a minimal Solr server
+    before do
+      stub_solr
+      solr_response = ['id', items[0].id, items[1].id, items[2].id, nil].join("\n")
+      allow(solr_client).to receive(:get).with('select', any_args).and_return(solr_response)
+      allow(solr_client).to receive(:delete_by_query)
+      allow(solr_client).to receive(:delete_by_id)
+      allow(solr_client).to receive(:commit)
+    end
+
+    it 'removes Solr docs with unmatched IDs', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+      orphan_id = items[1].delete.id
+
+      described_class.delete_orphans
+      expect(solr_client).to have_received(:delete_by_query).with("id:[ * TO #{described_class.minimum(:id)} }").ordered
+      expect(solr_client).to have_received(:delete_by_id).with(array_including(orphan_id)).ordered
+      expect(solr_client).to have_received(:delete_by_query).with("id:{ #{described_class.maximum(:id)} TO * ]").ordered
+      expect(solr_client).to have_received(:commit).ordered
+    end
+  end
+
   describe '#delete_index', :solr do
     let(:item) { FactoryBot.build(:populated_item, id: 123) }
     let(:solr_client) { RSolr::Client.new(nil) }
