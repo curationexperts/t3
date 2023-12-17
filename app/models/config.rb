@@ -27,10 +27,6 @@ class Config < ApplicationRecord
     Field.all.order(:created_at)
   end
 
-  def enabled_fields
-    Field.active.order(:created_at)
-  end
-
   def verified?
     solr_version.present?
   end
@@ -104,7 +100,7 @@ class Config < ApplicationRecord
 
   def blacklight_fields_from_config
     config = Blacklight::Configuration.new
-    enabled_fields.each do |f|
+    Field.active.each do |f|
       config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
       config.add_index_field f.solr_field, label: f.name if f.list_view
       config.add_show_field f.solr_field, label: f.name if f.item_view
@@ -113,7 +109,7 @@ class Config < ApplicationRecord
   end
 
   def title_field_from_config
-    enabled_fields.select { |f| f.name.match(/^Title/) }.last&.solr_field
+    Field.active.order(:sequence).find_by("name ILIKE 'title%'")&.solr_field
   end
 
   def solr_connection_from_config
