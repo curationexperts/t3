@@ -208,6 +208,70 @@ RSpec.describe Field do
     end
   end
 
+  describe '#sequence' do
+    it 'gets set to the end of the list' do
+      previous = FactoryBot.create(:field, sequence: 10)
+      FactoryBot.create(:field)
+      expect(described_class.last.sequence).to be > previous.sequence
+    end
+  end
+
+  describe '#move' do
+    let!(:fields) { FactoryBot.create_list(:field, 2) }
+
+    it 'rasiese an exception on invalid commands' do
+      expect { fields[1].move(:sideways) }.to raise_exception ArgumentError
+    end
+
+    describe ':up' do
+      it ':moves the field toward the beginning of the sequence' do
+        fields[1].move(:up)
+        fields.each(&:reload)
+        expect(fields[0].sequence).to be > fields[1].sequence
+      end
+
+      it 'is a no-op if the field is already at the start of the sequence' do
+        expect { fields[0].move(:up) }.not_to(change { described_class.order(:sequence).ids })
+      end
+    end
+
+    describe ':down' do
+      it 'moves the field toward the end of the sequence' do
+        fields[0].move(:down)
+        fields.each(&:reload)
+        expect(fields[1].sequence).to be < fields[0].sequence
+      end
+
+      it 'is a no-op if the field is already at the end of the sequence' do
+        expect { fields[1].move(:down) }.not_to(change { described_class.order(:sequence).ids })
+      end
+    end
+
+    describe ':top' do
+      it 'moves the field to the top of the list' do
+        fields[1].move(:top)
+        fields.each(&:reload)
+        expect(fields[1].sequence).to be < fields[0].sequence
+      end
+
+      it 'is a no-op if the field is already at the start of the sequence' do
+        expect { fields[0].move(:top) }.not_to(change { described_class.order(:sequence).ids })
+      end
+    end
+
+    describe ':bottom' do
+      it 'moves the field to the end of the list' do
+        fields[0].move(:bottom)
+        fields.each(&:reload)
+        expect(fields[0].sequence).to be > fields[1].sequence
+      end
+
+      it 'is a no-op if the field is already at the end of the sequence' do
+        expect { fields[1].move(:down) }.not_to(change { described_class.order(:sequence).ids })
+      end
+    end
+  end
+
   describe '#save' do
     it 'updates the blacklight configuration' do
       allow(field).to receive(:update_catalog_controller)
