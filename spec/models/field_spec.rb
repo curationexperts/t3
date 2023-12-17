@@ -294,6 +294,8 @@ RSpec.describe Field do
       relation = described_class.where(id: nil) # empty relation
       allow(relation).to receive(:records).and_return(sample_fields)
       allow(relation).to receive(:order).and_return(sample_fields)
+      allow(relation).to receive(:order).with(:sequence).and_return(relation)
+      allow(relation).to receive(:find_by).and_return(nil)
       allow(described_class).to receive(:active).and_return(relation)
     end
 

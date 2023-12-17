@@ -1,6 +1,6 @@
 # Configuration point for field definitions across CatalogController, Blueprints, Items, and
 # import jobs.
-class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
+class Field < ApplicationRecord
   enum data_type: {
     string: 1, # consider 'exact',  'literal', or 'verbatim' as type or type prefix
     text_en: 2,
@@ -95,27 +95,7 @@ class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def update_catalog_controller
-    CatalogController.configure_blacklight do |config|
-      active_fields = blacklight_fields_from_config
-      config.facet_fields = active_fields.facet_fields
-      config.index_fields = active_fields.index_fields
-      config.show_fields = active_fields.show_fields
-      config.index.title_field = title_field_from_config
-    end
-  end
-
-  def blacklight_fields_from_config
-    config = Blacklight::Configuration.new
-    Field.active.each do |f|
-      config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
-      config.add_index_field f.solr_field, label: f.name if f.list_view
-      config.add_show_field f.solr_field, label: f.name if f.item_view
-    end
-    config
-  end
-
-  def title_field_from_config
-    Field.active.select { |f| f.name.match(/^Title/) }.last&.solr_field
+    Config.current.update_catalog_controller
   end
 
   # Put the field at the end of the sequence if it's sequence order has not ben set
