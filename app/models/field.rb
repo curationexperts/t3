@@ -74,16 +74,18 @@ class Field < ApplicationRecord
   # Change the field's position in the display sequence
   def move(position) # rubocop:disable Metrics/MethodLength
     case position
-    when :up
+    when :up, 'up'
       swap_with predecessor
-    when :down
+    when :down, 'down'
       swap_with successor
-    when :top
+    when :top, 'top'
       move_to beginning_of_sequence
-    when :bottom
+    when :bottom, 'bottom'
       move_to end_of_sequence
     else
-      raise ArgumentError, "(#{position}) is not a valid command, must be one of :top, :up, :doewn, :bottom"
+      errors.add(:sequence, :position,
+                 message: "move (#{position}) is not a valid command, must be one of :top, :up, :down, :bottom")
+      false
     end
   end
 
@@ -104,13 +106,11 @@ class Field < ApplicationRecord
   end
 
   # Swap the field's sequence order with the passed field
-  def swap_with(other = nil)
-    return unless other
+  def swap_with(other)
+    return true unless other
 
     my_sequence = self.sequence
-
-    update!(sequence: other.sequence)
-    other.update!(sequence: my_sequence)
+    update(sequence: other.sequence) && other.update(sequence: my_sequence)
   end
 
   # Set the field position in the sequence
@@ -118,6 +118,7 @@ class Field < ApplicationRecord
   def move_to(position)
     update!(sequence: position)
     Field.resequence
+    true
   end
 
   # Return the Field next closest to the top of the display sequence
