@@ -30,6 +30,10 @@ RSpec.describe Admin::FieldsController do
       expect(patch: '/admin/fields/1').to route_to('admin/fields#update', id: '1')
     end
 
+    it 'routes to #move via PATCH' do
+      expect(patch: '/admin/fields/1/move').to route_to('admin/fields#move', id: '1')
+    end
+
     it 'routes to #destroy' do
       expect(delete: '/admin/fields/1').to route_to('admin/fields#destroy', id: '1')
     end

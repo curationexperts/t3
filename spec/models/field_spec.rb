@@ -217,10 +217,17 @@ RSpec.describe Field do
   end
 
   describe '#move' do
-    let!(:fields) { FactoryBot.create_list(:field, 2) }
+    let(:fields) { FactoryBot.create_list(:field, 2) }
 
-    it 'rasiese an exception on invalid commands' do
-      expect { fields[1].move(:sideways) }.to raise_exception ArgumentError
+    context 'with invalid commands' do
+      it 'returns false' do
+        expect(field.move(:sideways)).to be false
+      end
+
+      it 'adds an error' do
+        field.move(:sideways)
+        expect(field.errors.where(:sequence, :position)).to be_present
+      end
     end
 
     describe ':up' do
@@ -230,7 +237,8 @@ RSpec.describe Field do
         expect(fields[0].sequence).to be > fields[1].sequence
       end
 
-      it 'is a no-op if the field is already at the start of the sequence' do
+      it 'is a no-op if the field is already at the start of the sequence', :aggregate_failures do
+        expect(fields[0].sequence).to eq 1
         expect { fields[0].move(:up) }.not_to(change { described_class.order(:sequence).ids })
       end
     end
@@ -242,7 +250,8 @@ RSpec.describe Field do
         expect(fields[1].sequence).to be < fields[0].sequence
       end
 
-      it 'is a no-op if the field is already at the end of the sequence' do
+      it 'is a no-op if the field is already at the end of the sequence', :aggregate_failures do
+        expect(fields[0].sequence).to eq 1
         expect { fields[1].move(:down) }.not_to(change { described_class.order(:sequence).ids })
       end
     end
@@ -254,7 +263,8 @@ RSpec.describe Field do
         expect(fields[1].sequence).to be < fields[0].sequence
       end
 
-      it 'is a no-op if the field is already at the start of the sequence' do
+      it 'is a no-op if the field is already at the start of the sequence', :aggregate_failures do
+        expect(fields[0].sequence).to eq 1
         expect { fields[0].move(:top) }.not_to(change { described_class.order(:sequence).ids })
       end
     end
@@ -266,7 +276,8 @@ RSpec.describe Field do
         expect(fields[0].sequence).to be > fields[1].sequence
       end
 
-      it 'is a no-op if the field is already at the end of the sequence' do
+      it 'is a no-op if the field is already at the end of the sequence', :aggregate_failures do
+        expect(fields[0].sequence).to eq 1
         expect { fields[1].move(:down) }.not_to(change { described_class.order(:sequence).ids })
       end
     end

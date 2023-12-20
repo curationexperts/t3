@@ -3,7 +3,7 @@ module Admin
   # This class ensures consistent behavior across various other
   # objects including the CatalogController, Items, and Blueprints
   class FieldsController < ApplicationController
-    before_action :set_field, only: %i[show edit update destroy]
+    before_action :set_field, only: %i[show edit update move destroy]
 
     # GET /fields or /fields.json
     def index
@@ -44,6 +44,19 @@ module Admin
           format.json { render :show, status: :ok, location: @field }
         else
           format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @field.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+
+    # PATCH /fields/1/move or /fields/1/move.json
+    def move # rubocop:disable Metrics/AbcSize
+      respond_to do |format|
+        if @field.move(params[:move])
+          format.html { redirect_to fields_url, notice: 'Field was successfully moved.' }
+          format.json { render :show, status: :ok, location: @field }
+        else
+          format.html { redirect_to fields_url, status: :unprocessable_entity, alert: @field.errors.full_messages }
           format.json { render json: @field.errors, status: :unprocessable_entity }
         end
       end

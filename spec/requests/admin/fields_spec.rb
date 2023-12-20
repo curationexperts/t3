@@ -107,6 +107,35 @@ RSpec.describe '/admin/fields' do
     end
   end
 
+  describe 'PATCH /move' do
+    context 'with valid parameters' do
+      it 'sends a move message to the object' do
+        field = Field.create! valid_attributes
+        allow(Field).to receive(:find).with(field.id.to_s).and_return(field)
+        allow(field).to receive(:move).and_return(true)
+
+        patch move_field_path(field), params: { 'move' => 'up' }
+        expect(field).to have_received(:move).with('up')
+      end
+
+      it 'redirects to the index view' do
+        field = Field.create! valid_attributes
+        patch move_field_path(field), params: { move: :up }
+        expect(response).to redirect_to fields_url
+      end
+    end
+
+    context 'with invalid parameters' do
+      it 'renders a response with 422 status' do
+        field = FactoryBot.build(:field, id: 1)
+        allow(Field).to receive(:find).with(field.id.to_s).and_return(field)
+
+        patch move_field_path(field), params: { move: :sideways }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
   describe 'DELETE /destroy' do
     it 'destroys the requested field' do
       field = Field.create! valid_attributes
