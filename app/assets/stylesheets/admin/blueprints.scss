@@ -12,18 +12,15 @@
   tr {
     height: 2.5rem;
   }
-}
-
-.name {
-  width: 15rem;
-}
-
-.solr_field {
-  width: 13rem;
-}
-
-.field_number, .searchable, .facetable, .list_view, .item_view {
-  text-align: center;
+  .name {
+    width: 15rem;
+  }
+  .solr_field {
+    width: 13rem;
+  }
+  .field_number, .searchable, .facetable, .list_view, .item_view {
+    text-align: center;
+  }
 }
 
 button, a {

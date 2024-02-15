@@ -5,6 +5,6 @@ class Blueprint < ApplicationRecord
   validates :name, format: { with: /\A([\w _-])+\z/, message: 'can not contain special characters' }, allow_blank: true
 
   def fields
-    Field.active
+    Field.active.order(:sequence)
   end
 end
