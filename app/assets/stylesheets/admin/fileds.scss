@@ -39,7 +39,10 @@
   }
 }
 
-#fields {
+table#fields {
+  table-layout: fixed;
+  width: 100%;
+
   thead {
     border-color: color-mix(in srgb, var(--bs-body-bg) 50%, white);;
     border-style: solid;
@@ -60,19 +63,49 @@
     background-color: color-mix(in srgb, var(--bs-body-bg) 50%, white);
   }
 
+  tr {
+    height: 3.25rem;
+  }
+
+  th.order {
+    padding-left: 1rem;
+  }
+
+  .order {
+    width: 5.5rem;
+    button {
+      margin: 0 0.5rem 0 0;
+      border: 0;
+      padding: 0.25rem 0 0.25rem 0;
+      background-color: rgba(0, 0, 0, 0) ;
+
+      &.up {
+        padding-left: 0.5rem;
+        margin-left: 0.5rem;
+      }
+      &.down {
+        padding-right: 0.5rem;
+      }
+    }
+  }
   .name {
-    min-width: 15rem;
+    width: 10rem;
   }
 
   .data_type {
-    min-width: 10rem;
+    width: 10rem;
+  }
+
+  .settings {;
+    width: 15rem;
+  }
+
+  .solr_field {
+    width: 15rem;
+    word-wrap: break-word;
   }
 
   .source_field {
-    min-width: 15rem;
-  }
-
-  .settings {
-    min-width: 20rem;
+    word-wrap: break-word;
   }
 }

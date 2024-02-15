@@ -1,48 +1,53 @@
 <h1>Fields</h1>
 
-<div id="fields">
-  <table>
-    <thead>
+<table id="fields">
+  <thead>
+    <tr>
+      <th class="order">Order</th>
+      <th class="name">Name</th>
+      <th class="data_type">Data Type</th>
+      <th class="settings">Settings</th>
+      <th class="solr_field">Indexes to</th>
+      <th class="source_field">Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @fields.each do |field| %>
       <tr>
-        <th class="name">Name</th>
-        <th class="data_type">Data Type</th>
-        <th class="source_field">Source</th>
-        <th class="settings">Settings</th>
-        <th class="solr_field">Indexes to</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @fields.each do |field| %>
-        <tr>
-          <td class="name"><%= link_to field.name, field -%></td>
-          <td class="data_type"><%= field.data_type -%><%= ' (multiple)' if field.multiple -%></td>
-          <td class="source_field"><%= field.source_field -%></td>
-          <td class="settings">
-            <% settings = field.active ? ['active'] : ['disabled'] %>
-            <% settings << ['required'] if field.required %>
-            <% settings << ['list view'] if field.list_view %>
-            <% settings << ['item view'] if field.item_view %>
-            <% settings << ['searchable'] if field.searchable %>
-            <% settings << ['facetable'] if field.facetable %>
-            <%= settings.join(', ') -%>
+        <td class="order">
+          <%= button_to '🔼', move_field_path(field, move: :up), id: dom_id(field, :move_up), class: 'up', method: :patch, disabled: field.sequence == 1 %>
+          <%= button_to '🔽', move_field_path(field, move: :down), id: dom_id(field, :move_down), class: 'down', method: :patch, disabled: field.sequence == Field.count %>
+        </td>
+        <td class="name"><%= link_to field.name, field -%></td>
+        <td class="data_type"><%= field.data_type -%><%= ' (multiple)' if field.multiple -%></td>
+        <td class="settings">
+          <% settings = field.active ? ['active'] : ['disabled'] %>
+          <% settings << ['required'] if field.required %>
+          <% settings << ['list view'] if field.list_view %>
+          <% settings << ['item view'] if field.item_view %>
+          <% settings << ['searchable'] if field.searchable %>
+          <% settings << ['facetable'] if field.facetable %>
+          <%= settings.join(', ') -%>
 
-          </td>
-          <td class="solr_field"><%= field.solr_field %></td>
-        </tr>
-      <% end %>
-
-    </tbody>
-    <tfoot>
-      <tr>
-        <th class="name">Name</th>
-        <th class="data_type">Data Type</th>
-        <th class="source_field">Source</th>
-        <th class="settings">Settings</th>
-        <th class="solr_field">Indexes to</th>
+        </td>
+        <td class="solr_field"><%= field.solr_field %></td>
+        <td class="source_field"><%= field.source_field -%></td>
       </tr>
-    </tfoot>
-  </table>
-</div>
+    <% end %>
+
+  </tbody>
+  <tfoot>
+    <tr>
+      <th class="order">Order</th>
+      <th class="name">Name</th>
+      <th class="data_type">Data Type</th>
+      <th class="settings">Settings</th>
+      <th class="solr_field">Indexes to</th>
+      <th class="source_field">Source</th>
+    </tr>
+  </tfoot>
+</table>
+
 
 <br>
 <%= link_to "Add field", new_field_path, class: 'btn btn-outline-primary' %>
