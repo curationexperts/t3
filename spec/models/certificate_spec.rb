@@ -24,6 +24,15 @@ RSpec.describe Certificate, :aggregate_failures do
     allow(Net::HTTP).to receive(:new).and_return(http)
   end
 
+  # Convenience method simulate an error on HTTP calls
+  def stub_http_error
+    allow(Resolv).to receive(:getaddress).and_return('127.0.0.1')
+    http = Net::HTTP.new(host: 'host.example.com')
+    exception = Net::HTTPFatalError.new('injected test exception', nil)
+    allow(http).to receive(:start).and_raise(exception)
+    allow(Net::HTTP).to receive(:new).and_return(http)
+  end
+
   # This one test makes live connections over the public internet
   # to ensure our logic and syntax are valid. The remaining tests
   # stub out all internet calls
@@ -62,8 +71,7 @@ RSpec.describe Certificate, :aggregate_failures do
   end
 
   it 'errors on NET::HTTP exceptions' do
-    # stub the resolution call for a non-live host
-    allow(Resolv).to receive(:getaddress).and_return('127.0.0.1')
+    stub_http_error
 
     cert = described_class.new(host: 'host.example.com')
     expect(cert).not_to be_valid
