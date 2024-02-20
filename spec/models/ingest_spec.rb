@@ -75,6 +75,25 @@ RSpec.describe Ingest do
     end
   end
 
+  describe '#report' do
+    it 'is an ActiveStorage attachment' do
+      ingest = described_class.new
+      expect(ingest.report).to be_a ActiveStorage::Attached::One
+    end
+
+    it 'is empty on initialization' do
+      ingest = described_class.new
+      expect(ingest.report).not_to be_attached
+    end
+
+    it 'is not required for validation' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.report.purge
+      ingest.validate
+      expect(ingest.errors).to be_empty
+    end
+  end
+
   describe '#check_manifest' do
     let(:invalid_manifest) { Rack::Test::UploadedFile.new('spec/fixtures/files/sample_logo.png', 'image/png') }
 
