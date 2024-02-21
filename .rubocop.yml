@@ -17,6 +17,7 @@ Metrics/BlockLength:
     - 'config/environments/**/*'
 
 Metrics/MethodLength:
+  CountAsOne: ['array', 'hash', 'heredoc']
   Exclude:
     - 'db/**/*'
 

@@ -15,6 +15,10 @@ RSpec.describe ProgressBarHelper do
     it 'yields a custom progress bar' do
       expect(helper.progress_bar(5, 100)).to match 'class="status_badge"'
     end
+
+    it 'includes error count when passed' do
+      expect(helper.progress_bar(15, 20, 'errored', 5)).to match '5 of 20 errored'
+    end
   end
 
   describe '#width' do

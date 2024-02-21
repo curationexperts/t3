@@ -20,7 +20,7 @@ RSpec.describe ImportJob do
     end
 
     it 'gets called once for each item in the manifest' do
-      allow(job).to receive(:process_record)
+      allow(job).to receive(:process_record).and_return({ status: 'created' })
       job.perform_now
       expect(job).to have_received(:process_record).exactly(2).times
     end
@@ -49,37 +49,101 @@ RSpec.describe ImportJob do
   describe 'ingest status' do
     it 'upates on enque' do
       described_class.perform_later(ingest)
-      ingest.reload
       expect(ingest.status).to eq 'queued'
     end
 
     it 'updates on perform' do
-      allow(job).to receive(:process_record)
+      allow(job).to receive(:process_record).and_return({ status: 'created' })
       allow(ingest).to receive(:update)
       job.perform_now
       expect(ingest).to have_received(:update).with(status: Ingest.statuses[:processing])
     end
 
     it 'updates on completion' do
-      allow(job).to receive(:process_record)
+      allow(job).to receive(:process_record).and_return({ status: 'created' })
       job.perform_now
-      ingest.reload
       expect(ingest.status).to eq 'completed'
     end
 
     it 'updates on exceptions' do
       allow(job).to receive(:process_record).and_raise RuntimeError
       job.perform_now
-      ingest.reload
       expect(ingest.status).to eq 'errored'
     end
   end
 
   it 'updates the ingest record processed record count', :aggregate_failures do
-    allow(job).to receive(:process_record)
+    allow(job).to receive(:process_record).and_return({ status: 'created' })
     expect(ingest.processed).to eq 0
     job.perform_now
-    ingest.reload
     expect(ingest.processed).to eq 2
+  end
+
+  context 'with errors' do
+    before do
+      allow(job).to receive(:save_record).and_return({ status: 'created' }, { status: 'error' }, { status: 'created' })
+    end
+
+    it 'sets the job status' do
+      job.perform_now
+      expect(ingest).to be_errored
+    end
+
+    it 'sets the error count' do
+      job.perform_now
+      expect(ingest.error_count).to eq 1
+    end
+  end
+
+  describe 'status report' do
+    it 'gets attached at job completion' do
+      allow(job).to receive(:process_record).and_return({ status: 'created' })
+      job.perform_now
+      expect(ingest.report).to be_attached
+    end
+
+    it 'includes job metrics', :aggregate_failures do
+      allow(job).to receive(:process_record).and_return({ status: 'created' })
+      job.perform_now
+      report = JSON.parse(ingest.report.download, { symbolize_names: true })
+      expect(report).to include(
+        context: a_hash_including(
+          status: 'completed',
+          submitted: /\A\d{4}-\d{2}-\d{2}/,
+          finished: /\d{2}\.\d{3}Z\z/,
+          submitted_by: ingest.user.display_name
+        ),
+        items: a_kind_of(Array)
+      )
+    end
+
+    context 'with errors' do
+      before do
+        # Simulate an error on creating one of two records
+        allow(Item).to receive(:create) do |params|
+          raise 'Testing exception handling' if params[:description]['title_ssi'].match?(/Admiral/)
+
+          Item.new(id: 1)
+        end
+      end
+
+      it 'captures errors', :aggregate_failures do
+        job.perform_now
+        expect(ingest).to be_errored
+        report = JSON.parse(ingest.report.download, { symbolize_names: true })
+        expect(report).to include(
+          context: a_hash_including(
+            status: 'errored',
+            submitted: /\d{4}-\d{2}-\d{2}/,
+            started: /\d{4}-\d{2}-\d{2}/,
+            finished: /\d{4}-\d{2}-\d{2}/,
+            submitted_by: ingest.user.display_name,
+            processed: 2,
+            errored: 1
+          ),
+          items: include(a_hash_including(message: 'Testing exception handling'))
+        )
+      end
+    end
   end
 end

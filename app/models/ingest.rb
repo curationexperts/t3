@@ -2,6 +2,7 @@
 class Ingest < ApplicationRecord
   belongs_to :user
   has_one_attached :manifest
+  has_one_attached :report
 
   enum status: {
     initialized: 0, # default via table definition
