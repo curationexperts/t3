@@ -7,4 +7,9 @@ class Blueprint < ApplicationRecord
   def fields
     Field.active.order(:sequence)
   end
+
+  # Returns a reverse mapping of source_field ==> field name
+  def key_map
+    fields.to_h { |field| [field.source_field, field.name] }
+  end
 end

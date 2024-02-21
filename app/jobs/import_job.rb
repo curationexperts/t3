@@ -14,32 +14,91 @@ class ImportJob < ApplicationJob
     ingest = job.arguments.first
     ingest.update(status: Ingest.statuses[:processing])
     block.call
-    ingest.update(status: Ingest.statuses[:completed])
-  rescue RuntimeError
+    ingest.update(status: Ingest.statuses[:completed]) if ingest.processing?
+  rescue RuntimeError => e
     ingest.update(status: Ingest.statuses[:errored])
+    Rails.logger.error e
   end
 
   def perform(ingest)
-    processed = 0
+    report = Report.new(ingest)
     metadata = JSON.parse(ingest.manifest.download)
     docs = metadata.dig('response', 'docs')
     docs.each do |doc|
-      process_record(doc)
-      processed += 1
+      report << process_record(doc)
       # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
-      ingest.update_column(:processed, processed) # rubocop:disable Rails/SkipsModelValidations
+      ingest.update_column(:processed, report.processed) # rubocop:disable Rails/SkipsModelValidations
     end
+    report.save
   end
 
   def process_record(doc)
+    blueprint = find_blueprint(doc)
+    description = build_description(blueprint, doc)
+    save_record(blueprint, description)
+  end
+
+  # Return the blueprint object matching the name from the input document
+  def find_blueprint(doc)
     blueprint_name = doc['has_model_ssim']&.first
-    blueprint = Blueprint.find_by(name: blueprint_name)
-    blueprint ||= Blueprint.find_by(name: 'Default') # TODO: remove when more blueprint functionality exists
-    description = {}
-    doc.each do |key, value|
-      new_key = blueprint.fields.find { |f| f.source_field == key }&.name || key
-      description[new_key] = value
+    Blueprint.find_by(name: blueprint_name) || Blueprint.find_by(name: 'Default')
+  end
+
+  # Return a hash with incoming document keys mapped to their blueprint targets
+  def build_description(blueprint, doc)
+    doc.transform_keys(blueprint.key_map).merge({ ingest_key: doc.to_json[0..99] })
+  end
+
+  # Save a new Item, rescuing & capturing exceptions
+  def save_record(blueprint, description)
+    item = Item.create(blueprint: blueprint, description: description)
+    { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
+  rescue RuntimeError => e
+    Rails.logger.error { "#{e}: #{e.message}" }
+    { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
+      ref: description[:ingest_key] }
+  end
+
+  # Utility class to encapsulate the details of status reporting from
+  # the rest of the import process
+  class Report
+    def initialize(ingest)
+      @ingest = ingest
+      @context = {
+        ingest_id: ingest.id,
+        submitted_by: ingest.user.display_name,
+        submitted: ingest.created_at,
+        started: Time.current.iso8601(3)
+      }
+      @statuses = []
     end
-    Item.create(blueprint: blueprint, description: description)
+
+    def <<(json)
+      @statuses << json
+    end
+
+    def processed
+      @statuses.count
+    end
+
+    def errored
+      @statuses.select { |item| item[:status] == 'error' }.count
+    end
+
+    def save
+      @context.merge!({
+                        finished: Time.current.iso8601(3),
+                        status: errored.zero? ? 'completed' : 'errored',
+                        processed: processed,
+                        errored: errored
+                      })
+      report = { context: @context, items: @statuses }
+      @ingest.report.attach(
+        io: StringIO.open(report.to_json),
+        filename: "import#{@ingest.id}.json",
+        content_type: 'application/json'
+      )
+      @ingest.update(status: Ingest.statuses[:errored]) if errored >= 1
+    end
   end
 end
