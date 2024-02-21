@@ -307,19 +307,22 @@ RSpec.describe Field do
       allow(relation).to receive(:order).and_return(sample_fields)
       allow(relation).to receive(:order).with(:sequence).and_return(relation)
       allow(relation).to receive(:find_by).and_return(nil)
+      allow(relation).to receive(:first).and_return(sample_fields[0])
       allow(described_class).to receive(:active).and_return(relation)
     end
 
     it 'updates index fields', :aggregate_failures do
+      # NOTE: the first active field is used as the title field and already displays in index and show views
       expect { field.send(:update_catalog_controller) }
         .to change { CatalogController.blacklight_config.index_fields.values.map(&:label) }
-        .from([]).to(['field1', 'field2'])
+        .from([]).to(['field2'])
     end
 
     it 'updates show fields', :aggregate_failures do
+      # NOTE: the first active field is used as the title field and already displays in index and show views
       expect { field.send(:update_catalog_controller) }
         .to change { CatalogController.blacklight_config.show_fields.values.map(&:label) }
-        .from([]).to(['field1', 'field3'])
+        .from([]).to(['field3'])
     end
 
     it 'updates facet fields', :aggregate_failures do
