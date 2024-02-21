@@ -79,6 +79,22 @@ RSpec.describe ImportJob do
     expect(ingest.processed).to eq 2
   end
 
+  context 'with errors' do
+    before do
+      allow(job).to receive(:save_record).and_return({ status: 'created' }, { status: 'error' }, { status: 'created' })
+    end
+
+    it 'sets the job status' do
+      job.perform_now
+      expect(ingest).to be_errored
+    end
+
+    it 'sets the error count' do
+      job.perform_now
+      expect(ingest.error_count).to eq 1
+    end
+  end
+
   describe 'status report' do
     it 'gets attached at job completion' do
       allow(job).to receive(:process_record).and_return({ status: 'created' })

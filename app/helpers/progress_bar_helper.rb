@@ -5,11 +5,12 @@ module ProgressBarHelper
   # @param total [Integer] the total number of items; accepts any object that responds to #to_i
   # @param status [String] an optional processing status message
   # @return [String] the tags representing the corresponding progress bar
-  def progress_bar(processed, total, status = nil)
+  def progress_bar(processed, total, status = nil, errored = 0)
+    numerator = errored.zero? ? processed : errored
     tag.div(class: ['status_badge', status]) do
-      tag.div(message(processed, total, status), class: ['status_text']).concat(
-        tag.div(message(processed, total, status), class: ['status_increment'], aria: { hidden: true },
-                                                   style: "clip-path: inset(0 0 0 #{width(processed, total, status)})")
+      tag.div(message(numerator, total, status), class: ['status_text']).concat(
+        tag.div(message(numerator, total, status), class: ['status_increment'], aria: { hidden: true },
+                                                   style: "clip-path: inset(0 0 0 #{width(numerator, total, status)})")
       )
     end
   end

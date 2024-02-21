@@ -14,7 +14,8 @@ class ImportJob < ApplicationJob
     ingest = job.arguments.first
     ingest.update(status: Ingest.statuses[:processing])
     block.call
-    ingest.update(status: Ingest.statuses[:completed]) if ingest.processing?
+    ingest.update(status: Ingest.statuses[:completed]) if ingest.error_count.zero?
+    ingest.update(status: Ingest.statuses[:errored]) if ingest.error_count.positive?
   rescue RuntimeError => e
     ingest.update(status: Ingest.statuses[:errored])
     Rails.logger.error e
@@ -86,11 +87,12 @@ class ImportJob < ApplicationJob
     end
 
     def save
+      @ingest.update(error_count: errored)
       @context.merge!({
                         finished: Time.current.iso8601(3),
                         status: errored.zero? ? 'completed' : 'errored',
                         processed: processed,
-                        errored: errored
+                        errored: @ingest.error_count
                       })
       report = { context: @context, items: @statuses }
       @ingest.report.attach(
@@ -98,7 +100,6 @@ class ImportJob < ApplicationJob
         filename: "import#{@ingest.id}.json",
         content_type: 'application/json'
       )
-      @ingest.update(status: Ingest.statuses[:errored]) if errored >= 1
     end
   end
 end
