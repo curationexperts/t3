@@ -98,9 +98,10 @@ class Config < ApplicationRecord
 
   private
 
-  def blacklight_fields_from_config
+  def blacklight_fields_from_config # rubocop:disable Metrics/AbcSize
     config = Blacklight::Configuration.new
-    Field.active.order(:sequence).each do |f|
+    # NOTE: skip the first field because it's always used as the main title field for Blacklight
+    Field.active.order(:sequence)[1..]&.each do |f|
       config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
       config.add_index_field f.solr_field, label: f.name if f.list_view
       config.add_show_field f.solr_field, label: f.name if f.item_view
@@ -109,7 +110,7 @@ class Config < ApplicationRecord
   end
 
   def title_field_from_config
-    Field.active.order(:sequence).find_by("name ILIKE 'title%'")&.solr_field
+    Field.active.order(:sequence).first&.solr_field
   end
 
   def solr_connection_from_config
