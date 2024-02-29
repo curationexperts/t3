@@ -124,4 +124,15 @@ RSpec.describe Theme do
       expect(theme.main_logo).to be_a ActiveStorage::Attached::One
     end
   end
+
+  describe '#favicon' do
+    it 'defaults to a tenejo-branded favicon' do
+      expect(described_class.new.favicon.filename).to eq 'tenejo_knot_sm.png'
+    end
+
+    it 'accepts ActiveStorage attachments' do
+      theme.favicon.attach(fixture_file_upload('sample_logo.png'))
+      expect(theme.favicon).to be_a ActiveStorage::Attached::One
+    end
+  end
 end

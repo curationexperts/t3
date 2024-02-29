@@ -17,11 +17,13 @@ class Theme < ApplicationRecord
   attribute :background_accent_color, default: '#FFFFFF'
 
   has_one_attached :main_logo
+  has_one_attached :favicon
 
   validates :label, presence: true
   validates :header_color, :header_text_color, :background_color, :background_accent_color,
             format: { with: /\A#[0-9a-f]{6}\z/i, message: "'%<value>s' is not in hex #RRGGBB format" }
 
+  after_initialize :ensure_favicon
   before_destroy :confirm_inactive
   after_save :refresh_current
 
@@ -75,5 +77,17 @@ class Theme < ApplicationRecord
     raise ActiveRecord::RecordNotDestroyed.new("Can't delete active theme. Please activate a different theme first",
                                                self)
     # throw(:abort)
+  end
+
+  # Attach a default favicon if one isn't attached
+  def ensure_favicon
+    return if favicon.attached?
+
+    favicon.attach(
+      io: File.open('app/assets/images/tenejo_knot_sm.png'),
+      filename: 'tenejo_knot_sm.png',
+      content_type: 'image/png',
+      identify: false
+    )
   end
 end
