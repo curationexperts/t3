@@ -12,6 +12,13 @@ RSpec.describe ThemesHelper do
   end
 
   describe '#main_logo_path' do
+    # Stub out a slow call to the asset path for an engine that isn't loaded yet
+    before do
+      allow(view).to receive(:image_path)
+        .with('blacklight/logo.png')
+        .and_return('/assets/blacklight/logo-650a77e54d19e9576d80005d9f05fdaeb3bbe1161c000f7f3c829190e01710de.png')
+    end
+
     context 'without a blob uploaded' do
       it 'returns the blacklight logo' do
         theme = Theme.new
@@ -32,6 +39,36 @@ RSpec.describe ThemesHelper do
         theme = SolrDocument.new
         expect(helper.main_logo_path(theme)).to match %r{/assets/blacklight/logo.*.png}
       end
+    end
+  end
+
+  describe '#tenejo_favicon_link_tag' do
+    it 'returns the application default' do
+      theme = Theme.new(label: 'Theme with defaults')
+      theme.activate!
+      expect(helper.tenejo_favicon_link_tag).to match 'tenejo_knot_sm.png'
+    end
+
+    it 'reads the type from the attachment' do
+      theme = Theme.new(label: 'Ive got a favicon')
+      theme.favicon.attach(fixture_file_upload('rocket-takeoff.svg', 'image/svg'))
+      theme.activate!
+      expect(helper.tenejo_favicon_link_tag).to match %r{type="image/svg\+xml"}
+    end
+  end
+
+  describe '#favicon_preview' do
+    it 'returns nil when the favicon is not set' do
+      theme = Theme.new
+      expect(helper.favicon_preview(theme)).to be_nil
+    end
+
+    it 'returns an image tag for the favicon' do
+      theme = Theme.new
+      # Pretend we've saved the theme ;)
+      allow(theme).to receive(:persisted?).and_return(true)
+      theme.favicon.attach(fixture_file_upload('rocket-takeoff.svg', 'image/svg'))
+      expect(helper.favicon_preview(theme)).to match(/<img[^>]+>/)
     end
   end
 end

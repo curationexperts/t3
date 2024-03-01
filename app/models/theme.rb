@@ -81,7 +81,7 @@ class Theme < ApplicationRecord
 
   # Attach a default favicon if one isn't attached
   def ensure_favicon
-    return if favicon.attached?
+    return if favicon.try(:signed_id)
 
     favicon.attach(
       io: File.open('app/assets/images/tenejo_knot_sm.png'),

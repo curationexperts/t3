@@ -10,7 +10,7 @@
       document.querySelector('html').classList.remove('no-js');
     </script>
     <%= opensearch_description_tag application_name, opensearch_catalog_url(format: 'xml') %>
-    <%= favicon_link_tag %>
+    <%= tenejo_favicon_link_tag %>
     <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload"  %>
     <!-- Inject dynamically updated style variables-->
     <link type="text/css" rel="stylesheet" href="/admin/themes/<%= theme_id %>.css" data-turbo-track=reload">
