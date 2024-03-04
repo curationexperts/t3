@@ -51,6 +51,12 @@
           <%= form.label :main_logo, style: "display: block" %>
           Change logo <%= form.file_field :main_logo %>
         </div>
+
+        <div class='theme-icon'>
+          <%= image_tag theme.favicon if theme.favicon.attached? %>
+          <%= form.label :favicon, style: "display: block" %>
+          Change favicon <%= form.file_field :favicon %>
+        </div>
       </div>
     </div>
   </div>
