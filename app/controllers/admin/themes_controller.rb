@@ -85,7 +85,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def theme_params
-      params.require(:theme).permit(:label, :site_name, :main_logo,
+      params.require(:theme).permit(:label, :site_name, :main_logo, :favicon,
                                     :header_color, :header_text_color,
                                     :background_color, :background_accent_color)
     end

@@ -126,20 +126,30 @@ RSpec.describe '/admin/themes' do
         expect(theme.main_logo).to be_attached
       end
 
-      it 'purges any existing logo' do # rubocop:disable RSpec/ExampleLength
-        theme.main_logo.attach(logo)
-        old_logo_blob = theme.main_logo.blob
-        patch theme_url(theme), params: { theme: { main_logo: logo } }
-        theme.reload
-        expect(theme.main_logo.blob).not_to eq old_logo_blob
-        expect { old_logo_blob.reload }.to raise_exception ActiveRecord::RecordNotFound
-      end
-
-      it 'remain attached when params are empty' do
+      it 'remains attached when the corresponding param is not provided' do
         theme.main_logo.attach(logo)
         patch theme_url(theme), params: { theme: { site_name: 'New Site' } }
         theme.reload
         expect(theme.main_logo).to be_attached
+      end
+    end
+
+    context 'with favicon attached', :aggregate_failures do
+      let(:icon_file) { fixture_file_upload('rocket-takeoff.svg') }
+      let(:theme) { Theme.create! valid_attributes }
+
+      it 'replaces the favicon' do
+        expect(theme.favicon.filename).to eq 'tenejo_knot_sm.png'
+        patch theme_url(theme), params: { theme: { favicon: icon_file } }
+        theme.reload
+        expect(theme.favicon.filename).to eq 'rocket-takeoff.svg'
+      end
+
+      it 'remains attached when the corresponding param is not provided' do
+        theme.favicon.attach(icon_file)
+        patch theme_url(theme), params: { theme: { site_name: 'New Site' } }
+        theme.reload
+        expect(theme.favicon.filename).to eq 'rocket-takeoff.svg'
       end
     end
 

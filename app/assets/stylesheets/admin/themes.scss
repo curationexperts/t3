@@ -1,11 +1,141 @@
 #themes {
-  h2 {
-    display: inline-block;
+  .theme-logo {
+    display: none;
   }
 
+  display: flex;
+  //gap: 2rem;
+  row-gap: 2rem;
+  column-gap: 5rem;
+  flex-wrap: wrap;
+}
+
+.theme-label {
   img.favicon-preview {
     height: 1rem;
     margin-bottom: 0.75rem;
     margin-right: 0.5rem;
+  }
+
+  h2 {
+    display: inline-block;
+  }
+}
+
+form {
+  .theme-logo {
+    img {
+      height: 5.5rem;
+      padding: 0.5em;
+      background-color: rgba(100%, 100%, 100%, 2%);
+      background-color: rgba(var(--bs-dark-rgb), 1);
+      border-radius: 0.35rem;
+    }
+  }
+
+  .theme-icon {
+    margin-top: 2rem;
+    img {
+      height: 1rem;
+    }
+  }
+}
+
+.theme-placeholder {
+  width: calc(1440px * 0.25);
+  height: calc(900px * 0.25);
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas {
+  position: relative;
+  background-color: white;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  width: fit-content;
+  height: auto;
+
+  .field-value {
+    width: calc(1440px * 0.25);;
+  }
+
+  svg{
+    scale: 5;
+    transform-origin: -2.35rem 2.25rem;
+    margin-left: -24px;
+  }
+}
+
+// iframe "Thumbnails"
+// see https://medium.com/@jamesfuthey/simulating-the-creation-of-website-thumbnail-screenshots-using-iframes-7145269891db
+.preview-container {
+  width: calc(1440px * 0.25);
+  height: calc(900px * 0.25);
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview {
+  position: relative;
+  width: 400%; // bug in Chrome returns scaled width
+  -ms-zoom: 0.25;
+  -moz-transform: scale(0.25);
+  -moz-transform-origin: 0 0;
+  -o-transform: scale(0.25);
+  -o-transform-origin: 0 0;
+  -webkit-transform: scale(0.25);
+  -webkit-transform-origin: 0 0;
+
+  iframe, img {
+    width: 1440px;
+    height: 900px;
+  }
+}
+
+.preview::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+// Spinner animation from https://loading.io/css/
+// See also Bootstrap Spinner https://getbootstrap.com/docs/5.3/components/spinners/#border-spinner
+// And https://developer.mozilla.org/en-US/docs/Web/CSS/animation
+.lds-dual-ring {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  //right: 0;
+  //bottom: 0;
+  margin-top: 75px;
+  margin-left: 150px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--bs-body-bg);
+  border-color: var(--bs-body-bg)transparent var(--bs-body-bg) transparent;
+  animation: lds-dual-ring 1.5s linear 30;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

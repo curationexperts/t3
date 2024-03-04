@@ -46,11 +46,11 @@ class Theme < ApplicationRecord
   end
 
   def update_with_attachments(params)
-    return false unless update(params.reject { |k| k['main_logo'] })
-    return true if params[:main_logo].blank?
+    return false unless update(params.except(:main_logo, :favicon))
+    return true if params[:main_logo].blank? && params[:favicon].blank?
 
-    main_logo.purge if main_logo.attached?
-    main_logo.attach(params[:main_logo])
+    main_logo.attach(params[:main_logo]) if params[:main_logo].present?
+    favicon.attach(params[:favicon]) if params[:favicon].present?
     true
   end
 
