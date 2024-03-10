@@ -37,5 +37,9 @@ module T3
 
     # Don't allow non-authorized users to infer existence of resources
     config.action_dispatch.rescue_responses.merge!('CanCan::AccessDenied' => :not_found)
+
+    # Output logs in JSON format
+    config.rails_semantic_logger.format = :json
+    config.semantic_logger.application = Rails.application.class.module_parent_name
   end
 end

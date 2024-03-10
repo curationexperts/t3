@@ -18,17 +18,20 @@ class ImportJob < ApplicationJob
     ingest.update(status: Ingest.statuses[:errored]) if ingest.error_count.positive?
   rescue RuntimeError => e
     ingest.update(status: Ingest.statuses[:errored])
-    Rails.logger.error e
+    logger.error e
   end
 
   def perform(ingest)
     report = Report.new(ingest)
     metadata = JSON.parse(ingest.manifest.download)
     docs = metadata.dig('response', 'docs')
-    docs.each do |doc|
-      report << process_record(doc)
-      # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
-      ingest.update_column(:processed, report.processed) # rubocop:disable Rails/SkipsModelValidations
+    docs.each.with_index do |doc, index|
+      logger.measure_info('Created item from metadata record', payload: { manifest_record: index + 1 },
+                                                               metric: 'item/import') do
+        report << process_record(doc)
+        # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
+        ingest.update_column(:processed, report.processed) # rubocop:disable Rails/SkipsModelValidations
+      end
     end
     report.save
   end
@@ -55,7 +58,7 @@ class ImportJob < ApplicationJob
     item = Item.create(blueprint: blueprint, description: description)
     { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
   rescue RuntimeError => e
-    Rails.logger.error { "#{e}: #{e.message}" }
+    logger.error { "#{e}: #{e.message}" }
     { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
       ref: description[:ingest_key] }
   end
