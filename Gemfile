@@ -44,6 +44,9 @@ gem 'stimulus-rails'
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem 'jbuilder'
 
+# Support semantic logs in JSON format [https://logger.rocketjob.io/rails.html]
+gem 'rails_semantic_logger'
+
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.0'
 

@@ -7,10 +7,12 @@ class Item < ApplicationRecord
 
   class << self
     def reindex_all
-      Item.find_each do |item|
-        item.update_index(commit: false)
+      logger.measure_info('Reindexing everything', metric: 'item/index_all', payload: { item_count: Item.count }) do
+        Item.find_each do |item|
+          item.update_index(commit: false)
+        end
+        Config.solr_connection.commit
       end
-      Config.solr_connection.commit
     end
 
     def delete_orphans
@@ -49,11 +51,13 @@ class Item < ApplicationRecord
   end
 
   def update_index(commit: true)
-    save if changed? # ensure we're indexing the stored version of the item
-    document = to_solr
-    Config.solr_connection.update data: { add: { doc: document } }.to_json,
-                                  headers: { 'Content-Type' => 'application/json' },
-                                  params: { commit: commit }
+    logger.measure_debug('Reindexing item', payload: { id: id, commit: commit }, metric: 'item/index_one') do
+      save if changed? # ensure we're indexing the stored version of the item
+      document = to_solr
+      Config.solr_connection.update data: { add: { doc: document } }.to_json,
+                                    headers: { 'Content-Type' => 'application/json' },
+                                    params: { commit: commit }
+    end
   end
 
   def delete_index
