@@ -1,6 +1,7 @@
-<h1>Ingests</h1>
-
 <div id="ingests">
+  <h1>Ingests</h1>
+  <%= link_to "Submit new job", new_ingest_path, id: 'new_ingest', class: 'btn btn-primary' %>
+
   <table>
     <thead>
       <tr>
@@ -31,8 +32,6 @@
     </tfoot>
   </table>
 </div>
-
-<%= link_to "Submit new batch", new_ingest_path, id: 'new_ingest', class: 'btn btn-secondary btn-sm' %>
 
 <!--Hack to get job processing updates-->
 <!--TODO: Use Turbo streams for status badge updates-->

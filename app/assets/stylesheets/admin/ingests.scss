@@ -1,44 +1,57 @@
-#ingests td {
-  padding-right: 1rem;
-}
+#ingests {
+  h1 {
+    display: inline-block;
+  }
 
-.status {
-  width: 15rem;
-}
+  #new_ingest {
+    margin-left: 5.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--bs-btn-color);
+  }
 
-.status_badge {
-  position: relative;
-  width: 100%;
-  text-align: center;
-  border-radius: 0.2rem;
-  border-color: darkslategray;
-  border-width: 2px;
-  border-style: solid;
-  color: white;
-  background-color: dimgray;
-  &.queued {
-    color: darkslateblue;
-    background-color: lightsteelblue;
+  td {
+    padding-right: 1rem;
   }
-  &.processing {
-    color: white;
-    background-color: darkslateblue;
+
+  .status {
+    width: 15rem;
   }
-  &.completed {
-    color: white;
-    background-color: darkolivegreen;
-  }
-  &.errored {
-    color: white;
-    background-color: brown;
-  }
-  .status_increment {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: black;
-    background-color: lightsteelblue;
+
+  .status_badge {
+    position: relative;
     width: 100%;
     text-align: center;
+    border-radius: 0.2rem;
+    border-color: darkslategray;
+    border-width: 2px;
+    border-style: solid;
+    color: white;
+    background-color: dimgray;
+    &.queued {
+      color: darkslateblue;
+      background-color: lightsteelblue;
+    }
+    &.processing {
+      color: white;
+      background-color: darkslateblue;
+    }
+    &.completed {
+      color: white;
+      background-color: darkolivegreen;
+    }
+    &.errored {
+      color: white;
+      background-color: brown;
+    }
+    .status_increment {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: black;
+      background-color: lightsteelblue;
+      width: 100%;
+      text-align: center;
+    }
   }
 }
+
