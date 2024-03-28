@@ -131,7 +131,7 @@ RSpec.describe '/admin/items' do
   describe 'DELETE /destroy' do
     it 'destroys the requested item' do
       # item = Item.create! valid_attributes
-      item = FactoryBot.create(:populated_item)
+      item = FactoryBot.create(:item)
       expect do
         delete item_url(item)
       end.to change(Item, :count).by(-1)
@@ -139,7 +139,7 @@ RSpec.describe '/admin/items' do
 
     it 'redirects to the items list' do
       # item = Item.create! valid_attributes
-      item = FactoryBot.create(:populated_item)
+      item = FactoryBot.create(:item)
       delete item_url(item)
       expect(response).to redirect_to(items_url)
     end
