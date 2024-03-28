@@ -68,7 +68,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def item_params
-      params.require(:item).permit(:blueprint_id, description: {})
+      params.require(:item).permit(:blueprint_id, metadata: {})
     end
   end
 end

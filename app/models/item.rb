@@ -5,7 +5,7 @@ class Item < ApplicationRecord
   after_save :update_index
   after_destroy_commit :delete_index
 
-  validates :description, presence: true
+  validates :metadata, presence: true
   validate :required_fields_present
 
   class << self
@@ -74,7 +74,7 @@ class Item < ApplicationRecord
     blueprint.fields.each do |field|
       solr_field = field.solr_field
       solr_facet = field.solr_facet_field
-      value = description[field.name]
+      value = metadata[field.name]
       doc[solr_field] = value
       doc[solr_facet] = value if field.facetable
     end
@@ -87,7 +87,7 @@ class Item < ApplicationRecord
     return if blueprint&.fields.blank?
 
     blueprint.fields.select(&:required).each do |required_field|
-      present = description.keys.include?(required_field.name)
+      present = metadata.keys.include?(required_field.name)
       unless present
         errors.add(required_field.name.downcase.to_sym, :blank, message:
           "Required field 'required_field.name' can not be blank")
