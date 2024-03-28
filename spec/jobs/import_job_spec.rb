@@ -35,10 +35,10 @@ RSpec.describe ImportJob do
       FactoryBot.create(:field, name: 'Date', data_type: 'integer', source_field: 'date_isi')
 
       job.process_record(doc)
-      expect(Item.last.description).to include('Title' => 'Anna Karenina',
-                                               'Author' => ['Tolstoy, Lev Nikolayevich',
-                                                            'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
-                                               'Date' => 1878)
+      expect(Item.last.metadata).to include('Title' => 'Anna Karenina',
+                                            'Author' => ['Tolstoy, Lev Nikolayevich',
+                                                         'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
+                                            'Date' => 1878)
     end
   end
 
@@ -121,7 +121,7 @@ RSpec.describe ImportJob do
       before do
         # Simulate an error on creating one of two records
         allow(Item).to receive(:create) do |params|
-          raise 'Testing exception handling' if params[:description]['title_ssi'].match?(/Admiral/)
+          raise 'Testing exception handling' if params[:metadata]['title_ssi'].match?(/Admiral/)
 
           Item.new(id: 1)
         end

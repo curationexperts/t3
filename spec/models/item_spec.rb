@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Item do
-  let(:new_item) { described_class.new(description: basic_description) }
+  let(:new_item) { described_class.new(metadata: basic_description) }
   let(:basic_description) do
     {
       'Title' => 'One Hundred Years of Solitute',
@@ -18,14 +18,14 @@ RSpec.describe Item do
     }
   end
 
-  describe '#description' do
+  describe '#metadata' do
     it 'defaults to nil' do
-      expect(described_class.new.description).to be_nil
+      expect(described_class.new.metadata).to be_nil
     end
 
     it 'accepts JSON' do
-      new_item.description = basic_description.as_json
-      expect(new_item.description['Date']).to eq '1967'
+      new_item.metadata = basic_description.as_json
+      expect(new_item.metadata['Date']).to eq '1967'
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe Item do
 
   describe '#to_solr' do
     let(:blueprint) { FactoryBot.build(:blueprint, name: 'Sample Blueprint') }
-    let(:new_item) { described_class.new(blueprint: blueprint, description: basic_description.as_json) }
+    let(:new_item) { described_class.new(blueprint: blueprint, metadata: basic_description.as_json) }
 
     it 'generates a solr document' do
       allow(blueprint).to receive(:fields).and_return(
@@ -85,7 +85,7 @@ RSpec.describe Item do
 
   describe '#save' do
     let(:blueprint) { FactoryBot.build(:blueprint) }
-    let(:new_item) { described_class.new(blueprint: blueprint, description: basic_description.as_json) }
+    let(:new_item) { described_class.new(blueprint: blueprint, metadata: basic_description.as_json) }
 
     before do
       # Stub solr calls which are tested elsewhere
@@ -96,10 +96,10 @@ RSpec.describe Item do
       expect { new_item.save! }.to change(described_class, :count).by(1)
     end
 
-    it 'validates description is present' do
-      new_item.description = nil
+    it 'validates metadata is present' do
+      new_item.metadata = nil
       new_item.save
-      expect(new_item.errors.where(:description, :blank)).to be_present
+      expect(new_item.errors.where(:metadata, :blank)).to be_present
     end
 
     it 'validates required fields' do
@@ -135,10 +135,10 @@ RSpec.describe Item do
     end
 
     it 'saves any unsaved changes' do
-      item.description['Title'] = 'An Updated Title'
+      item.metadata['Title'] = 'An Updated Title'
       item.update_index
       item.reload
-      expect(item.description['Title']).to eq 'An Updated Title'
+      expect(item.metadata['Title']).to eq 'An Updated Title'
     end
   end
 

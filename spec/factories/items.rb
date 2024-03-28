@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :item do
     blueprint
-    description do
+    metadata do
       {
         'Title' => 'One Hundred Years of Solitute',
         'Author' => ['Márquez, Gabriel García'],
