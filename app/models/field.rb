@@ -19,6 +19,15 @@ class Field < ApplicationRecord
     'boolean' => 'b'
   }.freeze
 
+  TYPE_TO_HELPER = {
+    'string' => :text_field,
+    'text_en' => :text_area,
+    'integer' => :number_field,
+    'float' => :number_field,
+    'date' => :date_field,
+    'boolean' => :check_box
+  }.freeze
+
   validates :name, presence: true
   validates :name, uniqueness: { case_sensitive: false }
   validates :name, format: { with: /\A[a-z0-9]/i, message: 'must begin with a letter or number' }
