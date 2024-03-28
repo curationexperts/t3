@@ -5,6 +5,9 @@ class Item < ApplicationRecord
   after_save :update_index
   after_destroy_commit :delete_index
 
+  validates :description, presence: true
+  validate :required_fields_present
+
   class << self
     def reindex_all
       logger.measure_info('Reindexing everything', metric: 'item/index_all', payload: { item_count: Item.count }) do
@@ -76,5 +79,19 @@ class Item < ApplicationRecord
       doc[solr_facet] = value if field.facetable
     end
     doc
+  end
+
+  private
+
+  def required_fields_present
+    return if blueprint&.fields.blank?
+
+    blueprint.fields.select(&:required).each do |required_field|
+      present = description.keys.include?(required_field.name)
+      unless present
+        errors.add(required_field.name.downcase.to_sym, :blank, message:
+          "Required field 'required_field.name' can not be blank")
+      end
+    end
   end
 end
