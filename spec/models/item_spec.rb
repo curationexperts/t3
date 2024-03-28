@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Item do
-  let(:new_item) { described_class.new }
+  let(:new_item) { described_class.new(description: basic_description) }
   let(:basic_description) do
     {
       'Title' => 'One Hundred Years of Solitute',
@@ -20,7 +20,7 @@ RSpec.describe Item do
 
   describe '#description' do
     it 'defaults to nil' do
-      expect(new_item.description).to be_nil
+      expect(described_class.new.description).to be_nil
     end
 
     it 'accepts JSON' do
@@ -61,7 +61,7 @@ RSpec.describe Item do
     end
 
     it 'uses the ActiveRecord ID as the solr ID' do
-      item = FactoryBot.build(:populated_item, id: 'placeholder_id')
+      item = FactoryBot.build(:item, id: 'placeholder_id')
       expect(item.to_solr['id']).to eq item.id
     end
 
@@ -83,16 +83,37 @@ RSpec.describe Item do
     end
   end
 
-  it 'saves successfully' do
-    # Stub solr calls which are tested elsewhere
-    allow(new_item).to receive(:update_index)
-    new_item.blueprint = FactoryBot.build(:blueprint)
-    new_item.description = basic_description.as_json
-    expect { new_item.save! }.to change(described_class, :count).by(1)
+  describe '#save' do
+    let(:blueprint) { FactoryBot.build(:blueprint) }
+    let(:new_item) { described_class.new(blueprint: blueprint, description: basic_description.as_json) }
+
+    before do
+      # Stub solr calls which are tested elsewhere
+      allow(new_item).to receive(:update_index)
+    end
+
+    it 'saves successfully' do
+      expect { new_item.save! }.to change(described_class, :count).by(1)
+    end
+
+    it 'validates description is present' do
+      new_item.description = nil
+      new_item.save
+      expect(new_item.errors.where(:description, :blank)).to be_present
+    end
+
+    it 'validates required fields' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Required', required: true)]
+      )
+
+      new_item.save
+      expect(new_item.errors.where(:required, :blank)).to be_present
+    end
   end
 
   describe '#update_index', :solr do
-    let(:item) { FactoryBot.build(:populated_item) }
+    let(:item) { FactoryBot.build(:item) }
     let(:solr_client) { RSolr::Client.new(nil) }
 
     # Fake a minimal Solr server
@@ -131,7 +152,7 @@ RSpec.describe Item do
 
     it 'calls solr update for each item', :aggregate_failures do
       allow(solr_client).to receive(:update)
-      FactoryBot.create_list(:populated_item, 2)
+      FactoryBot.create_list(:item, 2)
       described_class.reindex_all
       expect(solr_client).to have_received(:update)
         .with(hash_including(data: /add/)).exactly(2 * described_class.count).times # create + reindex = 2x
@@ -139,7 +160,7 @@ RSpec.describe Item do
 
     it 'sends a commit at the end' do
       allow(solr_client).to receive(:commit)
-      FactoryBot.create_list(:populated_item, 2)
+      FactoryBot.create_list(:item, 2)
       described_class.reindex_all
       expect(solr_client).to have_received(:commit)
     end
@@ -171,7 +192,7 @@ RSpec.describe Item do
   end
 
   describe '#delete_index', :solr do
-    let(:item) { FactoryBot.build(:populated_item, id: 123) }
+    let(:item) { FactoryBot.build(:item, id: 123) }
     let(:solr_client) { RSolr::Client.new(nil) }
 
     # Fake a minimal Solr server
