@@ -16,6 +16,9 @@ Metrics/BlockLength:
     - 'config/routes.rb'
     - 'config/environments/**/*'
 
+Metrics/ClassLength:
+  CountAsOne: ['array', 'hash', 'heredoc']
+
 Metrics/MethodLength:
   CountAsOne: ['array', 'hash', 'heredoc']
   Exclude:

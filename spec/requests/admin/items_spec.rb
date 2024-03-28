@@ -5,7 +5,7 @@ RSpec.describe '/admin/items' do
   # Item. As you add validations to Item, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { { 'description' => { 'title' => 'My Title' }, 'blueprint_id' => Blueprint.first.id } }
-  let(:invalid_attributes) { { blueprint_id: '' } }
+  let(:invalid_attributes) { { description: 'invalid' } }
 
   # Fake a minimal Solr server
   before do
@@ -117,8 +117,11 @@ RSpec.describe '/admin/items' do
     end
 
     context 'with invalid parameters' do
+      let(:item) { Item.create! valid_attributes }
+
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        item = Item.create! valid_attributes
+        allow(item).to receive(:update).and_return false
+        allow(Item).to receive(:find).and_return item
         patch item_url(item), params: { item: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end

@@ -13,13 +13,19 @@
 
   <div>
     <%= form.label :blueprint_id, style: "display: block" %>
-    <%= form.text_field :blueprint_id %>
+    <%= form.collection_select :blueprint_id, Blueprint.order(:name), :id, :name, {}, {disabled: controller.action_name == 'edit'} %>
+    <%= form.hidden_field :blueprint_id, value: item.blueprint_id %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_field :description %>
-  </div>
+  <%= fields_for :description, OpenStruct.new(item.description) do |item_detail| %>
+    <% item.blueprint.fields.each do |field| %>
+      <div>
+        <%= item_detail.label field.name, style: "display: block" %>
+        <% field_method = Field::TYPE_TO_HELPER[field.data_type] %>
+        <%= item_detail.send(field_method, field.name) %>
+      </div>
+    <% end %>
+  <% end %>
 
   <div>
     <%= form.submit %>
