@@ -4,8 +4,8 @@ RSpec.describe '/admin/items' do
   # This should return the minimal set of attributes required to create a valid
   # Item. As you add validations to Item, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { 'description' => { 'title' => 'My Title' }, 'blueprint_id' => Blueprint.first.id } }
-  let(:invalid_attributes) { { description: 'invalid' } }
+  let(:valid_attributes) { { 'metadata' => { 'title' => 'My Title' }, 'blueprint_id' => Blueprint.first.id } }
+  let(:invalid_attributes) { { 'metadata' => 'invalid' } }
 
   # Fake a minimal Solr server
   before do
@@ -98,14 +98,14 @@ RSpec.describe '/admin/items' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        { description: valid_attributes['description'].merge({ 'alternate_title' => 'Weiterer Titel' }) }
+        { metadata: valid_attributes['metadata'].merge({ 'alternate_title' => 'Weiterer Titel' }) }
       end
 
       it 'updates the requested item' do
         item = Item.create! valid_attributes
         patch item_url(item), params: { item: new_attributes }
         item.reload
-        expect(item.description['alternate_title']).to eq 'Weiterer Titel'
+        expect(item.metadata['alternate_title']).to eq 'Weiterer Titel'
       end
 
       it 'redirects to the item' do

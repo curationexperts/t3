@@ -38,8 +38,8 @@ class ImportJob < ApplicationJob
 
   def process_record(doc)
     blueprint = find_blueprint(doc)
-    description = build_description(blueprint, doc)
-    save_record(blueprint, description)
+    metadata = build_description(blueprint, doc)
+    save_record(blueprint, metadata)
   end
 
   # Return the blueprint object matching the name from the input document
@@ -54,13 +54,13 @@ class ImportJob < ApplicationJob
   end
 
   # Save a new Item, rescuing & capturing exceptions
-  def save_record(blueprint, description)
-    item = Item.create(blueprint: blueprint, description: description)
+  def save_record(blueprint, metadata)
+    item = Item.create(blueprint: blueprint, metadata: metadata)
     { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
   rescue RuntimeError => e
     logger.error { "#{e}: #{e.message}" }
     { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
-      ref: description[:ingest_key] }
+      ref: metadata[:ingest_key] }
   end
 
   # Utility class to encapsulate the details of status reporting from

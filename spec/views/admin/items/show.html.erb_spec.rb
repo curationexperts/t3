@@ -4,7 +4,7 @@ RSpec.describe 'admin/items/show' do
   before do
     assign(:item, Item.new(
                     blueprint: Blueprint.first,
-                    description: '',
+                    metadata: {},
                     id: 'not-persisted'
                   ))
   end

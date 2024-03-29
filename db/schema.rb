@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_21_194642) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_28_224015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,7 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_21_194642) do
 
   create_table "items", force: :cascade do |t|
     t.bigint "blueprint_id", null: false
-    t.jsonb "description"
+    t.jsonb "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blueprint_id"], name: "index_items_on_blueprint_id"

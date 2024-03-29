@@ -5,12 +5,12 @@ RSpec.describe 'admin/items/index' do
     assign(:items, [
              Item.new(
                blueprint: Blueprint.first,
-               description: '',
+               metadata: {},
                id: 'not-persisted-1'
              ),
              Item.new(
                blueprint: Blueprint.first,
-               description: '',
+               metadata: {},
                id: 'not-persisted-2'
              )
            ])

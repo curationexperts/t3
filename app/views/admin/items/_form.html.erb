@@ -17,7 +17,7 @@
     <%= form.hidden_field :blueprint_id, value: item.blueprint_id %>
   </div>
 
-  <%= fields_for :description, OpenStruct.new(item.description) do |item_detail| %>
+  <%= fields_for :metadata, OpenStruct.new(item.metadata) do |item_detail| %>
     <% item.blueprint.fields.each do |field| %>
       <div>
         <%= item_detail.label field.name, style: "display: block" do -%>
