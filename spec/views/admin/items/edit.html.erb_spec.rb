@@ -35,7 +35,7 @@ RSpec.describe 'admin/items/edit', :solr do
     render
     input_fields = Capybara.string(rendered).all('input[@type!="submit"], textarea')
     field_ids = input_fields.pluck(:id)
-    expect(field_ids).to eq ['metadata_Title', 'metadata_Author', 'metadata_Format']
+    expect(field_ids).to eq ['item_metadata_Title', 'item_metadata_Author', 'item_metadata_Format']
   end
 
   it 'indiicates required inputs' do
@@ -47,7 +47,7 @@ RSpec.describe 'admin/items/edit', :solr do
     render
     input_fields = Capybara.string(rendered).all('label:has(span.required)')
     field_ids = input_fields.pluck(:for)
-    expect(field_ids).to eq ['metadata_Title', 'metadata_Format']
+    expect(field_ids).to eq ['item_metadata_Title', 'item_metadata_Format']
   end
 
   describe 'a text field' do
@@ -58,7 +58,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a textarea input' do
       allow(blueprint).to receive(:fields).and_return([text_field])
       render
-      expect(rendered).to have_selector('textarea#metadata_abstract')
+      expect(rendered).to have_selector('textarea#item_metadata_abstract')
     end
   end
 
@@ -70,7 +70,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a text_field input' do
       allow(blueprint).to receive(:fields).and_return([string_field])
       render
-      expect(rendered).to have_selector('input#metadata_genre[@type="text"]')
+      expect(rendered).to have_selector('input#item_metadata_genre[@type="text"]')
     end
   end
 
@@ -80,7 +80,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a date_field input' do
       allow(blueprint).to receive(:fields).and_return([date_field])
       render
-      expect(rendered).to have_selector('input#metadata_date[@type="date"]')
+      expect(rendered).to have_selector('input#item_metadata_date[@type="date"]')
     end
   end
 
@@ -92,7 +92,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a checkbox' do
       allow(blueprint).to receive(:fields).and_return([boolean_field])
       render
-      expect(rendered).to have_selector('input#metadata_special_collections[@type="checkbox"]')
+      expect(rendered).to have_selector('input#item_metadata_special_collections[@type="checkbox"]')
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a numeric field' do
       allow(blueprint).to receive(:fields).and_return([integer_field])
       render
-      expect(rendered).to have_selector('input#metadata_year[@type="number"]')
+      expect(rendered).to have_selector('input#item_metadata_year[@type="number"]')
     end
   end
 
@@ -116,7 +116,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a numeric field' do
       allow(blueprint).to receive(:fields).and_return([float_field])
       render
-      expect(rendered).to have_selector('input#metadata_score[@type="number"]')
+      expect(rendered).to have_selector('input#item_metadata_score[@type="number"]')
     end
   end
 end
