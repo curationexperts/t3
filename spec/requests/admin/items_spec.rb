@@ -6,9 +6,12 @@ RSpec.describe '/admin/items' do
   # adjust the attributes here as well.
   let(:valid_attributes) { { 'metadata' => { 'title' => 'My Title' }, 'blueprint_id' => Blueprint.first.id } }
   let(:invalid_attributes) { { 'metadata' => 'invalid' } }
+  let(:super_admin) { FactoryBot.create(:super_admin) }
 
-  # Fake a minimal Solr server
   before do
+    login_as super_admin
+
+    # Fake a minimal Solr server
     solr_client = RSolr::Client.new(nil)
     allow(RSolr::Client).to receive(:new).and_return(solr_client)
     allow(solr_client).to receive(:get).and_return({ 'lucene' => { 'solr-spec-version' => '9.4.0' } })
@@ -142,6 +145,22 @@ RSpec.describe '/admin/items' do
       item = FactoryBot.create(:item)
       delete item_url(item)
       expect(response).to redirect_to(items_url)
+    end
+  end
+
+  describe 'resctricts access' do
+    let(:regular_user) { FactoryBot.create(:user) }
+
+    example 'for guest users' do
+      logout
+      get items_url
+      expect(response).to be_not_found
+    end
+
+    example 'for non-admin users' do
+      login_as regular_user
+      get items_url
+      expect(response).to be_unauthorized
     end
   end
 end

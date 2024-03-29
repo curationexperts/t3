@@ -5,6 +5,11 @@
       <li class='nav-item'>
         <%= link_to t('t3.admin.status'), status_path, class: 'nav-link' + active_controller_class('status') %>
       </li>
+      <% if can? :read, Item %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.items'), items_path, class: 'nav-link' + active_controller_class('items') %>
+        </li>
+      <% end %>
       <% if can? :read, User %>
         <li class='nav-item'>
           <%= link_to t('t3.admin.users'), users_path, class: 'nav-link' + active_controller_class('users') %>

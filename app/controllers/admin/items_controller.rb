@@ -2,6 +2,7 @@ module Admin
   # Controller for UI to manage individual Items stored in the repository
   class ItemsController < ApplicationController
     before_action :set_item, only: %i[show edit update destroy]
+    load_and_authorize_resource
 
     # GET /items or /items.json
     def index
