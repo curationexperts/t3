@@ -12,6 +12,20 @@ RSpec.describe 'admin/_sidebar' do
     expect(rendered).to have_link(href: status_path)
   end
 
+  describe 'items link' do
+    it 'renders for authorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Item).and_return(true)
+      render
+      expect(rendered).to have_link(href: items_path)
+    end
+
+    it 'is hidden from unauthorized users' do
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Item).and_return(false)
+      render
+      expect(rendered).not_to have_link(href: items_path)
+    end
+  end
+
   describe 'users link' do
     it 'renders for authorized users' do
       allow(view.controller.current_ability).to receive(:can?).with(:read, User).and_return(true)
