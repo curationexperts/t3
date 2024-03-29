@@ -38,6 +38,18 @@ RSpec.describe 'admin/items/edit', :solr do
     expect(field_ids).to eq ['description_Title', 'description_Author', 'description_Format']
   end
 
+  it 'indiicates required inputs' do
+    allow(blueprint).to receive(:fields).and_return([
+                                                      FactoryBot.build(:field, name: 'Title', required: true),
+                                                      FactoryBot.build(:field, name: 'Author'),
+                                                      FactoryBot.build(:field, name: 'Format', required: true)
+                                                    ])
+    render
+    input_fields = Capybara.string(rendered).all('label:has(span.required)')
+    field_ids = input_fields.pluck(:for)
+    expect(field_ids).to eq ['description_Title', 'description_Format']
+  end
+
   describe 'a text field' do
     let(:text_field) do
       FactoryBot.build(:field, name: 'abstract', data_type: 'text_en', multiple: false, id: 1, sequence: 1)

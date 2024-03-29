@@ -1,3 +1,7 @@
-input, textarea {
+.item input, .item textarea {
   width: 50rem;
+}
+
+.item .required {
+  font-style: italic;
 }
