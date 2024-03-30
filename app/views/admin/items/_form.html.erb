@@ -20,12 +20,24 @@
   <%= form.fields_for :metadata, OpenStruct.new(item.metadata) do |item_detail| %>
     <% item.blueprint.fields.each do |field| %>
       <div>
-        <%= item_detail.label field.name, style: "display: block" do -%>
+        <label>
           <%= field.name -%>
           <%= content_tag(:span, '(required)', class: 'required') if field.required -%>
-        <% end %>
-        <% field_method = Field::TYPE_TO_HELPER[field.data_type] %>
-        <%= item_detail.send(field_method, field.name, required: field.required, aria: {label: field.name, required: field.required}) %>
+
+          <% field_method = Field::TYPE_TO_HELPER[field.data_type] %>
+          <% if field.multiple %>
+            <% item_detail.object[field.name] ||= [nil] %>
+            <% item_detail.object[field.name].each.with_index(1) do |value, index| %>
+              <%= item_detail.send(field_method, field.name,
+                                   value: value, id: item_detail.field_id(field.name, index),
+                                   multiple: field.multiple, aria: {label: field.name + " #{index}",
+                                                                    required: field.required}) %>
+            <% end %>
+          <% else %>
+            <%= item_detail.send(field_method, field.name, multiple: field.multiple,
+                                 aria: {label: field.name, required: field.required}) %>
+          <% end %>
+        </label>
       </div>
     <% end %>
   <% end %>

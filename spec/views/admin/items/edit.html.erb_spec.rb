@@ -45,8 +45,8 @@ RSpec.describe 'admin/items/edit', :solr do
                                                       FactoryBot.build(:field, name: 'Format', required: true)
                                                     ])
     render
-    input_fields = Capybara.string(rendered).all('label:has(span.required)')
-    field_ids = input_fields.pluck(:for)
+    input_fields = Capybara.string(rendered).all('label:has(span.required) input')
+    field_ids = input_fields.pluck(:id)
     expect(field_ids).to eq ['item_metadata_Title', 'item_metadata_Format']
   end
 
@@ -70,7 +70,7 @@ RSpec.describe 'admin/items/edit', :solr do
     it 'renders as a text_field input' do
       allow(blueprint).to receive(:fields).and_return([string_field])
       render
-      expect(rendered).to have_selector('input#item_metadata_genre[@type="text"]')
+      expect(rendered).to have_selector('input#item_metadata_genre_1[@type="text"]')
     end
   end
 
@@ -108,7 +108,7 @@ RSpec.describe 'admin/items/edit', :solr do
     end
   end
 
-  describe 'an float field' do
+  describe 'a float field' do
     let(:float_field) do
       FactoryBot.build(:field, name: 'score', data_type: 'float', multiple: false, id: 1, sequence: 1)
     end
@@ -117,6 +117,32 @@ RSpec.describe 'admin/items/edit', :solr do
       allow(blueprint).to receive(:fields).and_return([float_field])
       render
       expect(rendered).to have_selector('input#item_metadata_score[@type="number"]')
+    end
+  end
+
+  describe 'a multivalue field' do
+    let(:string_field) { FactoryBot.build(:field, name: 'keyword', data_type: 'string', multiple: true) }
+    let(:item) do
+      Item.create!(
+        blueprint: blueprint,
+        metadata: { 'Title' => '1 Print', 'keyword' => ['multivalue', 'test example'] }
+      )
+    end
+
+    before do
+      allow(blueprint).to receive(:fields).and_return([string_field])
+    end
+
+    it 'renders multiple inputs' do
+      render
+      expect(rendered).to have_field('item[metadata][keyword][]', count: 2)
+    end
+
+    # If the parameter name ends with an empty set of square brackets [] then they will be accumulated in an array
+    # see https://guides.rubyonrails.org/form_helpers.html#basic-structures
+    it 'returns an array in parameters' do
+      render
+      expect(rendered).to have_field('item_metadata_keyword_2', with: 'test example')
     end
   end
 end
