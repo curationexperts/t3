@@ -39,14 +39,10 @@ module Admin
 
     # PATCH/PUT /items/1 or /items/1.json
     def update
-      respond_to do |format|
-        if @item.update(item_params)
-          format.html { redirect_to item_url(@item), notice: 'Item was successfully updated.' }
-          format.json { render :show, status: :ok, location: @item }
-        else
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @item.errors, status: :unprocessable_entity }
-        end
+      if params[:refresh]
+        refresh_client
+      else
+        update_item
       end
     end
 
@@ -70,6 +66,29 @@ module Admin
     # Only allow a list of trusted parameters through.
     def item_params
       params.require(:item).permit(:blueprint_id, metadata: {})
+    end
+
+    # Modify fields in browser without updating database
+    def refresh_client
+      return unless params[:refresh][:add_entry]
+
+      field_name = params[:refresh][:add_entry]
+      @item.assign_attributes(item_params)
+      @item.metadata[field_name].push(nil)
+      render :edit, status: :accepted
+    end
+
+    # Persist form data to the Item in the database
+    def update_item
+      respond_to do |format|
+        if @item.update(item_params)
+          format.html { redirect_to item_url(@item) }
+          format.json { render :show, status: :ok, location: @item }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @item.errors, status: :unprocessable_entity }
+        end
+      end
     end
   end
 end

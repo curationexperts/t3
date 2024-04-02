@@ -119,6 +119,33 @@ RSpec.describe '/admin/items' do
       end
     end
 
+    context 'with a field action' do
+      let(:item) { FactoryBot.create(:item, blueprint: blueprint) }
+      let(:blueprint) { FactoryBot.build(:blueprint) }
+
+      before do
+        active = instance_double(ActiveRecord::Relation)
+        allow(Field).to receive(:active).and_return(active)
+        allow(active).to receive(:order).and_return(
+          [FactoryBot.build(:field, name: 'Author', multiple: true)]
+        )
+      end
+
+      it 'extends requested fields', :aggregate_failures do
+        item.metadata.merge!({ 'Author' => ['Bronte, Charlotte', 'Bell, Currer'] })
+        patch item_url(item), params: { refresh: { 'add_entry' => 'Author' }, item: { metadata: item.metadata } }
+        body = Capybara.string(response.body)
+        expect(body).to have_field('item_metadata_Author_2', with: 'Bell, Currer')
+        expect(body).to have_field('item_metadata_Author_3') # field exists
+        # expect(body).not_to have_field('item_metadata_Author_3', with: /.*/) # and field is empty
+      end
+
+      it 'accepts data without saving' do
+        patch item_url(item), params: { refresh: { 'add_entry' => 'Author' }, item: { metadata: item.metadata } }
+        expect(response).to have_http_status(:accepted)
+      end
+    end
+
     context 'with invalid parameters' do
       let(:item) { Item.create! valid_attributes }
 

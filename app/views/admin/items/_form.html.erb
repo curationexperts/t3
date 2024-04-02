@@ -33,6 +33,7 @@
                                    multiple: field.multiple, aria: {label: field.name + " #{index}",
                                                                     required: field.required}) %>
             <% end %>
+            <%= form.button t('t3.item.add_entry', field: field.name), name: 'refresh[add_entry]', value: field.name, class: 'add_value' %>
           <% else %>
             <%= item_detail.send(field_method, field.name, multiple: field.multiple,
                                  aria: {label: field.name, required: field.required}) %>

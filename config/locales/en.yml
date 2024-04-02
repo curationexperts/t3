@@ -33,6 +33,8 @@ en:
   t3:
     header_links:
       status: 'Dashboard'
+    item:
+      add_entry: 'Add %{field}'
 
   activerecord:
     errors:

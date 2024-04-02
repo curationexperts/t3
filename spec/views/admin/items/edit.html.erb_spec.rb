@@ -133,16 +133,21 @@ RSpec.describe 'admin/items/edit', :solr do
       allow(blueprint).to receive(:fields).and_return([string_field])
     end
 
-    it 'renders multiple inputs' do
+    # If the parameter name ends with an empty set of square brackets [] then they will be accumulated in an array
+    # see https://guides.rubyonrails.org/form_helpers.html#basic-structures
+    it 'returns values as an array' do
       render
       expect(rendered).to have_field('item[metadata][keyword][]', count: 2)
     end
 
-    # If the parameter name ends with an empty set of square brackets [] then they will be accumulated in an array
-    # see https://guides.rubyonrails.org/form_helpers.html#basic-structures
-    it 'returns an array in parameters' do
+    it 'renders each value in a separate input field' do
       render
       expect(rendered).to have_field('item_metadata_keyword_2', with: 'test example')
+    end
+
+    it 'has a button to add additional values' do
+      render
+      expect(rendered).to have_button('refresh[add_entry]', text: 'keyword')
     end
   end
 end
