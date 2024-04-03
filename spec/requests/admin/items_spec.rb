@@ -119,7 +119,7 @@ RSpec.describe '/admin/items' do
       end
     end
 
-    context 'with a field action' do
+    context 'with a field refresh' do
       let(:item) { FactoryBot.create(:item, blueprint: blueprint) }
       let(:blueprint) { FactoryBot.build(:blueprint) }
 
@@ -154,6 +154,15 @@ RSpec.describe '/admin/items' do
         expect(response).to have_http_status(:accepted)
       end
 
+      it 'handles delete on empty fields', :aggregate_failures do
+        patch item_url(item),
+              params: { refresh: ['delete', 'Author', '1'].join(' '),
+                        item: { metadata: item.metadata.except('Author') } }
+        body = Capybara.string(response.body)
+        expect(body).to have_button('refresh', value: 'delete Author 1')
+        expect(response).to have_http_status(:accepted)
+      end
+
       it 'rejects bad requests' do
         patch item_url(item),
               params: { refresh: ['delete', 'Author', '40'].join(' '), item: { metadata: item.metadata } }
@@ -165,8 +174,8 @@ RSpec.describe '/admin/items' do
                                                                                     multiple: true)])
         patch item_url(item), params: { refresh: 'add Resource Type -1', item: { metadata: item.metadata } }
         body = Capybara.string(response.body)
-        expect(body).to have_selector('input#item_metadata_Resource\ Type_1') # by id
-        expect(body).to have_field('item[metadata][Resource Type][]', count: 1) # by name
+        expect(body).to have_selector('input#item_metadata_Resource\ Type_2') # by id
+        expect(body).to have_field('item[metadata][Resource Type][]', count: 2) # by name
       end
     end
 

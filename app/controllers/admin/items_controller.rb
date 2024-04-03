@@ -74,7 +74,8 @@ module Admin
       return unless params['refresh']
 
       command = params.require('refresh')
-      command.match(/^(?<action>[a-z]+) (?<field>.*) (?<index>-?\d+)$/).captures
+      params = command.match(/^(?<action>[a-z]+) (?<field>.*) (?<index>-?\d+)$/)
+      [params[:action], params[:field], params[:index].to_i]
     end
 
     # Modify fields in browser without updating database
@@ -85,18 +86,30 @@ module Admin
       # copy any changes in the form back to the controller @item
       @item.assign_attributes(item_params)
       @item.metadata[field]&.push(nil) if action == 'add'
-      @item.metadata[field]&.delete_at(index.to_i - 1) if action == 'delete'
+      @item.metadata[field]&.delete_at(index - 1) if action == 'delete'
       render :edit, status: :accepted
     end
 
     # Return `true` if values don't represent a vaild field action
     def invalid_action?(action, field, index)
-      return true unless action.in?(['add', 'delete'])                # action is valid
-      return true unless @item.metadata[field].is_a?(Array)           # field is present and multivalued
-      return true unless index.match?(/-?\d+/) &&                     # index is a number
-                         index.to_i.abs <= @item.metadata[field].size # index is within range
+      return true unless valid_action?(action)
+      return true unless multivalued?(field)
+      return true unless within_range?(field, index)
 
       false
+    end
+
+    def valid_action?(action)
+      action.in?(['add', 'delete'])
+    end
+
+    def multivalued?(field)
+      @item.blueprint.fields.find { |f| f.name == field }&.multiple
+    end
+
+    def within_range?(field, index)
+      size = item_params['metadata'][field]&.size || 1
+      (-1..size).include?(index)
     end
 
     # Persist form data to the Item in the database
