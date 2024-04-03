@@ -32,8 +32,9 @@
                                    value: value, id: item_detail.field_id(field.name, index),
                                    multiple: field.multiple, aria: {label: field.name + " #{index}",
                                                                     required: field.required}) %>
+              <%= form.button t('t3.item.delete_entry', field: field.name, index: index), name: 'refresh', value: ['delete', field.name, index], class: 'delete_value' %>
             <% end %>
-            <%= form.button t('t3.item.add_entry', field: field.name), name: 'refresh[add_entry]', value: field.name, class: 'add_value' %>
+            <%= form.button t('t3.item.add_entry', field: field.name), name: 'refresh', value: ['add', field.name, -1], class: 'add_value' %>
           <% else %>
             <%= item_detail.send(field_method, field.name, multiple: field.multiple,
                                  aria: {label: field.name, required: field.required}) %>
