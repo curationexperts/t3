@@ -68,14 +68,35 @@ module Admin
       params.require(:item).permit(:blueprint_id, metadata: {})
     end
 
+    # Parse refresh parameteres when present
+    # @return Array = [action, field, index]
+    def refresh_params
+      return unless params['refresh']
+
+      command = params.require('refresh')
+      command.match(/^(?<action>[a-z]+) (?<field>.*) (?<index>-?\d+)$/).captures
+    end
+
     # Modify fields in browser without updating database
     def refresh_client
-      return unless params[:refresh][:add_entry]
+      action, field, index = refresh_params
+      return(render :edit, status: :bad_request) if invalid_action?(action, field, index)
 
-      field_name = params[:refresh][:add_entry]
+      # copy any changes in the form back to the controller @item
       @item.assign_attributes(item_params)
-      @item.metadata[field_name].push(nil)
+      @item.metadata[field]&.push(nil) if action == 'add'
+      @item.metadata[field]&.delete_at(index.to_i - 1) if action == 'delete'
       render :edit, status: :accepted
+    end
+
+    # Return `true` if values don't represent a vaild field action
+    def invalid_action?(action, field, index)
+      return true unless action.in?(['add', 'delete'])                # action is valid
+      return true unless @item.metadata[field].is_a?(Array)           # field is present and multivalued
+      return true unless index.match?(/-?\d+/) &&                     # index is a number
+                         index.to_i.abs <= @item.metadata[field].size # index is within range
+
+      false
     end
 
     # Persist form data to the Item in the database

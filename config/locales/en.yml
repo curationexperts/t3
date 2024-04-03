@@ -35,6 +35,7 @@ en:
       status: 'Dashboard'
     item:
       add_entry: 'Add %{field}'
+      delete_entry: 'Delete %{field} %{index}'
 
   activerecord:
     errors:

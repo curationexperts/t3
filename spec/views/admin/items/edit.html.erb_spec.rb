@@ -147,7 +147,12 @@ RSpec.describe 'admin/items/edit', :solr do
 
     it 'has a button to add additional values' do
       render
-      expect(rendered).to have_button('refresh[add_entry]', text: 'keyword')
+      expect(rendered).to have_button('refresh', value: 'add keyword -1')
+    end
+
+    it 'has a button to delete each existing value' do
+      render
+      expect(rendered).to have_button('refresh', value: 'delete keyword 2')
     end
   end
 end

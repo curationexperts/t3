@@ -133,16 +133,40 @@ RSpec.describe '/admin/items' do
 
       it 'extends requested fields', :aggregate_failures do
         item.metadata.merge!({ 'Author' => ['Bronte, Charlotte', 'Bell, Currer'] })
-        patch item_url(item), params: { refresh: { 'add_entry' => 'Author' }, item: { metadata: item.metadata } }
+        patch item_url(item), params: { refresh: 'add Author -1', item: { metadata: item.metadata } }
         body = Capybara.string(response.body)
         expect(body).to have_field('item_metadata_Author_2', with: 'Bell, Currer')
         expect(body).to have_field('item_metadata_Author_3') # field exists
         # expect(body).not_to have_field('item_metadata_Author_3', with: /.*/) # and field is empty
       end
 
-      it 'accepts data without saving' do
-        patch item_url(item), params: { refresh: { 'add_entry' => 'Author' }, item: { metadata: item.metadata } }
+      it 'deletes requested fields', :aggregate_failures do
+        item.metadata.merge!({ 'Author' => ['Bronte, Charlotte', 'Bell, Currer'] })
+        patch item_url(item), params: { refresh: 'delete Author 1', item: { metadata: item.metadata } }
+        body = Capybara.string(response.body)
+        expect(body).to have_field('item_metadata_Author_1', with: 'Bell, Currer')
+        expect(body).to have_field('item[metadata][Author][]', count: 1)
+      end
+
+      it 'refreshes data without saving' do
+        patch item_url(item),
+              params: { refresh: ['add', 'Author', '-1'].join(' '), item: { metadata: item.metadata } }
         expect(response).to have_http_status(:accepted)
+      end
+
+      it 'rejects bad requests' do
+        patch item_url(item),
+              params: { refresh: ['delete', 'Author', '40'].join(' '), item: { metadata: item.metadata } }
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'handles field names that include spaces', :aggregate_failures do
+        allow(Field.active).to receive(:order).and_return([FactoryBot.build(:field, name: 'Resource Type',
+                                                                                    multiple: true)])
+        patch item_url(item), params: { refresh: 'add Resource Type -1', item: { metadata: item.metadata } }
+        body = Capybara.string(response.body)
+        expect(body).to have_selector('input#item_metadata_Resource\ Type_1') # by id
+        expect(body).to have_field('item[metadata][Resource Type][]', count: 1) # by name
       end
     end
 
