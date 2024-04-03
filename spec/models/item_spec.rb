@@ -110,6 +110,14 @@ RSpec.describe Item do
       new_item.save
       expect(new_item.errors.where(:required, :blank)).to be_present
     end
+
+    it 'diregards empty field values' do
+      allow(blueprint)
+        .to receive(:fields).and_return([FactoryBot.build(:field, name: 'Author', multiple: true)])
+      new_item.metadata['Author'] = [nil, 'Author', {}, 'Co-Author', '', 'Editor']
+      new_item.save!
+      expect(new_item.metadata['Author']).to eq ['Author', 'Co-Author', 'Editor']
+    end
   end
 
   describe '#update_index', :solr do

@@ -2,6 +2,7 @@
 class Item < ApplicationRecord
   belongs_to :blueprint
 
+  before_save :prune_blank_values
   after_save :update_index
   after_destroy_commit :delete_index
 
@@ -82,6 +83,13 @@ class Item < ApplicationRecord
   end
 
   private
+
+  def prune_blank_values
+    blueprint.fields.each do |field|
+      value = metadata[field.name]
+      metadata[field.name] = field.multiple ? (value || []).compact_blank : value.presence
+    end
+  end
 
   def required_fields_present
     return if blueprint&.fields.blank?
