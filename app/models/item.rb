@@ -2,6 +2,7 @@
 class Item < ApplicationRecord
   belongs_to :blueprint
 
+  after_initialize :check_metadata
   before_save :prune_blank_values
   after_save :update_index
   after_destroy_commit :delete_index
@@ -71,7 +72,7 @@ class Item < ApplicationRecord
   end
 
   def to_solr
-    doc = { 'blueprint_ssi' => blueprint.name, 'id' => id }
+    doc = solr_base_values
     blueprint.fields.each do |field|
       solr_field = field.solr_field
       solr_facet = field.solr_facet_field
@@ -83,6 +84,18 @@ class Item < ApplicationRecord
   end
 
   private
+
+  def solr_base_values
+    {
+      'model_ssi' => self.class.name,
+      'blueprint_ssi' => blueprint.name,
+      'id' => id
+    }
+  end
+
+  def check_metadata
+    self.metadata ||= {}
+  end
 
   def prune_blank_values
     blueprint.fields.each do |field|

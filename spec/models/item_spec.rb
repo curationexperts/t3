@@ -19,8 +19,8 @@ RSpec.describe Item do
   end
 
   describe '#metadata' do
-    it 'defaults to nil' do
-      expect(described_class.new.metadata).to be_nil
+    it 'defaults to an empty hash' do
+      expect(described_class.new.metadata).to eq({})
     end
 
     it 'accepts JSON' do
@@ -63,6 +63,10 @@ RSpec.describe Item do
     it 'uses the ActiveRecord ID as the solr ID' do
       item = FactoryBot.build(:item, id: 'placeholder_id')
       expect(item.to_solr['id']).to eq item.id
+    end
+
+    it 'inlcudes the model in its solrization' do
+      expect(new_item.to_solr['model_ssi']).to eq 'Item'
     end
 
     it 'generates facetable versions of tokenized fields (e.g. text_en)' do

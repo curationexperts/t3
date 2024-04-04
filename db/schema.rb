@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_28_224015) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_05_162425) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_28_224015) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["document_id"], name: "index_bookmarks_on_document_id"
     t.index ["user_id"], name: "index_bookmarks_on_user_id"
+  end
+
+  create_table "collections", force: :cascade do |t|
+    t.jsonb "metadata"
+    t.bigint "blueprint_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id"], name: "index_collections_on_blueprint_id"
   end
 
   create_table "configs", force: :cascade do |t|
