@@ -12,7 +12,9 @@ class Ability
     Config => 'System Manager',
     Blueprint => 'System Manager',
     Field => 'System Manager',
-    Ingest => 'System Manager'
+    Ingest => 'System Manager',
+    Item => 'System Manager',
+    Collection => 'System Manager'
   }.freeze
 
   def initialize(user)

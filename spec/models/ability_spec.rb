@@ -31,6 +31,8 @@ RSpec.describe Ability do
         expect(authz.can?(:read, Blueprint)).to be false
         expect(authz.can?(:read, Field)).to be false
         expect(authz.can?(:read, Ingest)).to be false
+        expect(authz.can?(:read, Item)).to be false
+        expect(authz.can?(:read, Collection)).to be false
       end
     end
 
@@ -59,6 +61,10 @@ RSpec.describe Ability do
 
       it 'cannot manage Themes' do
         expect(authz.can?(:read, Theme)).to be false
+      end
+
+      it 'cannot manage Items' do
+        expect(authz.can?(:read, Item)).to be false
       end
     end
 
@@ -97,6 +103,14 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Ingest)).to be true
       end
 
+      it 'can manage Items' do
+        expect(authz.can?(:manage, Item)).to be true
+      end
+
+      it 'can manage Collections' do
+        expect(authz.can?(:manage, Collection)).to be true
+      end
+
       it 'can read dashboard status' do
         expect(authz.can?(:read, :dashboard)).to be true
       end
@@ -114,12 +128,21 @@ RSpec.describe Ability do
         allow(user).to receive(:role_name?).with('System Manager').and_return(true)
       end
 
-      it 'can manage multiple features', :aggregate_failures do
+      it 'can manage User related features', :aggregate_failures do
         expect(authz.can?(:manage, User)).to be true
         expect(authz.can?(:manage, Role)).to be true
-        expect(authz.can?(:manage, Theme)).to be false
+      end
+
+      it 'can manage Content related features', :aggregate_failures do
+        expect(authz.can?(:manage, Item)).to be true
+        expect(authz.can?(:manage, Collection)).to be true
+        expect(authz.can?(:manage, Field)).to be true
         expect(authz.can?(:manage, Blueprint)).to be true
         expect(authz.can?(:manage, Ingest)).to be true
+      end
+
+      it 'can not manage Brand related features' do
+        expect(authz.can?(:manage, Theme)).to be false
       end
 
       it 'can read dashboard status' do
