@@ -43,20 +43,24 @@ RSpec.describe '/admin/items' do
 
       it 'renders the _choose_blueprint selection partial' do
         get new_item_url
-        expect(response.body).to include('id=\'choose_blueprint\'')
+        expect(response.body).to include('id="choose_blueprint"')
+      end
+
+      it 'has a form/button for each blueprint' do
+        # We're only checking for the first (which should always be 'Default')
+        get new_item_url
+        expect(response.body).to include('action="/admin/items/new/Default"')
       end
     end
 
     context 'with a blueprint selected' do
-      let(:blueprint) { FactoryBot.create(:blueprint) }
-
       it 'renders a successful response' do
-        get new_item_url, params: { blueprint_id: blueprint.id }
+        get new_blueprinted_items_path(Blueprint.first.name)
         expect(response).to be_successful
       end
 
       it 'renders the _form fields partial' do
-        get new_item_url, params: { blueprint_id: blueprint.id }
+        get new_blueprinted_items_path(Blueprint.first.name)
         expect(response.body).to include('id="item_fields"')
       end
     end
