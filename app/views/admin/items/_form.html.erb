@@ -13,8 +13,8 @@
 
   <div>
     <%= form.label :blueprint_id, style: "display: block" %>
-    <%= form.collection_select :blueprint_id, Blueprint.order(:name), :id, :name, {}, {disabled: controller.action_name == 'edit'} %>
     <%= form.hidden_field :blueprint_id, value: item.blueprint_id %>
+    <%= form.collection_select :blueprint_id, Blueprint.order(:name), :id, :name, {}, {disabled: true} %>
   </div>
 
   <%= form.fields_for :metadata, OpenStruct.new(item.metadata) do |item_detail| %>

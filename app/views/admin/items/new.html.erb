@@ -1,9 +1,9 @@
 <h1>New item</h1>
 
-<% if @blueprint %>
-  <%= render "form", item: @item, blueprint: @blueprint %>
+<% if @item.blueprint %>
+  <%= render 'form', item: @item %>
 <% else %>
-  <%= render "choose_blueprint", item: @item, blueprint: @blueprint %>
+  <%= render 'choose_blueprint', item: @item %>
 <% end %>
 
 <br>

@@ -1,9 +1,6 @@
 <h2>Choose a Blueprint</h2>
-<div id='choose_blueprint'>
+<div id="choose_blueprint">
   <% Blueprint.all.each do |blueprint| %>
-    <%= form_with(model: item) do |form| %>
-      <%= form.hidden_field :blueprint_id, value: blueprint.id %>
-        <%= form.submit blueprint.name %>
-    <% end %>
+    <%= button_to blueprint.name, "/admin/#{controller_name}/new/#{CGI.escape(blueprint.name)}", method: :get, class: 'btn btn-primary btn-sm' %>
   <% end %>
 </div>

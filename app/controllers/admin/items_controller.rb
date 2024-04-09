@@ -14,9 +14,7 @@ module Admin
 
     # GET /items/new
     def new
-      blueprint_id = params['blueprint_id']
-      @item = Item.new(blueprint_id: blueprint_id)
-      @blueprint = Blueprint.find(blueprint_id) if blueprint_id
+      @item.blueprint = Blueprint.find_by(name: params['blueprint'])
     end
 
     # GET /items/1/edit
