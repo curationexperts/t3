@@ -3,58 +3,16 @@
     <h2>Admin Tools</h2>
     <ul class='nav nav-pills flex-column mb-auto'>
       <li class='nav-item'>
-        <%= link_to t('t3.admin.status'), status_path, class: 'nav-link' + active_controller_class('status') %>
+        <%= link_to t('t3.admin.status'), status_path, class: ['nav-link', controller_name == 'status' ? 'active' : '' ]%>
       </li>
-      <% if can? :read, Item %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.items'), items_path, class: 'nav-link' + active_controller_class('items') %>
-        </li>
-      <% end %>
-      <% if can? :read, Collection %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.collections'), collections_path, class: 'nav-link' + active_controller_class('collections') %>
-        </li>
-      <% end %>
-      <% if can? :read, Ingest %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.ingests'), ingests_path, class: 'nav-link' + active_controller_class('ingests') %>
-        </li>
-      <% end %>
-      <% if can? :read, User %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.users'), users_path, class: 'nav-link' + active_controller_class('users') %>
-        </li>
-      <% end %>
-      <% if can? :read, Role %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.roles'), roles_path, class: 'nav-link' + active_controller_class('roles') %>
-        </li>
-      <% end %>
-      <% if can? :read, Blueprint %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.blueprints'), blueprints_path, class: 'nav-link' + active_controller_class('blueprints') %>
-        </li>
-      <% end %>
-      <% if can? :read, Field %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.fields'), fields_path, class: 'nav-link' + active_controller_class('fields') %>
-        </li>
-      <% end %>
-      <% if can? :read, Theme %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.themes'), themes_path, class: 'nav-link' + active_controller_class('themes') %>
-        </li>
-      <% end %>
-      <% if can? :read, Config %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.configs'), config_path, class: 'nav-link' + active_controller_class('configs') %>
-        </li>
-      <% end %>
-      <% if can? :read, CustomDomain %>
-        <li class='nav-item'>
-          <%= link_to t('t3.admin.custom_domains'), custom_domains_path, class: 'nav-link' + active_controller_class('custom_domains') %>
-        </li>
+
+      <% [Item, Collection, Ingest, User, Role, Blueprint, Field, Theme, Config, CustomDomain].each do |menu_area|  %>
+        <% if can? :read, menu_area %>
+          <li class='nav-item'>
+            <%= link_to t("t3.admin.#{menu_area.model_name.plural}"), menu_area, class: ['nav-link', active_class(menu_area)] %>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </nav>
-<% end -%>
+<% end %>
