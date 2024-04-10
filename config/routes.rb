@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     resources :items do
       get 'new/:blueprint', on: :collection, action: :new, as: :new_blueprinted
     end
+    resources :collections do
+      get 'new/:blueprint', on: :collection, action: :new, as: :new_blueprinted
+    end
     resources :users
     resources :roles
     resources :blueprints
