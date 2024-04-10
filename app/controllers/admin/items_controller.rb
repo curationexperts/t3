@@ -1,13 +1,10 @@
 module Admin
   # Controller for UI to manage individual Items stored in the repository
   class ItemsController < ApplicationController
-    before_action :set_item, only: %i[show edit update destroy]
     load_and_authorize_resource
 
     # GET /items or /items.json
-    def index
-      @items = Item.all
-    end
+    def index; end
 
     # GET /items/1 or /items/1.json
     def show; end
@@ -22,11 +19,9 @@ module Admin
 
     # POST /items or /items.json
     def create
-      @item = Item.new(item_params)
-
       respond_to do |format|
         if @item.save
-          format.html { redirect_to item_url(@item), notice: 'Item was successfully created.' }
+          format.html { redirect_to @item }
           format.json { render :show, status: :created, location: @item }
         else
           format.html { render :new, status: :unprocessable_entity }
@@ -49,24 +44,19 @@ module Admin
       @item.destroy
 
       respond_to do |format|
-        format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
+        format.html { redirect_to @item.class, notice: "#{@item.class} was successfully destroyed" }
         format.json { head :no_content }
       end
     end
 
     private
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_item
-      @item = Item.find(params[:id])
-    end
-
     # Only allow a list of trusted parameters through.
     def item_params
       params.require(:item).permit(:blueprint_id, metadata: {})
     end
 
-    # Parse refresh parameteres when present
+    # Parse refresh parameters when present
     # @return Array = [action, field, index]
     def refresh_params
       return unless params['refresh']
@@ -114,7 +104,7 @@ module Admin
     def update_item
       respond_to do |format|
         if @item.update(item_params)
-          format.html { redirect_to item_url(@item) }
+          format.html { redirect_to @item }
           format.json { render :show, status: :ok, location: @item }
         else
           format.html { render :edit, status: :unprocessable_entity }

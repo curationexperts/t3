@@ -10,6 +10,11 @@
           <%= link_to t('t3.admin.items'), items_path, class: 'nav-link' + active_controller_class('items') %>
         </li>
       <% end %>
+      <% if can? :read, Collection %>
+        <li class='nav-item'>
+          <%= link_to t('t3.admin.collections'), collections_path, class: 'nav-link' + active_controller_class('collections') %>
+        </li>
+      <% end %>
       <% if can? :read, Ingest %>
         <li class='nav-item'>
           <%= link_to t('t3.admin.ingests'), ingests_path, class: 'nav-link' + active_controller_class('ingests') %>
