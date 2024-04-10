@@ -6,6 +6,14 @@ RSpec.describe Admin::ConfigsController do
       expect(get: '/admin/config').to route_to('admin/configs#show')
     end
 
+    it 'routes conventional index path to #show' do
+      expect(get: 'admin/configs').to route_to('admin/configs#show')
+    end
+
+    it 'has a plural path alias' do
+      expect(get(configs_path)).to route_to('admin/configs#show')
+    end
+
     it 'routes to #edit' do
       expect(get: '/admin/config/edit').to route_to('admin/configs#edit')
     end
