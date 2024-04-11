@@ -3,8 +3,8 @@
 <%= render @item %>
 
 <div>
-  <%= link_to "Edit this item", edit_item_path(@item) %> |
-  <%= link_to "Back to items", items_path %>
+  <%= link_to "Edit this #{@item.class}", url_for([:edit, @item]) %> |
+  <%= link_to "Back to #{@item.class.name.pluralize}", url_for(@item.class) %>
 
-  <%= button_to "Destroy this item", @item, method: :delete %>
+  <%= button_to "Destroy this #{@item.class}", @item, method: :delete, id: dom_id(@item, :delete) %>
 </div>

@@ -14,6 +14,8 @@ RSpec.describe 'admin/items/index' do
                id: 'not-persisted-2'
              )
            ])
+
+    allow(view).to receive(:controller_name).and_return('items')
   end
 
   it 'renders a list of items' do
