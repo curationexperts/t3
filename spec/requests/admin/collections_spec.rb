@@ -135,8 +135,8 @@ RSpec.describe '/admin/collections' do
         collection.metadata.merge!({ 'Author' => ['Bronte, Charlotte', 'Bell, Currer'] })
         patch collection_url(collection), params: { refresh: 'add Author -1', item: { metadata: collection.metadata } }
         body = Capybara.string(response.body)
-        expect(body).to have_field('collection_metadata_Author_2', with: 'Bell, Currer')
-        expect(body).to have_field('collection_metadata_Author_3') # field exists
+        expect(body).to have_field('item_metadata_Author_2', with: 'Bell, Currer')
+        expect(body).to have_field('item_metadata_Author_3') # field exists
         # expect(body).not_to have_field('collection_metadata_Author_3', with: /.*/) # and field is empty
       end
 
@@ -145,8 +145,8 @@ RSpec.describe '/admin/collections' do
         patch collection_url(collection), params:
           { refresh: 'delete Author 1', item: { metadata: collection.metadata } }
         body = Capybara.string(response.body)
-        expect(body).to have_field('collection_metadata_Author_1', with: 'Bell, Currer')
-        expect(body).to have_field('collection[metadata][Author][]', count: 1)
+        expect(body).to have_field('item_metadata_Author_1', with: 'Bell, Currer')
+        expect(body).to have_field('item[metadata][Author][]', count: 1)
       end
 
       it 'refreshes data without saving' do
@@ -177,8 +177,8 @@ RSpec.describe '/admin/collections' do
           refresh: 'add Resource Type -1', item: { metadata: collection.metadata }
         }
         body = Capybara.string(response.body)
-        expect(body).to have_selector('input#collection_metadata_Resource\ Type_2') # by id
-        expect(body).to have_field('collection[metadata][Resource Type][]', count: 2) # by name
+        expect(body).to have_selector('input#item_metadata_Resource\ Type_2') # by id
+        expect(body).to have_field('item[metadata][Resource Type][]', count: 2) # by name
       end
     end
 

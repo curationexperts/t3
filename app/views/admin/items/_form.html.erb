@@ -1,4 +1,4 @@
-<%= form_with(model: item, id: 'item_fields', class: 'item') do |form| %>
+<%= form_with(model: item, scope: 'item', id: 'item_fields', class: 'item') do |form| %>
   <% if item.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
