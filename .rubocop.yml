@@ -52,6 +52,10 @@ Style/FrozenStringLiteralComment:
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
 
+Style/OpenStructUse:
+  Exclude:
+    - 'spec/helpers/t3_form_builder_spec.rb'
+
 Style/SymbolProc:
   AllowedPatterns: ['map', 'select']
 
