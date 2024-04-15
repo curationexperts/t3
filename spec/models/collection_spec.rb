@@ -5,7 +5,7 @@ RSpec.describe Collection do
   let(:blueprint) { FactoryBot.create(:blueprint) }
 
   it 'behaves like an Item' do
-    expect(collection).to be_a(Item)
+    expect(collection).to be_a(Resource)
   end
 
   it 'inlcudes the model in its solrization' do
