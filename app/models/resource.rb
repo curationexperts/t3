@@ -14,27 +14,28 @@ class Resource < ApplicationRecord
 
   class << self
     def reindex_all
-      logger.measure_info('Reindexing everything', metric: 'item/index_all', payload: { item_count: Item.count }) do
-        Item.find_each do |item|
-          item.update_index(commit: false)
+      logger.measure_info('Reindexing everything', metric: "#{name}/index_all",
+                                                   payload: { resource_count: count }) do
+        find_each do |resource|
+          resource.update_index(commit: false)
         end
         Config.solr_connection.commit
       end
     end
 
     def delete_orphans
-      previously_checked = Item.minimum(:id)
+      previously_checked = minimum(:id)
       # Delete any Solr documents with IDs less than the lowest database ID
       Config.solr_connection.delete_by_query("id:[ * TO #{previously_checked} }")
 
       # Compare Database and Solr IDs in batches (of 1,000)
-      Item.in_batches do |batch|
+      in_batches do |batch|
         prune_orphans(batch, previously_checked)
         previously_checked = batch.last.id
       end
 
       # Delete any Solr documents with IDs greater than the highest database ID
-      Config.solr_connection.delete_by_query("id:{ #{Item.maximum(:id)} TO * ]")
+      Config.solr_connection.delete_by_query("id:{ #{maximum(:id)} TO * ]")
       Config.solr_connection.commit
     end
 
@@ -64,8 +65,9 @@ class Resource < ApplicationRecord
   end
 
   def update_index(commit: true)
-    logger.measure_debug('Reindexing item', payload: { id: id, commit: commit }, metric: 'item/index_one') do
-      save if changed? # ensure we're indexing the stored version of the item
+    logger.measure_debug("Reindexing #{self.class}", payload: { id: id, commit: commit },
+                                                     metric: "#{self.class}/index_one") do
+      save if changed? # ensure we're indexing the stored version of the resource
       document = to_solr
       Config.solr_connection.update data: { add: { doc: document } }.to_json,
                                     headers: { 'Content-Type' => 'application/json' },
