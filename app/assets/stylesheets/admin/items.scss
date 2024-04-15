@@ -1,13 +1,41 @@
-.item input, .item textarea {
-  width: 50rem;
-  display: block;
+.item {
+  input, textarea {
+    width: 50rem;
+    display: block;
+  }
+
+  select {
+    width: 35rem;
+    margin-right: 2rem;
+    height: 1.9rem;
+  }
+
+  button.delete_value {
+    width: 13rem;
+  }
+
+  button.add_value {
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  .required {
+    font-style: italic;
+  }
+
+  label {
+    margin-bottom: 0.5rem;
+  }
 }
 
-.item .required {
-  font-style: italic;
+#choose_blueprint {
+  width: fit-content;
+
+  button {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
 }
 
-#choose_blueprint button {
-  display: block;
-  margin-bottom: 0.25rem;
-}
+

@@ -7,7 +7,8 @@ class Field < ApplicationRecord
     integer: 3,
     float: 4,
     date: 5,
-    boolean: 6
+    boolean: 6,
+    vocabulary: 7
   }
 
   TYPE_TO_SOLR = {
@@ -16,7 +17,8 @@ class Field < ApplicationRecord
     'integer' => 'lt',
     'float' => 'dbt',
     'date' => 'dt',
-    'boolean' => 'b'
+    'boolean' => 'b',
+    'vocabulary' => 's'
   }.freeze
 
   TYPE_TO_HELPER = {
@@ -25,7 +27,8 @@ class Field < ApplicationRecord
     'integer' => :number_field,
     'float' => :number_field,
     'date' => :date_field,
-    'boolean' => :check_box
+    'boolean' => :check_box,
+    'vocabulary' => :vocabulary_field
   }.freeze
 
   validates :name, presence: true
@@ -96,6 +99,10 @@ class Field < ApplicationRecord
                  message: "move (#{position}) is not a valid command, must be one of :top, :up, :down, :bottom")
       false
     end
+  end
+
+  def form_helper
+    TYPE_TO_HELPER[data_type]
   end
 
   private

@@ -1,4 +1,4 @@
-<%= form_with(model: item, scope: 'item', id: 'item_fields', class: 'item') do |form| %>
+<%= form_with(model: item, scope: 'item', id: 'item_fields', class: 'item', builder: T3FormBuilder) do |form| %>
   <% if item.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
@@ -23,20 +23,21 @@
         <label>
           <%= field.name -%>
           <%= content_tag(:span, '(required)', class: 'required') if field.required -%>
+          <br/>
 
-          <% field_method = Field::TYPE_TO_HELPER[field.data_type] %>
           <% if field.multiple %>
             <% item_detail.object[field.name] ||= [nil] %>
             <% item_detail.object[field.name].each.with_index(1) do |value, index| %>
-              <%= item_detail.send(field_method, field.name,
+              <%= item_detail.send(field.form_helper, field.name,
                                    value: value, id: item_detail.field_id(field.name, index),
                                    multiple: field.multiple, aria: {label: field.name + " #{index}",
                                                                     required: field.required}) %>
               <%= form.button t('t3.item.delete_entry', field: field.name, index: index), name: 'refresh', value: ['delete', field.name, index], class: 'delete_value' %>
+              <br/>
             <% end %>
             <%= form.button t('t3.item.add_entry', field: field.name), name: 'refresh', value: ['add', field.name, -1], class: 'add_value' %>
           <% else %>
-            <%= item_detail.send(field_method, field.name, multiple: field.multiple,
+            <%= item_detail.send(field.form_helper, field.name, multiple: field.multiple,
                                  aria: {label: field.name, required: field.required}) %>
           <% end %>
         </label>

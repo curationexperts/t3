@@ -11,7 +11,7 @@ RSpec.describe T3FormBuilder do
   let(:tag_options) { {} }
 
   describe '#vocabulary' do
-    let(:vocabulary_helper) { Capybara.string(form_builder.vocabulary(:collection, tag_options)) }
+    let(:vocabulary_helper) { Capybara.string(form_builder.vocabulary_field(:collection, tag_options)) }
 
     it 'renders a select with the expected id' do
       expect(vocabulary_helper).to have_select('item[metadata][collection]')
@@ -33,7 +33,11 @@ RSpec.describe T3FormBuilder do
       let(:tag_options) { { value: 'Green' } }
 
       before do
-        collections = [OpenStruct.new({ id: 'Red' }), OpenStruct.new({ id: 'Green' }), OpenStruct.new({ id: 'Blue' })]
+        collections = [
+          instance_double(Collection, { label: 'Red', id: 5 }),
+          instance_double(Collection, { label: 'Green', id: 20 }),
+          instance_double(Collection, { label: 'Blue', id: 25 })
+        ]
         allow(Collection).to receive(:order).and_return(collections)
       end
 

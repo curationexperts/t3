@@ -51,6 +51,10 @@ class Item < ApplicationRecord
     end
   end
 
+  def label
+    metadata[label_field]
+  end
+
   def to_partial_path
     "admin/#{super}"
   end
@@ -114,5 +118,9 @@ class Item < ApplicationRecord
           "Required field 'required_field.name' can not be blank")
       end
     end
+  end
+
+  def label_field
+    @label_field ||= blueprint.fields.first.name
   end
 end
