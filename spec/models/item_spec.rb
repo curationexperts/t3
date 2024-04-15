@@ -4,7 +4,7 @@ RSpec.describe Item do
   let(:new_item) { described_class.new(metadata: basic_description) }
   let(:basic_description) do
     {
-      'Title' => 'One Hundred Years of Solitute',
+      'Title' => 'One Hundred Years of Solitude',
       'Author' => ['Márquez, Gabriel García'],
       'Date' => '1967'
     }
@@ -12,7 +12,7 @@ RSpec.describe Item do
   let(:solr_doc) do
     {
       'blueprint_ssi' => 'Sample Blueprint',
-      'title_tesi' => 'One Hundred Years of Solitute',
+      'title_tesi' => 'One Hundred Years of Solitude',
       'author_tesim' => ['Márquez, Gabriel García'],
       'date_ltsi' => '1967'
     }
@@ -43,6 +43,18 @@ RSpec.describe Item do
 
     it 'must be a kind of Blueprint' do
       expect { new_item.blueprint = 'not a blueprint' }.to raise_exception ActiveRecord::AssociationTypeMismatch
+    end
+  end
+
+  describe '#label' do
+    let(:blueprint) { FactoryBot.build(:blueprint, name: 'Sample Blueprint') }
+    let(:new_item) { described_class.new(blueprint: blueprint, metadata: basic_description.as_json) }
+
+    it 'returns the value of the bluprint title field' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Title', data_type: 'text_en')]
+      )
+      expect(new_item.label).to eq 'One Hundred Years of Solitude'
     end
   end
 

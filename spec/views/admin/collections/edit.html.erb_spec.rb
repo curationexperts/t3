@@ -168,4 +168,32 @@ RSpec.describe 'admin/items/edit', :solr do
       expect(rendered).to have_button('refresh', value: 'delete keyword 2')
     end
   end
+
+  describe 'a vocabulary field' do
+    let(:vocabulary_field) do
+      FactoryBot.build(:field, name: 'collection', data_type: 'vocabulary', multiple: false, id: 1, sequence: 1)
+    end
+
+    before do
+      collections = [
+        instance_double(Collection, { id: 1, label: 'Cyan' }),
+        instance_double(Collection, { id: 2, label: 'Magenta' }),
+        instance_double(Collection, { id: 4, label: 'Yellow' })
+      ]
+      allow(Collection).to receive(:order).and_return(collections)
+    end
+
+    it 'renders a slection list' do
+      allow(blueprint).to receive(:fields).and_return([vocabulary_field])
+      render
+      expect(rendered).to have_select('item[metadata][collection]')
+    end
+
+    it 'lists available values' do
+      allow(blueprint).to receive(:fields).and_return([vocabulary_field])
+      render
+      select_options = Capybara.string(rendered).all('select option').map(&:text)
+      expect(select_options).to include('Cyan', 'Magenta', 'Yellow')
+    end
+  end
 end

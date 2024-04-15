@@ -111,6 +111,15 @@ RSpec.describe Field do
     end
   end
 
+  describe '#form_helper' do
+    it 'is defined for each data_type' do
+      described_class.data_types.each_key do |data_type|
+        field.data_type = data_type
+        expect(field.form_helper).to be_present, "Missing form_helper mapping for data_type: #{data_type}"
+      end
+    end
+  end
+
   describe '#solr_suffix' do
     it 'ends in "m" for multivalued fields' do
       field.multiple = true
