@@ -80,9 +80,7 @@ module Admin
 
     # Return `true` if values don't represent a vaild field action
     def invalid_action?(action, field, index)
-      return true unless valid_action?(action)
-      return true unless multivalued?(field)
-      return true unless within_range?(field, index)
+      return true unless multivalued?(field) && valid_action?(action) && within_range?(field, index)
 
       false
     end
