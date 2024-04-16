@@ -39,7 +39,7 @@ module Admin
     # PATCH/PUT /themes/1 or /themes/1.json
     def update
       respond_to do |format|
-        if @theme.update_with_attachments(theme_params)
+        if @theme.update(theme_params)
           format.html { redirect_to theme_url(@theme) }
           format.json { render :show, status: :ok, location: @theme }
         else
