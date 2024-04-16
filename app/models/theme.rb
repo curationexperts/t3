@@ -45,15 +45,6 @@ class Theme < ApplicationRecord
     Theme.current = self
   end
 
-  def update_with_attachments(params)
-    return false unless update(params.except(:main_logo, :favicon))
-    return true if params[:main_logo].blank? && params[:favicon].blank?
-
-    main_logo.attach(params[:main_logo]) if params[:main_logo].present?
-    favicon.attach(params[:favicon]) if params[:favicon].present?
-    true
-  end
-
   private
 
   # un-memoized access to @current for comparison tests
