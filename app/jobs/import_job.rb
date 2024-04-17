@@ -42,6 +42,8 @@ class ImportJob < ApplicationJob
     save_record(blueprint, metadata)
   end
 
+  private
+
   # Return the blueprint object matching the name from the input document
   def find_blueprint(doc)
     blueprint_name = doc['has_model_ssim']&.first
@@ -50,17 +52,41 @@ class ImportJob < ApplicationJob
 
   # Return a hash with incoming document keys mapped to their blueprint targets
   def build_description(blueprint, doc)
-    doc.transform_keys(blueprint.key_map).merge({ ingest_key: doc.to_json[0..99] })
+    doc.transform_keys(blueprint.key_map).merge({ ingest_snippet: doc.to_json[0..99] })
   end
 
   # Save a new Item, rescuing & capturing exceptions
   def save_record(blueprint, metadata)
-    item = Item.create(blueprint: blueprint, metadata: metadata)
+    attachables = fetch_files(metadata)
+    item = Item.create(blueprint: blueprint, metadata: metadata, files: attachables)
     { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
   rescue RuntimeError => e
     logger.error { "#{e}: #{e.message}" }
     { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
-      ref: metadata[:ingest_key] }
+      ref: metadata[:ingest_snippet] }
+  end
+
+  def fetch_files(metadata)
+    files = metadata['files']
+    return unless files.respond_to?(:map)
+
+    files.map do |reference|
+      reference_io = read_from(reference['url'])
+      blob = ActiveStorage::Blob.create_and_upload!(io: reference_io, filename: reference['name'],
+                                                    content_type: 'application/octet-stream', identify: false)
+      reference_io.close
+      blob
+    end
+  end
+
+  def read_from(url)
+    case url
+    when /http/
+      # Use URI.parse to prevent code injection - https://docs.rubocop.org/rubocop/cops_security.html#securityopen
+      URI.parse(url).open
+    else
+      File.open(url)
+    end
   end
 
   # Utility class to encapsulate the details of status reporting from
