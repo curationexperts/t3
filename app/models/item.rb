@@ -4,4 +4,5 @@
 # be an easy jump to managing collections.  So both classes inherit from the
 # same parent and share controllers that provide common behavior
 class Item < Resource
+  has_many_attached :files
 end
