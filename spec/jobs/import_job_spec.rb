@@ -40,6 +40,23 @@ RSpec.describe ImportJob do
                                                          'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
                                             'Date' => 1878)
     end
+
+    context 'with files' do
+      let(:doc_with_files) do
+        doc.merge({ 'files' => [{ 'name' => 'local_file.png',  'url' => 'spec/fixtures/files/sample_logo.png' },
+                                { 'name' => 'remote_file.png', 'url' => 'https://raw.githubusercontent.com/' \
+                                                                        'curationexperts/t3/v0.23.0/' \
+                                                                        'spec/fixtures/files/sample_logo.png' }] })
+      end
+
+      it 'attaches them to the item', :aggregate_failures do
+        job.process_record(doc_with_files)
+        filenames = Item.last.files.map(&:filename).map(&:to_s)
+        filesizes = Item.last.files.map(&:byte_size)
+        expect(filenames).to eq ['local_file.png', 'remote_file.png']
+        expect(filesizes).to eq [2878, 2878]
+      end
+    end
   end
 
   it 'requires an Ingest instance' do
