@@ -58,9 +58,9 @@ class ImportJob < ApplicationJob
   # Save a new Item, rescuing & capturing exceptions
   def save_record(blueprint, metadata)
     attachables = fetch_files(metadata)
-    item = Item.create(blueprint: blueprint, metadata: metadata, files: attachables)
+    item = Item.create!(blueprint: blueprint, metadata: metadata, files: attachables)
     { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
-  rescue RuntimeError => e
+  rescue StandardError => e
     logger.error { "#{e}: #{e.message}" }
     { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
       ref: metadata[:ingest_snippet] }
@@ -125,7 +125,7 @@ class ImportJob < ApplicationJob
                       })
       report = { context: @context, items: @statuses }
       @ingest.report.attach(
-        io: StringIO.open(report.to_json),
+        io: StringIO.open(JSON.pretty_generate(report)),
         filename: "import#{@ingest.id}.json",
         content_type: 'application/json'
       )
