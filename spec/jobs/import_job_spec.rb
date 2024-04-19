@@ -137,8 +137,8 @@ RSpec.describe ImportJob do
     context 'with errors' do
       before do
         # Simulate an error on creating one of two records
-        allow(Item).to receive(:create) do |params|
-          raise 'Testing exception handling' if params[:metadata]['title_ssi'].match?(/Admiral/)
+        allow(Item).to receive(:create!) do |params|
+          raise NoMethodError, 'Testing exception handling' if params[:metadata]['title_ssi'].match?(/Admiral/)
 
           Item.new(id: 1)
         end

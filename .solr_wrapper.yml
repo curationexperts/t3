@@ -5,3 +5,4 @@ download_dir: ./tmp
 collection:
   dir: solr/conf/
   name: blacklight-core
+  persist: true
