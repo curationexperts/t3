@@ -8,6 +8,7 @@ RSpec.describe 'Catalog Config' do
      { name: 'Creator',     data_type: 'text_en', list_view: true,  item_view: true, multiple: true, facetable: true },
      { name: 'Keywords',    data_type: 'string',  list_view: false, item_view: true, multiple: true, facetable: true },
      { name: 'Usage Notes', data_type: 'text_en', list_view: false, item_view: true, multiple: true }]
+    # NOTE: 'Files' --> 'files_ssm' is injected automatically to handle file attachments
   end
 
   # Stub out a minimal solr server
@@ -46,7 +47,8 @@ RSpec.describe 'Catalog Config' do
                                 ['description_tesim', 'Description'],
                                 ['creator_tesim', 'Creator'],
                                 ['keywords_ssim', 'Keywords'],
-                                ['usage_notes_tesim', 'Usage Notes']
+                                ['usage_notes_tesim', 'Usage Notes'],
+                                ['files_ssm', 'Files']
                               ])
   end
 

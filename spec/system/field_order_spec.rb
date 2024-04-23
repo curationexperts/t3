@@ -20,7 +20,8 @@ describe 'Field Order' do
 
     # Check Catalog configuration reflects updated field order
     # NOTE: first field is used as the title field and suppressed from index_fields and show_fields
-    show_fields = CatalogController.blacklight_config.show_fields.values.map(&:label)
+    # NOTE: 'Files' is injected by the Config object and we want to disregard it for this test
+    show_fields = CatalogController.blacklight_config.show_fields.values.map(&:label).without('Files')
     expect(show_fields).to eq ['Alpha', 'Gamma']
   end
 end
