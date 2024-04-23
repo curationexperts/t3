@@ -106,7 +106,7 @@ class Config < ApplicationRecord
       config.add_index_field f.solr_field, label: f.name if f.list_view
       config.add_show_field f.solr_field, label: f.name if f.item_view
     end
-    config.add_show_field 'files_ssm', label: 'Files' # , helper_method: :file_links
+    config.add_show_field 'files_ssm', label: 'Files', helper_method: :file_links
     config
   end
 
