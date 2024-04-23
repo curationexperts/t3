@@ -110,7 +110,7 @@ class Resource < ApplicationRecord
   def prune_blank_values
     blueprint.fields.each do |field|
       value = metadata[field.name]
-      metadata[field.name] = field.multiple ? (value || []).compact_blank : value.presence
+      metadata[field.name] = field.multiple ? [*value].compact_blank : value.presence
     end
   end
 

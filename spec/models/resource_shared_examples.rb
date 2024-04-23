@@ -131,6 +131,14 @@ RSpec.shared_examples 'a resource' do
       resource.save!
       expect(resource.metadata['Author']).to eq ['Author', 'Co-Author', 'Editor']
     end
+
+    it 'casts scalars for multi-valued fields' do
+      allow(blueprint)
+        .to receive(:fields).and_return([FactoryBot.build(:field, name: 'Author', multiple: true)])
+      resource.metadata['Author'] = 'scalar'
+      resource.save!
+      expect(resource.metadata['Author']).to be_an(Array)
+    end
   end
 
   describe '#update_index', :solr do
