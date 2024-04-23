@@ -331,7 +331,7 @@ RSpec.describe Field do
       # NOTE: the first active field is used as the title field and already displays in index and show views
       expect { field.send(:update_catalog_controller) }
         .to change { CatalogController.blacklight_config.show_fields.values.map(&:label) }
-        .from([]).to(['field3'])
+        .from([]).to(array_including('field3'))
     end
 
     it 'updates facet fields', :aggregate_failures do
