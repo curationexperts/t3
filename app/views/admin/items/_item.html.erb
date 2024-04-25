@@ -1,12 +1,17 @@
 <div id="<%= dom_id item %>">
-  <p>
-    <strong>Blueprint:</strong>
-    <%= item.blueprint.name %>
-  </p>
-
-  <p>
-    <strong>Metadata:</strong>
-    <%= item.metadata %>
-  </p>
-
+  <h2 class="resource_label"><%= item.label -%></h2>
+  <dl>
+    <div>
+      <dt>Blueprint:</dt>
+      <dd class="blueprint_name"><%= item.blueprint.name %></dd>
+    </div>
+    <div>
+      <dt>Created:</dt>
+      <dd class="created_at"><%= item.created_at %></dd>
+    </div>
+    <div>
+      <dt>Modified:</dt>
+      <dd class="updated_at"><%= item.updated_at %></dd>
+    </div>
+  </dl>
 </div>

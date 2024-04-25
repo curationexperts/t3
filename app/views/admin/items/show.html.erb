@@ -1,10 +1,14 @@
 <p style="color: green"><%= notice %></p>
+<div class="resource">
+  <h1>Item Details</h1>
 
-<%= render @item %>
+    <%= render @item %>
 
-<div>
-  <%= link_to "Edit this #{@item.class}", url_for([:edit, @item]) %> |
-  <%= link_to "Back to #{@item.class.name.pluralize}", url_for(@item.class) %>
+  <div>
+    <%= link_to "Edit this #{@item.class}", url_for([:edit, @item]) %> |
+    <%= link_to "Back to #{@item.class.name.pluralize}", url_for(@item.class) %> |
+    <%= link_to "Public View",  solr_document_path(@item) %>
 
-  <%= button_to "Destroy this #{@item.class}", @item, method: :delete, id: dom_id(@item, :delete) %>
+    <%= button_to "Destroy this #{@item.class}", @item, method: :delete, id: dom_id(@item, :delete), class: 'btn btn-outline-danger', form_class: 'delete_button' %>
+  </div>
 </div>

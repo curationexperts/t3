@@ -1,0 +1,30 @@
+.resource {
+  .resource_label {
+    font-size: 1.25rem;
+  }
+
+  dl {
+    margin: 0.25rem;
+  }
+
+  dt, dd {
+    display: inline-block;
+  }
+
+  dt {
+    font-weight: normal;
+    color: var(--bs-secondary-color);
+    text-align: right;
+    width: 7rem;
+    margin-right: 1rem;
+  }
+
+  dd {
+    margin-bottom: 0;
+  }
+
+  .delete_button {
+    display: inline-block;
+    margin-inline-start: 5rem;
+  }
+}
