@@ -107,6 +107,9 @@ class Resource < ApplicationRecord
     self.metadata ||= {}
   end
 
+  # Removes blank fields from the persisted metadata
+  # e.g. '', [], nil, [nil], [nil, ''], etc.
+  # @note 0 is not a blank value
   def prune_blank_values
     blueprint.fields.each do |field|
       value = metadata[field.name]
@@ -114,16 +117,33 @@ class Resource < ApplicationRecord
     end
   end
 
+  # Validates that each required field has a non-blank value
   def required_fields_present
     return if blueprint&.fields.blank?
 
-    blueprint.fields.select(&:required).each do |required_field|
-      present = metadata.keys.include?(required_field.name)
-      unless present
-        errors.add(required_field.name.downcase.to_sym, :blank, message:
-          "Required field 'required_field.name' can not be blank")
+    required_fields.each do |required_field|
+      if missing_value?(required_field)
+        errors.add(:metadata, :invalid, message:
+          "field \"#{required_field}\" can't be blank")
       end
     end
+  end
+
+  # Return a list of any required fields in the blueprint
+  # @return Array<String> names of any required fields
+  def required_fields
+    blueprint.fields.select(&:required).map(&:name)
+  end
+
+  # Check for possible permutations of 'blank' input values in both
+  # single and multi-value metadata fields
+  # @return [Boolean] true  when no value is set;
+  #                   false when a non-blank value is present
+  # @example Missing values
+  #   '', nil, [], {}, [nil], [nil, '', [], {}]
+  def missing_value?(field_name)
+    value = metadata[field_name]
+    [*value].compact_blank.empty?
   end
 
   def label_field

@@ -99,6 +99,14 @@ RSpec.shared_examples 'a resource' do
     end
   end
 
+  it 'validates required fields' do
+    allow(blueprint).to receive(:fields).and_return([FactoryBot.build(:field, name: 'Required', required: true)])
+
+    resource.metadata['Required'] = ['', nil, {}]
+    resource.valid?
+    expect(resource.errors.where(:metadata, :invalid)).to be_present
+  end
+
   describe '#save' do
     before do
       # Stub solr calls which are tested elsewhere
@@ -113,15 +121,6 @@ RSpec.shared_examples 'a resource' do
       resource.metadata = nil
       resource.save
       expect(resource.errors.where(:metadata, :blank)).to be_present
-    end
-
-    it 'validates required fields' do
-      allow(blueprint).to receive(:fields).and_return(
-        [FactoryBot.build(:field, name: 'Required', required: true)]
-      )
-
-      resource.save
-      expect(resource.errors.where(:required, :blank)).to be_present
     end
 
     it 'diregards empty field values' do
