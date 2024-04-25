@@ -12,6 +12,8 @@ class Resource < ApplicationRecord
   validates :metadata, presence: true
   validate :required_fields_present
 
+  delegate :label_field, to: :blueprint
+
   class << self
     def reindex_all
       logger.measure_info('Reindexing everything', metric: "#{name}/index_all",
@@ -55,7 +57,7 @@ class Resource < ApplicationRecord
   end
 
   def label
-    metadata[label_field]
+    metadata[label_field] || "#{self.class}(#{id})"
   end
 
   # Use items partials instead of looking for separate items and collection partials
@@ -144,9 +146,5 @@ class Resource < ApplicationRecord
   def missing_value?(field_name)
     value = metadata[field_name]
     [*value].compact_blank.empty?
-  end
-
-  def label_field
-    @label_field ||= blueprint.fields.first.name
   end
 end

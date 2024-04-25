@@ -54,6 +54,14 @@ RSpec.shared_examples 'a resource' do
       )
       expect(resource.label).to eq 'One Hundred Years of Solitude'
     end
+
+    it 'returns the id when the title field is empty' do
+      # No "title" field is defined if there are no fields
+      allow(blueprint).to receive(:fields).and_return([])
+      resource.id = 987
+
+      expect(resource.label).to eq "#{resource.class}(987)"
+    end
   end
 
   describe '#to_solr' do
