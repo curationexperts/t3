@@ -8,6 +8,7 @@ RSpec.describe 'admin/_sidebar' do
   end
 
   it 'has a status link' do
+    allow(view.controller.current_ability).to receive(:can?).with(:read, Status).and_return(true)
     render
     expect(rendered).to have_link(href: status_path)
   end
