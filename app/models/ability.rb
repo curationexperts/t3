@@ -48,6 +48,6 @@ class Ability
     # Assign authorizations based on system roles
     authorized_resources = ROLE_MAPPER.select { |_resource, role| user&.role_name?(role) }
     authorized_resources.each_key { |resource| can :manage, resource }
-    can :read, :dashboard if authorized_resources.any?
+    can :read, [:dashboard, Status] if authorized_resources.any?
   end
 end

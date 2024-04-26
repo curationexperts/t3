@@ -55,8 +55,12 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Role)).to be true
       end
 
-      it 'can read dashboard status' do
+      it 'can read dashboard' do
         expect(authz.can?(:read, :dashboard)).to be true
+      end
+
+      it 'can read Status' do
+        expect(authz.can?(:read, Status)).to be true
       end
 
       it 'cannot manage Themes' do
@@ -107,8 +111,12 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Collection)).to be true
       end
 
-      it 'can read dashboard status' do
+      it 'can read dashboard' do
         expect(authz.can?(:read, :dashboard)).to be true
+      end
+
+      it 'can read Status' do
+        expect(authz.can?(:read, Status)).to be true
       end
 
       it 'cannot manage Users' do
