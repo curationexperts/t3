@@ -23,10 +23,6 @@ class Config < ApplicationRecord
     Config.first || Config.create(DEFAULT_CONFIG)
   end
 
-  def fields
-    Field.all.order(:created_at)
-  end
-
   def verified?
     solr_version.present?
   end

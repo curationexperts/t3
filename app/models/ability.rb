@@ -9,7 +9,6 @@ class Ability
     User => 'User Manager',
     Role => 'User Manager',
     Theme => 'Brand Manager',
-    Config => 'System Manager',
     Blueprint => 'System Manager',
     Field => 'System Manager',
     Ingest => 'System Manager',
