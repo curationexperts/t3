@@ -87,10 +87,6 @@ RSpec.describe Ability do
     describe 'as System Manager' do
       let(:role_name) { 'System Manager' }
 
-      it 'can manage Connfigs' do
-        expect(authz.can?(:manage, Config)).to be true
-      end
-
       it 'can manage Blueprints' do
         expect(authz.can?(:manage, Blueprint)).to be true
       end

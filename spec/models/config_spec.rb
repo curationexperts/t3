@@ -203,13 +203,6 @@ RSpec.describe Config, :aggregate_failures do
     end
   end
 
-  describe '#fields' do
-    it 'defaults to all active fields' do
-      FactoryBot.create_list(:field, 2)
-      expect(config.fields).to match_array Field.active
-    end
-  end
-
   describe '#available_fields' do
     it 'returns a list of fields indexed in the core' do
       config.solr_core = 'tenejo'
