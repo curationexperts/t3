@@ -1,100 +1,99 @@
 require 'rails_helper'
 
+CERTBOT_CAPTURES =
+  {
+    certificates2:
+      <<~STDOUT,
+        Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        Found the following matching certs:
+          Certificate Name: t3.application
+            Serial Number: 12345678901234567890123456789012345
+            Key Type: ECDSA
+            Domains: t3-dev.example.com t3.university.edu
+            Expiry Date: 2023-11-12 19:15:08+00:00 (VALID: 89 days)
+            Certificate Path: /etc/letsencrypt/live/t3.application/fullchain.pem
+            Private Key Path: /etc/letsencrypt/live/t3.application/privkey.pem
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      STDOUT
+    certificates3:
+      <<~STDOUT,
+        Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        Found the following matching certs:
+          Certificate Name: t3.application
+            Serial Number: 54321098765432109876543210987654321
+            Key Type: ECDSA
+            Domains: t3-dev.example.com t3.university.edu t3.example.com
+            Expiry Date: 2023-11-12 19:46:32+00:00 (VALID: 89 days)
+            Certificate Path: /etc/letsencrypt/live/t3.application/fullchain.pem
+            Private Key Path: /etc/letsencrypt/live/t3.application/privkey.pem
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      STDOUT
+    update_success:
+      <<~STDOUT,
+        Saving debug log to /var/log/letsencrypt/letsencrypt.log
+        Renewing an existing certificate for t3-dev.example.com and 2 more domains
+
+        Successfully received certificate.
+        Certificate is saved at: /etc/letsencrypt/live/t3.application/fullchain.pem
+        Key is saved at:         /etc/letsencrypt/live/t3.application/privkey.pem
+        This certificate expires on 2023-11-13.
+        These files will be updated when the certificate renews.
+        Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        If you like Certbot, please consider supporting our work by:
+         * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+         * Donating to EFF:                    https://eff.org/donate-le
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      STDOUT
+    update_partial:
+      <<~STDOUT,
+        Saving debug log to /var/log/letsencrypt/letsencrypt.log
+        Renewing an existing certificate for t3-dev.example.com and 2 more domains
+
+        Certbot failed to authenticate some domains (authenticator: apache). The Certificate Authority reported these problems:
+            Domain: demo.tenejo.com
+            Type:   unauthorized
+            Detail: 50.16.172.231: Invalid response from https://demo.tenejo.com/.well-known/acme-challenge/sxzTJOsdmDKfInk7chxPpYj_9HWjEkEbInNP5ZFKTcY: 404
+
+        Hint: The Certificate Authority failed to verify the temporary Apache configuration changes made by Certbot.#{' '}
+        Ensure that the listed domains point to this Apache server and that it is accessible from the internet.
+
+        Unable to obtain a certificate with every requested domain. Retrying without: demo.tenejo.com
+
+        Successfully received certificate.
+        Certificate is saved at: /etc/letsencrypt/live/t3.application/fullchain.pem
+        Key is saved at:         /etc/letsencrypt/live/t3.application/privkey.pem
+        This certificate expires on 2023-11-13.
+        These files will be updated when the certificate renews.
+        Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        If you like Certbot, please consider supporting our work by:
+         * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+         * Donating to EFF:                    https://eff.org/donate-le
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+      STDOUT
+    update_error:
+      <<~STDOUT,
+        Saving debug log to /var/log/letsencrypt/letsencrypt.log
+        Renewing an existing certificate for t3-dev.example.com and 4 more domains
+        An unexpected error occurred:
+        Error creating new order :: Cannot issue for "foo-tenejo-com": Domain name needs at least one dot
+        Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
+      STDOUT
+    unexpected: 'Not what we were expecting...'
+  }.freeze
+
 RSpec.describe Certbot::V2::Client do
-  let(:certbot_captures) do
-    {
-      certificates2:
-        <<~STDOUT,
-          Saving debug log to /var/log/letsencrypt/letsencrypt.log
-
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          Found the following matching certs:
-            Certificate Name: t3.application
-              Serial Number: 12345678901234567890123456789012345
-              Key Type: ECDSA
-              Domains: t3-dev.example.com t3.university.edu
-              Expiry Date: 2023-11-12 19:15:08+00:00 (VALID: 89 days)
-              Certificate Path: /etc/letsencrypt/live/t3.application/fullchain.pem
-              Private Key Path: /etc/letsencrypt/live/t3.application/privkey.pem
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        STDOUT
-      certificates3:
-        <<~STDOUT,
-          Saving debug log to /var/log/letsencrypt/letsencrypt.log
-
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          Found the following matching certs:
-            Certificate Name: t3.application
-              Serial Number: 54321098765432109876543210987654321
-              Key Type: ECDSA
-              Domains: t3-dev.example.com t3.university.edu t3.example.com
-              Expiry Date: 2023-11-12 19:46:32+00:00 (VALID: 89 days)
-              Certificate Path: /etc/letsencrypt/live/t3.application/fullchain.pem
-              Private Key Path: /etc/letsencrypt/live/t3.application/privkey.pem
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        STDOUT
-      update_success:
-        <<~STDOUT,
-          Saving debug log to /var/log/letsencrypt/letsencrypt.log
-          Renewing an existing certificate for t3-dev.example.com and 2 more domains
-
-          Successfully received certificate.
-          Certificate is saved at: /etc/letsencrypt/live/t3.application/fullchain.pem
-          Key is saved at:         /etc/letsencrypt/live/t3.application/privkey.pem
-          This certificate expires on 2023-11-13.
-          These files will be updated when the certificate renews.
-          Certbot has set up a scheduled task to automatically renew this certificate in the background.
-
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          If you like Certbot, please consider supporting our work by:
-           * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
-           * Donating to EFF:                    https://eff.org/donate-le
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        STDOUT
-      update_partial:
-        <<~STDOUT,
-          Saving debug log to /var/log/letsencrypt/letsencrypt.log
-          Renewing an existing certificate for t3-dev.example.com and 2 more domains
-
-          Certbot failed to authenticate some domains (authenticator: apache). The Certificate Authority reported these problems:
-              Domain: demo.tenejo.com
-              Type:   unauthorized
-              Detail: 50.16.172.231: Invalid response from https://demo.tenejo.com/.well-known/acme-challenge/sxzTJOsdmDKfInk7chxPpYj_9HWjEkEbInNP5ZFKTcY: 404
-
-          Hint: The Certificate Authority failed to verify the temporary Apache configuration changes made by Certbot.#{' '}
-          Ensure that the listed domains point to this Apache server and that it is accessible from the internet.
-
-          Unable to obtain a certificate with every requested domain. Retrying without: demo.tenejo.com
-
-          Successfully received certificate.
-          Certificate is saved at: /etc/letsencrypt/live/t3.application/fullchain.pem
-          Key is saved at:         /etc/letsencrypt/live/t3.application/privkey.pem
-          This certificate expires on 2023-11-13.
-          These files will be updated when the certificate renews.
-          Certbot has set up a scheduled task to automatically renew this certificate in the background.
-
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          If you like Certbot, please consider supporting our work by:
-           * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
-           * Donating to EFF:                    https://eff.org/donate-le
-          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        STDOUT
-      update_error:
-        <<~STDOUT,
-          Saving debug log to /var/log/letsencrypt/letsencrypt.log
-          Renewing an existing certificate for t3-dev.example.com and 4 more domains
-          An unexpected error occurred:
-          Error creating new order :: Cannot issue for "foo-tenejo-com": Domain name needs at least one dot
-          Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
-        STDOUT
-      unexpected: 'Not what we were expecting...'
-    }
-  end
-
-  let(:status_failed) { Process.wait2(fork { Process.exit 5 })[1] }
-  let(:status_successful) { Process.wait2(fork { Process.exit 0 })[1] }
+  let(:status_failed) { instance_double(Process::Status, { success?: false }) }
+  let(:status_successful) { instance_double(Process::Status, { success?: true }) }
   let(:status) { status_successful }
-  let(:certbot_stdout) { certbot_captures[:certificates2] }
+  let(:certbot_stdout) { CERTBOT_CAPTURES[:certificates2] }
 
   before do
     # stub certbot certinfo calls
@@ -120,7 +119,7 @@ RSpec.describe Certbot::V2::Client do
     end
 
     context 'when certbot gives an unexpected response' do
-      let(:certbot_stdout) { certbot_captures[:unexpected] }
+      let(:certbot_stdout) { CERTBOT_CAPTURES[:unexpected] }
 
       it 'returns a non-valid client' do
         expect(described_class.new).to be_invalid
@@ -157,8 +156,8 @@ RSpec.describe Certbot::V2::Client do
         .to receive(:capture2e)
         .with(Certbot::V2::Client::CERTBOT_READ)
         .and_return(
-          [certbot_captures[:certificates2], status_successful],
-          [certbot_captures[:certificates3], status_successful]
+          [CERTBOT_CAPTURES[:certificates2], status_successful],
+          [CERTBOT_CAPTURES[:certificates3], status_successful]
         )
     end
 
@@ -167,7 +166,7 @@ RSpec.describe Certbot::V2::Client do
         # stub a successful call to 'certbot certonly'
         allow(Open3).to receive(:capture2e)
           .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
-          .and_return([certbot_captures[:update_success], status])
+          .and_return([CERTBOT_CAPTURES[:update_success], status])
       end
 
       it 'updates the domains on the certificate' do
@@ -200,7 +199,7 @@ RSpec.describe Certbot::V2::Client do
         allow(Open3)
           .to receive(:capture2e)
           .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
-          .and_return([certbot_captures[:update_error], status_failed])
+          .and_return([CERTBOT_CAPTURES[:update_error], status_failed])
       end
 
       it 'passes the error message' do
@@ -216,7 +215,7 @@ RSpec.describe Certbot::V2::Client do
         allow(Open3)
           .to receive(:capture2e)
           .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
-          .and_return([certbot_captures[:update_partial], status_successful])
+          .and_return([CERTBOT_CAPTURES[:update_partial], status_successful])
       end
 
       it 'passes the failure reason' do
@@ -234,8 +233,8 @@ RSpec.describe Certbot::V2::Client do
         .to receive(:capture2e)
         .with(Certbot::V2::Client::CERTBOT_READ)
         .and_return(
-          [certbot_captures[:certificates3], status_successful],
-          [certbot_captures[:certificates2], status_successful]
+          [CERTBOT_CAPTURES[:certificates3], status_successful],
+          [CERTBOT_CAPTURES[:certificates2], status_successful]
         )
     end
 
@@ -243,7 +242,7 @@ RSpec.describe Certbot::V2::Client do
       before do
         allow(Open3).to receive(:capture2e)
           .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
-          .and_return([certbot_captures[:update_success], status])
+          .and_return([CERTBOT_CAPTURES[:update_success], status])
       end
 
       it 'updates the domains' do
@@ -276,7 +275,7 @@ RSpec.describe Certbot::V2::Client do
         allow(Open3)
           .to receive(:capture2e)
           .with(a_string_matching(Certbot::V2::Client::CERTBOT_UPDATE))
-          .and_return([certbot_captures[:update_error], status_failed])
+          .and_return([CERTBOT_CAPTURES[:update_error], status_failed])
       end
 
       it 'passes the error message' do
