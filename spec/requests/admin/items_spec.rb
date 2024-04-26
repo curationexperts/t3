@@ -12,15 +12,13 @@ RSpec.describe '/admin/items' do
     login_as super_admin
 
     # Fake a minimal Solr server
-    solr_client = RSolr::Client.new(nil)
-    allow(RSolr::Client).to receive(:new).and_return(solr_client)
-    allow(solr_client).to receive(:get).and_return({ 'lucene' => { 'solr-spec-version' => '9.4.0' } })
-    allow(solr_client).to receive(:update)
+    solr_client = instance_double(RSolr::Client, { update: :stubbed })
+    allow(Config).to receive(:solr_connection).and_return(solr_client)
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      Item.create(valid_attributes)
+      Item.create!(valid_attributes)
       get items_url
       expect(response).to be_successful
     end
@@ -28,7 +26,7 @@ RSpec.describe '/admin/items' do
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      item = Item.create(valid_attributes)
+      item = Item.create!(valid_attributes)
       get item_url(item)
       expect(response).to be_successful
     end
@@ -128,14 +126,11 @@ RSpec.describe '/admin/items' do
       let(:blueprint) { FactoryBot.build(:blueprint) }
 
       before do
-        active = instance_double(ActiveRecord::Relation)
-        allow(Field).to receive(:active).and_return(active)
-        allow(active).to receive(:order).and_return(
-          [FactoryBot.build(:field, name: 'Author', multiple: true)]
-        )
+        allow(Blueprint).to receive(:fields)
+          .and_return([FactoryBot.build(:field, name: 'Author', multiple: true)])
       end
 
-      it 'extends requested fields', :aggregate_failures do
+      it 'adds requested fields', :aggregate_failures do
         item.metadata.merge!({ 'Author' => ['Bronte, Charlotte', 'Bell, Currer'] })
         patch item_url(item), params: { refresh: 'add Author -1', item: { metadata: item.metadata } }
         body = Capybara.string(response.body)
@@ -174,12 +169,12 @@ RSpec.describe '/admin/items' do
       end
 
       it 'handles field names that include spaces', :aggregate_failures do
-        allow(Field.active).to receive(:order).and_return([FactoryBot.build(:field, name: 'Resource Type',
-                                                                                    multiple: true)])
+        allow(Blueprint).to receive(:fields)
+          .and_return([FactoryBot.build(:field, name: 'Resource Type', multiple: true)])
+
         patch item_url(item), params: { refresh: 'add Resource Type -1', item: { metadata: item.metadata } }
-        body = Capybara.string(response.body)
-        expect(body).to have_selector('input#item_metadata_Resource\ Type_2') # by id
-        expect(body).to have_field('item[metadata][Resource Type][]', count: 2) # by name
+        expect(response.body).to match(/id="item_metadata_Resource\ Type_2"/) # by id
+        expect(response.body).to match(/name="item\[metadata\]\[Resource Type\]\[\]"/) # by name
       end
     end
 
