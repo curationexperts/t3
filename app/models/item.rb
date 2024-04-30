@@ -9,7 +9,7 @@ class Item < Resource
   private
 
   def solr_base_values
-    files_ssm = { 'files_ssm' => files_attachments.map { |file| file.signed_id }.presence }.compact
+    files_ssm = { 'files_ssm' => files.map(&:signed_id).presence }.compact
     super.merge(files_ssm)
   end
 end

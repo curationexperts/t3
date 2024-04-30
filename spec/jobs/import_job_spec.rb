@@ -56,6 +56,14 @@ RSpec.describe ImportJob do
         expect(filenames).to eq ['local_file.png', 'remote_file.png']
         expect(filesizes).to eq [2878, 2878]
       end
+
+      it 'indexes them to Solr' do
+        solr_client = RSolr::Client.new(nil)
+        job.process_record(doc_with_files)
+        signed_ids = Item.last.files.map(&:signed_id)
+        fragment = signed_ids.join('","')
+        expect(solr_client).to have_received(:update).with(hash_including(data: match(fragment)))
+      end
     end
   end
 
@@ -91,9 +99,7 @@ RSpec.describe ImportJob do
 
   it 'updates the ingest record processed record count', :aggregate_failures do
     allow(job).to receive(:process_record).and_return({ status: 'created' })
-    expect(ingest.processed).to eq 0
-    job.perform_now
-    expect(ingest.processed).to eq 2
+    expect { job.perform_now }.to change(ingest, :processed).from(0).to(2)
   end
 
   context 'with errors' do
