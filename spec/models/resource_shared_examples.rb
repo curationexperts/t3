@@ -14,9 +14,8 @@ RSpec.shared_examples 'a resource' do
     expect(resource).to be_a(Resource)
   end
 
-  it 'uses a class-specific table', :aggregate_failures do
-    expect(resource.class.table_name).to eq described_class.table_name
-    expect(resource.class.table_name).not_to eq 'resources'
+  it 'uses Single Table Inheritance' do
+    expect(resource.class.table_name).to eq 'resources'
   end
 
   describe '#metadata' do

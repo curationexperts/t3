@@ -1,7 +1,5 @@
 # Basic repository object, smallest unit of discovery
 class Resource < ApplicationRecord
-  self.abstract_class = true
-
   belongs_to :blueprint
 
   after_initialize :check_metadata
@@ -9,6 +7,7 @@ class Resource < ApplicationRecord
   after_save :update_index
   after_destroy_commit :delete_index
 
+  validates :type, presence: true
   validates :metadata, presence: true
   validate :required_fields_present
 
