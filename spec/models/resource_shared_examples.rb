@@ -36,9 +36,11 @@ RSpec.shared_examples 'a resource' do
       expect(resource).to be_valid
     end
 
-    it 'must have a value' do
+    it 'must have a value', :aggregate_failures do
+      expect(resource).to be_valid
       resource.blueprint = nil
       expect(resource).not_to be_valid
+      expect(resource.errors.where(:blueprint, :blank)).to be_present
     end
 
     it 'must be a kind of Blueprint' do
