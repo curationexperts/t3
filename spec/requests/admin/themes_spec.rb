@@ -84,6 +84,8 @@ RSpec.describe '/admin/themes' do
 
     context 'with invalid parameters' do
       it 'does not create a new Theme' do
+        # Stub out Theme.current so we don't accidentally create a current theme in this test
+        allow(Theme).to receive(:current).and_return(FactoryBot.build(:theme))
         expect do
           post themes_url, params: { theme: invalid_attributes }
         end.not_to change(Theme, :count)
@@ -164,8 +166,7 @@ RSpec.describe '/admin/themes' do
 
   describe 'PATCH /activate' do
     it 'updates the current theme' do
-      old_theme = FactoryBot.create(:theme)
-      old_theme.activate!
+      old_theme = Theme.current
       new_theme = FactoryBot.create(:theme)
       expect { patch activate_theme_url(new_theme) }.to change(Theme, :current).from(old_theme).to(new_theme)
     end
