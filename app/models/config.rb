@@ -13,12 +13,6 @@ class Config < ApplicationRecord
   before_destroy :check_for_existing
   after_commit :update_catalog_controller
 
-  enum setup_step: {
-    host: %i[solr_host solr_version],
-    core: [:solr_core],
-    fields: [:fields]
-  }
-
   def self.current
     Config.first || Config.create(DEFAULT_CONFIG)
   end
