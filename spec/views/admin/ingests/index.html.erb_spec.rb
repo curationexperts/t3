@@ -3,7 +3,10 @@ require 'rails_helper'
 RSpec.describe 'admin/ingests/index' do
   let(:ingests) { (1..3).collect { |i| FactoryBot.build(:ingest, id: i) } }
 
-  before { assign(:ingests, ingests) }
+  before do
+    assign(:ingests, ingests)
+    ingests.each { |ingest| allow(ingest.manifest).to receive(:signed_id).and_return('stubbed') }
+  end
 
   it 'renders a list of ingests' do
     render
@@ -22,6 +25,7 @@ RSpec.describe 'admin/ingests/index' do
 
   it 'links to the report' do
     ingests[2].report = Rack::Test::UploadedFile.new('spec/fixtures/files/report.json', 'application/json')
+    allow(ingests[2].report).to receive(:signed_id).and_return('stubbed')
     render
     expect(rendered).to have_selector('td.report a', text: ingests[1].report.filename)
   end
