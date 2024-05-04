@@ -230,7 +230,7 @@ RSpec.shared_examples 'a resource' do
   end
 
   describe '#delete_index', :solr do
-    let(:resource) { FactoryBot.build(described_class.name.underscore.to_sym, id: 123) }
+    let(:resource) { FactoryBot.create(described_class.name.underscore.to_sym) }
     let(:solr_client) { RSolr::Client.new(nil) }
 
     # Fake a minimal Solr server

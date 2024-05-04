@@ -30,6 +30,7 @@ RSpec.describe ThemesHelper do
       it 'returns the blob proxy path' do
         theme = Theme.new(label: 'Ive got a logo')
         theme.main_logo.attach(fixture_file_upload('sample_logo.png'))
+        theme.main_logo.save!
         expect(helper.main_logo_path(theme)).to match %r{rails/active_storage/blobs/proxy/}
       end
     end
@@ -68,6 +69,7 @@ RSpec.describe ThemesHelper do
       # Pretend we've saved the theme ;)
       allow(theme).to receive(:persisted?).and_return(true)
       theme.favicon.attach(fixture_file_upload('rocket-takeoff.svg', 'image/svg'))
+      theme.favicon.save!
       expect(helper.favicon_preview(theme)).to match(/<img[^>]+>/)
     end
   end

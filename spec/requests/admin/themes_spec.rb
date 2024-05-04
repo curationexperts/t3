@@ -86,6 +86,8 @@ RSpec.describe '/admin/themes' do
       it 'does not create a new Theme' do
         # Stub out Theme.current so we don't accidentally create a current theme in this test
         allow(Theme).to receive(:current).and_return(FactoryBot.build(:theme))
+        # Stub the favicon signed_id becase we aren't persisting the attachment
+        allow(Theme.current.favicon).to receive(:signed_id).and_return('stubbed')
         expect do
           post themes_url, params: { theme: invalid_attributes }
         end.not_to change(Theme, :count)

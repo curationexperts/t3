@@ -12,6 +12,7 @@ RSpec.describe 'layouts/blacklight/base' do
     stub_template('shared/_header_navbar.html.erb' => 'HEADER',
                   'shared/_footer.html.erb' => 'FOOTER')
     allow(Theme).to receive(:current).and_return(theme)
+    allow(theme.favicon).to receive(:signed_id).and_return('stubbed')
   end
 
   it 'includes the Theme site name in metadata' do
