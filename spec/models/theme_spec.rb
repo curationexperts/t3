@@ -126,8 +126,8 @@ RSpec.describe Theme do
   end
 
   describe '#favicon' do
-    it 'defaults to a tenejo-branded favicon' do
-      expect(described_class.new.favicon.filename).to eq 'tenejo_knot_sm.png'
+    it 'is empty on new themes' do
+      expect(described_class.new.favicon).not_to be_attached
     end
 
     it 'accepts ActiveStorage attachments' do

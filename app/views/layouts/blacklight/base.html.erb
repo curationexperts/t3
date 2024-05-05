@@ -14,7 +14,7 @@
     <%= tenejo_favicon_link_tag %>
     <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload"  %>
     <!-- Inject dynamically updated style variables-->
-    <link type="text/css" rel="stylesheet" href="/admin/themes/<%= theme_id %>.css" data-turbo-track="reload">
+    <link type="text/css" rel="stylesheet" href="<%= current_or_requested_css %>" data-turbo-track="reload">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <% if defined? Importmap %>
       <%= javascript_importmap_tags %>

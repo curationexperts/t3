@@ -17,24 +17,28 @@ module ThemesHelper
     end
   end
 
-  def tenejo_favicon_link_tag
-    requested_id = params[:theme_id]
-    theme = Theme.find_by(id: requested_id) || Theme.current
-
-    path = rails_storage_proxy_path theme.favicon
-    type = theme.favicon.content_type
-    favicon_link_tag(path, type: type)
+  def tenejo_favicon_link_tag(theme = requested_theme)
+    if theme.is_a?(Theme) && theme.favicon.persisted?
+      path = rails_storage_proxy_path theme.favicon
+      type = theme.favicon.content_type
+      favicon_link_tag(path, type: type)
+    else
+      favicon_link_tag('tenejo_knot_sm.png', type: 'image/png')
+    end
   end
 
   def favicon_preview(theme)
-    return unless theme.persisted?
+    return unless theme&.favicon&.persisted?
 
     image_tag(theme.favicon, class: 'favicon-preview')
   end
 
-  def theme_id
+  def current_or_requested_css
+    url_for(controller: 'admin/themes', action: :show, id: requested_theme.id, format: :css)
+  end
+
+  def requested_theme
     requested_id = params[:theme_id]
-    theme = Theme.find_by(id: requested_id) || Theme.current
-    theme.id
+    Theme.find_by(id: requested_id) || Theme.current
   end
 end
