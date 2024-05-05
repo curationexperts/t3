@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'layouts/blacklight/base' do
   let(:catalog) { CatalogController.new }
-  let(:theme) { Theme.new(site_name: 'A fancy new archive') }
+  let(:theme) { Theme.new(site_name: 'A fancy new archive', id: 1) }
 
   before do
     allow(view).to receive(:controller).and_return(catalog)
@@ -12,7 +12,6 @@ RSpec.describe 'layouts/blacklight/base' do
     stub_template('shared/_header_navbar.html.erb' => 'HEADER',
                   'shared/_footer.html.erb' => 'FOOTER')
     allow(Theme).to receive(:current).and_return(theme)
-    allow(theme.favicon).to receive(:signed_id).and_return('stubbed')
   end
 
   it 'includes the Theme site name in metadata' do
@@ -22,6 +21,6 @@ RSpec.describe 'layouts/blacklight/base' do
 
   it 'sets a favicon link' do
     render
-    expect(rendered).to match(/<link rel="icon".*href=".*tenejo_knot_sm.png"/)
+    expect(rendered).to match(/<link rel="icon".*href=".*tenejo_knot_sm.*.png"/)
   end
 end

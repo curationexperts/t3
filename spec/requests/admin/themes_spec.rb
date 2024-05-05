@@ -85,9 +85,8 @@ RSpec.describe '/admin/themes' do
     context 'with invalid parameters' do
       it 'does not create a new Theme' do
         # Stub out Theme.current so we don't accidentally create a current theme in this test
-        allow(Theme).to receive(:current).and_return(FactoryBot.build(:theme))
+        allow(Theme).to receive(:current).and_return(FactoryBot.build(:theme, id: 1))
         # Stub the favicon signed_id becase we aren't persisting the attachment
-        allow(Theme.current.favicon).to receive(:signed_id).and_return('stubbed')
         expect do
           post themes_url, params: { theme: invalid_attributes }
         end.not_to change(Theme, :count)
@@ -143,6 +142,7 @@ RSpec.describe '/admin/themes' do
       let(:theme) { Theme.create! valid_attributes }
 
       it 'replaces the favicon' do
+        theme.favicon.attach(fixture_file_upload('tenejo_knot_sm.png'))
         expect(theme.favicon.filename).to eq 'tenejo_knot_sm.png'
         patch theme_url(theme), params: { theme: { favicon: icon_file } }
         theme.reload

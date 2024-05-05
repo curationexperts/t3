@@ -47,7 +47,7 @@ RSpec.describe ThemesHelper do
     it 'returns the application default' do
       theme = Theme.new(label: 'Theme with defaults')
       theme.activate!
-      expect(helper.tenejo_favicon_link_tag).to match 'tenejo_knot_sm.png'
+      expect(helper.tenejo_favicon_link_tag).to match 'tenejo_knot_sm.*.png'
     end
 
     it 'reads the type from the attachment' do
