@@ -118,10 +118,17 @@ RSpec.describe '/admin/fields' do
         expect(field).to have_received(:move).with('up')
       end
 
-      it 'redirects to the index view' do
-        field = Field.create! valid_attributes
-        patch move_field_path(field), params: { move: :up }
-        expect(response).to redirect_to fields_url
+      it 'renders the updated list', :aggregate_failures do
+        field1, field2 = FactoryBot.create_list(:field, 2)
+
+        # Confirm field2 comes after field1 in sequence order
+        expect(field2.sequence).to be > field1.sequence
+
+        # Send request to reorder fields
+        patch move_field_path(field2), params: { move: :up }
+
+        # Sequence should be reordered and field2 should now come first in the sequence
+        expect(response.body).to match(/<tr id="field_#{field2.id}">.*<tr id="field_#{field1.id}">/m)
       end
     end
 
