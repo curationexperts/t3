@@ -1,2 +1,2 @@
 solr: bundle exec solr_wrapper
-web: env RUBY_DEBUG_OPEN=true bin/rails server
+web: env RUBY_DEBUG_OPEN=true bin/rails server -p 3000
