@@ -5,15 +5,10 @@ class Ability
   include CanCan::Ability
 
   ROLE_MAPPER = {
-    :all => 'Super Admin',
-    User => 'User Manager',
-    Role => 'User Manager',
-    Theme => 'Brand Manager',
-    Blueprint => 'System Manager',
-    Field => 'System Manager',
-    Ingest => 'System Manager',
-    Item => 'System Manager',
-    Collection => 'System Manager'
+    'Super Admin' => [:all],
+    'User Manager' => [User, Role],
+    'Brand Manager' => [Theme],
+    'System Manager' => [Blueprint, Field, Ingest, Item, Collection]
   }.freeze
 
   def initialize(user)
@@ -46,8 +41,8 @@ class Ability
     can :read, Theme.current
 
     # Assign authorizations based on system roles
-    authorized_resources = ROLE_MAPPER.select { |_resource, role| user&.role_name?(role) }
-    authorized_resources.each_key { |resource| can :manage, resource }
+    authorized_resources = ROLE_MAPPER.select { |role, _objects| user&.role_name?(role) }.values.flatten
+    can :manage, authorized_resources
     can :read, [:dashboard, Status] if authorized_resources.any?
   end
 end
