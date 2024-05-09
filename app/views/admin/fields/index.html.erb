@@ -1,5 +1,5 @@
 <h1>Fields</h1>
-
+<%= turbo_frame_tag 'field_order' do -%>
 <table id="fields">
   <thead>
     <tr>
@@ -13,12 +13,12 @@
   </thead>
   <tbody>
     <% @fields.each do |field| %>
-      <tr>
+      <tr id="<%= dom_id(field) %>">
         <td class="order">
           <%= button_to '🔼', move_field_path(field, move: :up), id: dom_id(field, :move_up), class: 'up', method: :patch, disabled: field.sequence == 1 %>
           <%= button_to '🔽', move_field_path(field, move: :down), id: dom_id(field, :move_down), class: 'down', method: :patch, disabled: field.sequence == Field.count %>
         </td>
-        <td class="name"><%= link_to field.name, field -%></td>
+        <td class="name"><%= link_to field.name, field, data: {turbo: false} -%></td>
         <td class="data_type"><%= field.data_type -%><%= ' (multiple)' if field.multiple -%></td>
         <td class="settings">
           <% settings = field.active ? ['active'] : ['disabled'] %>
@@ -47,7 +47,7 @@
     </tr>
   </tfoot>
 </table>
-
+<% end %>
 
 <br>
 <%= link_to "Add field", new_field_path, class: 'btn btn-outline-primary' %>

@@ -53,7 +53,8 @@ module Admin
     def move # rubocop:disable Metrics/AbcSize
       respond_to do |format|
         if @field.move(params[:move])
-          format.html { redirect_to fields_url }
+          @fields = Field.order(:sequence)
+          format.html { render :index }
           format.json { render :show, status: :ok, location: @field }
         else
           format.html { redirect_to fields_url, status: :unprocessable_entity, alert: @field.errors.full_messages }
