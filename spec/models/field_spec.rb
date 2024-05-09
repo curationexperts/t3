@@ -292,6 +292,14 @@ RSpec.describe Field do
     end
   end
 
+  describe '#delete' do
+    it 'updates sequence numbers' do
+      fields = FactoryBot.create_list(:field, 3)
+
+      expect { fields[0].destroy }.to change { described_class.maximum(:sequence) }.by(-1)
+    end
+  end
+
   describe '#save' do
     it 'updates the blacklight configuration' do
       allow(field).to receive(:update_catalog_controller)

@@ -43,6 +43,7 @@ class Field < ApplicationRecord
   before_save :check_sequence
   after_save :clear_solr_field
   after_save :update_catalog_controller
+  after_destroy { Field.resequence }
 
   scope :active, -> { where(active: true) }
 
