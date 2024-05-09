@@ -314,10 +314,11 @@ RSpec.describe Field do
        FactoryBot.build(:field, name: 'field2', list_view: true, item_view: false, facetable: true),
        FactoryBot.build(:field, name: 'field3', list_view: false, item_view: true, facetable: true)]
     end
+    let(:blacklight_config) { Blacklight::Configuration.new }
 
     before do
-      # Clear the catalog configuration
-      CatalogController.blacklight_config = Blacklight::Configuration.new
+      # Run these tests against an empty blacklight configuration
+      allow(CatalogController).to receive(:blacklight_config).and_return(blacklight_config)
       # Stub Fields.active and Fields.active.order
       relation = described_class.where(id: nil) # empty relation
       allow(relation).to receive(:records).and_return(sample_fields)
