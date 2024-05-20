@@ -12,8 +12,8 @@ BUILD: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/curationexperts/
 
 ### Current Dependencies
 * Ruby 3.2.1
-* Rails 7.0.7
-* Blacklight 8.0.1
-* Solr 9.2.1
-* Postgres 
+* Rails 7.1.3
+* Blacklight 8.1.0
+* Solr 9.x (9.6.0)
+* Postgres 14.x (14.11)
 
