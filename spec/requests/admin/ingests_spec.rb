@@ -18,7 +18,7 @@ RSpec.describe '/ingests' do
   # adjust the attributes here as well.
   let(:valid_attributes) do
     { user: super_admin,
-      manifest: Rack::Test::UploadedFile.new('spec/fixtures/files/ingest.json', 'application/json') }
+      manifest: Rack::Test::UploadedFile.new('spec/fixtures/files/manifest.json', 'application/json') }
   end
   let(:invalid_attributes) { { manifest: nil } }
   let(:super_admin)  { FactoryBot.create(:super_admin) }
