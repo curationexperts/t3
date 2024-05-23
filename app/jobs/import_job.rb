@@ -3,43 +3,36 @@
 class ImportJob < ApplicationJob
   queue_as :default
 
-  after_enqueue do |job|
-    ingest = job.arguments.first
-    ingest.update(status: Ingest.statuses[:queued])
-  end
+  after_enqueue { arguments.first.queued! }
 
-  around_perform do |job, block|
-    raise ArgumentError unless job.arguments.first.is_a?(Ingest)
-
-    ingest = job.arguments.first
-    ingest.update(status: Ingest.statuses[:processing])
-    block.call
-    ingest.update(status: Ingest.statuses[:completed]) if ingest.error_count.zero?
-    ingest.update(status: Ingest.statuses[:errored]) if ingest.error_count.positive?
-  rescue RuntimeError => e
-    ingest.update(status: Ingest.statuses[:errored])
-    logger.error e
-  end
+  before_perform { raise ArgumentError unless arguments.first.is_a?(Ingest) }
 
   def perform(ingest)
-    report = Report.new(ingest)
-    metadata = JSON.parse(ingest.manifest.download)
-    docs = metadata.dig('response', 'docs')
-    docs.each.with_index do |doc, index|
-      logger.measure_info('Created item from metadata record', payload: { manifest_record: index + 1 },
-                                                               metric: 'item/import') do
-        report << process_record(doc)
-        # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
-        ingest.update_column(:processed, report.processed) # rubocop:disable Rails/SkipsModelValidations
+    @report = Report.new(ingest)
+    records(ingest).each.with_index(1) do |doc, index|
+      logger.measure_info('Created item from metadata', payload: { manifest_record: index }, metric: 'item/import') do
+        @report << process_record(doc, index)
       end
     end
-    report.save
+  rescue StandardError => e
+    @report.record_error(e)
+  ensure
+    @report.save
   end
 
-  def process_record(doc)
+  # return the list of metadata records from the attached manifest
+  def records(ingest)
+    metadata = JSON.parse(ingest.manifest.download)
+    metadata.dig('response', 'docs')
+  end
+
+  # Transform the metadata into an Item saved to the database
+  def process_record(doc, index = nil)
     blueprint = find_blueprint(doc)
     metadata = build_description(blueprint, doc)
     save_record(blueprint, metadata)
+  rescue StandardError => e
+    @report.record_error(e, doc, index)
   end
 
   private
@@ -60,10 +53,6 @@ class ImportJob < ApplicationJob
     attachables = fetch_files(metadata)
     item = Item.create!(blueprint: blueprint, metadata: metadata, files: attachables)
     { id: item.id, status: 'created', timestamp: Time.current.iso8601(3) }
-  rescue StandardError => e
-    logger.error { "#{e}: #{e.message}" }
-    { id: nil, status: 'error', timestamp: Time.current.iso8601(3), error_class: e.class, message: e.message,
-      ref: metadata[:ingest_snippet] }
   end
 
   def fetch_files(metadata)
@@ -94,17 +83,16 @@ class ImportJob < ApplicationJob
   class Report
     def initialize(ingest)
       @ingest = ingest
-      @context = {
-        ingest_id: ingest.id,
-        submitted_by: ingest.user.display_name,
-        submitted: ingest.created_at,
-        started: Time.current.iso8601(3)
-      }
+      @start_time = Time.current.iso8601(3)
       @statuses = []
+      @errors = []
+      @ingest.processing!
     end
 
     def <<(json)
       @statuses << json
+      # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
+      @ingest.update_column(:processed, processed) # rubocop:disable Rails/SkipsModelValidations
     end
 
     def processed
@@ -112,23 +100,47 @@ class ImportJob < ApplicationJob
     end
 
     def errored
-      @statuses.select { |item| item[:status] == 'error' }.count
+      @errors.count
+    end
+
+    def final_status
+      errored.zero? ? 'completed' : 'errored'
     end
 
     def save
-      @ingest.update(error_count: errored)
-      @context.merge!({
-                        finished: Time.current.iso8601(3),
-                        status: errored.zero? ? 'completed' : 'errored',
-                        processed: processed,
-                        errored: @ingest.error_count
-                      })
-      report = { context: @context, items: @statuses }
+      @ingest.update(status: final_status, processed: processed, error_count: errored)
+      attach_report
+    end
+
+    # Assemble artifacts into a pretty JSON file and attach to the ingest record
+    def attach_report
+      report = JSON.pretty_generate({ context: context, items: @statuses, errors: @errors })
       @ingest.report.attach(
-        io: StringIO.open(JSON.pretty_generate(report)),
+        io: StringIO.open(report),
         filename: "import#{@ingest.id}.json",
         content_type: 'application/json'
       )
+    end
+
+    def context
+      {
+        ingest_id: @ingest.id,
+        submitted_by: @ingest.user.display_name,
+        submitted: @ingest.created_at,
+        started: @start_time,
+        finished: Time.current.iso8601(3),
+        status: @ingest.status,
+        processed: @ingest.processed,
+        errored: @ingest.error_count
+      }
+    end
+
+    def record_error(err, doc = nil, index = nil)
+      ImportJob.logger.error err
+      @errors << { id: "manifest_record_#{index || 'none'}", error_class: err.class,
+                   message: err.message, document: (doc || 'none') }
+      # broadcast_status
+      { id: "manifest_record_#{index}", status: 'errored', timestamp: Time.current.iso8601(3) }
     end
   end
 end
