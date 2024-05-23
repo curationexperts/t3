@@ -79,9 +79,9 @@ RSpec.describe ImportJob do
 
     it 'updates on perform' do
       allow(job).to receive(:process_record).and_return({ status: 'created' })
-      allow(ingest).to receive(:update)
+      allow(ingest).to receive(:processing!)
       job.perform_now
-      expect(ingest).to have_received(:update).with(status: Ingest.statuses[:processing])
+      expect(ingest).to have_received(:processing!)
     end
 
     it 'updates on completion' do
@@ -104,7 +104,14 @@ RSpec.describe ImportJob do
 
   context 'with errors' do
     before do
-      allow(job).to receive(:save_record).and_return({ status: 'created' }, { status: 'error' }, { status: 'created' })
+      # Simulate an error on creating one of two records
+      item = Item.new
+      item.errors.add(:metadata, :invalid, message: 'field "Title" can\'t include Scallywags')
+      allow(Item).to receive(:create!) do |params|
+        raise ActiveRecord::RecordInvalid, item if params[:metadata]['title_ssi'].match?(/Admiral/)
+
+        Item.new(id: 1)
+      end
     end
 
     it 'sets the job status' do
@@ -164,7 +171,8 @@ RSpec.describe ImportJob do
             processed: 2,
             errored: 1
           ),
-          items: include(a_hash_including(message: 'Testing exception handling'))
+          items: include(a_hash_including(id: 'manifest_record_2', status: 'errored')),
+          errors: include(a_hash_including(id: 'manifest_record_2', message: 'Testing exception handling'))
         )
       end
     end
