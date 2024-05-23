@@ -32,21 +32,10 @@ RSpec.describe Ingest do
       expect(ingest.size).to be 0
     end
 
-    it 'accepts positive integers' do
-      ingest = FactoryBot.build(:ingest, size: 20)
-      expect(ingest).to be_valid
-    end
-
-    it 'is invalid when negative' do
-      ingest = FactoryBot.build(:ingest, size: -1)
-      ingest.validate
-      expect(ingest.errors.where(:size, :greater_than_or_equal_to)).to be_present
-    end
-
-    it 'does not accept non-integers' do
-      ingest = FactoryBot.build(:ingest, size: 3.14159)
-      ingest.validate
-      expect(ingest.errors.where(:size, :not_an_integer)).to be_present
+    it 'is set from the manifest on creation' do
+      ingest = FactoryBot.build(:ingest)
+      ingest.validate(:create)
+      expect(ingest.size).to eq 2 # number of docs in spec/fixtures/files/manifest.json
     end
   end
 
