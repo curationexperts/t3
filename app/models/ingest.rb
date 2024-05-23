@@ -12,7 +12,6 @@ class Ingest < ApplicationRecord
     errored: 40
   }
 
-  validates :size, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :manifest_attached
   validate :manifest_format, on: :create
 
