@@ -91,8 +91,7 @@ class ImportJob < ApplicationJob
 
     def <<(json)
       @statuses << json
-      # use update_column for fast updates - bypass validations & callbacks becuse we're only incremeting a counter
-      @ingest.update_column(:processed, processed) # rubocop:disable Rails/SkipsModelValidations
+      broadcast_status
     end
 
     def processed
@@ -110,6 +109,7 @@ class ImportJob < ApplicationJob
     def save
       @ingest.update(status: final_status, processed: processed, error_count: errored)
       attach_report
+      broadcast_status
     end
 
     # Assemble artifacts into a pretty JSON file and attach to the ingest record
@@ -120,6 +120,8 @@ class ImportJob < ApplicationJob
         filename: "import#{@ingest.id}.json",
         content_type: 'application/json'
       )
+      # Update browser clients watching the import (using Turbo Streams)
+      @ingest.broadcast_replace_to 'ingests', partial: 'admin/ingests/report', target: "report_ingest_#{@ingest.id}"
     end
 
     def context
@@ -133,6 +135,13 @@ class ImportJob < ApplicationJob
         processed: @ingest.processed,
         errored: @ingest.error_count
       }
+    end
+
+    def broadcast_status
+      # Update the processed item count in the database and broadcast to any watching clients
+      @ingest.update_column(:processed, processed) # rubocop:disable Rails/SkipsModelValidations
+      # Update browser clients watching the import (using Turbo Streams)
+      @ingest.broadcast_replace_to 'ingests', partial: 'admin/ingests/status', target: "status_ingest_#{@ingest.id}"
     end
 
     def record_error(err, doc = nil, index = nil)

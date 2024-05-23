@@ -1,0 +1,3 @@
+<div id="<%= dom_id(ingest, :status) -%>">
+  <%= progress_bar(ingest.processed, ingest.size, ingest.status, ingest.error_count) %>
+</div>
