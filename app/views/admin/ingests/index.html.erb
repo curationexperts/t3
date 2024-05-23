@@ -1,3 +1,5 @@
+<%= turbo_stream_from 'ingests' -%>
+
 <div id="ingests">
   <h1>Ingests</h1>
   <%= link_to "Submit new job", new_ingest_path, id: 'new_ingest', class: 'btn btn-primary' %>
@@ -17,8 +19,8 @@
         <td class='batch_id'><%= ingest.id %> <%= link_to 'view', url_for(ingest) %> </td>
         <td class='owner'><%= ingest.user.display_name %></td>
         <td class='manifest'><%= link_to ingest.manifest.filename, rails_blob_path(ingest.manifest, disposition: "attachment") %></td>
-        <td class='report'><%= link_to ingest.report.filename, rails_blob_path(ingest.report, disposition: "attachment") if ingest.report.attached? %></td>
-        <td class='status'><%= progress_bar(ingest.processed, ingest.size, ingest.status, ingest.error_count) %></td>
+        <td class='report'><%= render 'report', ingest: ingest %></td>
+        <td class='status'><%= render 'status', ingest: ingest %></td>
       </tr>
     <% end %></tbody>
     <tfoot>
@@ -32,15 +34,3 @@
     </tfoot>
   </table>
 </div>
-
-<!--Hack to get job processing updates-->
-<!--TODO: Use Turbo streams for status badge updates-->
-<% if @ingests.map(&:status).include?('processing') %>
-  <script>
-      function autoRefresh() {
-          window.location = window.location.href;
-      }
-      setInterval('autoRefresh()', 2000);
-  </script>
-<% end %>
-

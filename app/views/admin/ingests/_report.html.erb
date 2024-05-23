@@ -1,0 +1,3 @@
+<div id="<%= dom_id(ingest, :report) -%>">
+  <%= link_to ingest.report.filename, rails_blob_path(ingest.report, disposition: "attachment") if ingest.report.attached? %>
+</div>
