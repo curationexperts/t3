@@ -1,1 +1,1 @@
-json.array! @fields, partial: 'fields/field', as: :field
+json.array! @fields, partial: 'admin/fields/field', as: :field
