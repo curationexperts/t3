@@ -1,6 +1,8 @@
 # Iterate over items in an Ingest manifest and
 # create associated repository objects
 class ImportJob < ApplicationJob
+  require 'open-uri'
+
   queue_as :default
 
   after_enqueue { arguments.first.queued! }
