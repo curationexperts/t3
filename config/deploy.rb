@@ -1,8 +1,6 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.17.3'
 
-require 'capistrano/passenger'
-
 set :application, 't3'
 set :repo_url, 'https://github.com/curationexperts/t3.git'
 set :deploy_to, '/opt/t3'
@@ -54,3 +52,8 @@ append :linked_files, 'config/master.key'
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+# Enable Pums Systemd ingegration in production
+set :puma_service_unit_name, 'puma'
+set :puma_enable_socket_service, true
+set :puma_bind, 'unix:///opt/t3/shared/tmp/sockets/puma.sock'

@@ -39,5 +39,8 @@ pidfile ENV.fetch('PIDFILE') { 'tmp/pids/server.pid' }
 #
 # preload_app!
 
+# Set up socket location
+bind 'unix:///opt/t3/shared/tmp/sockets/puma.sock' if Dir.exist?('/opt/t3/shared/tmp/sockets')
+
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
