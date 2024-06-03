@@ -30,7 +30,8 @@ gem 'sprockets-rails'
 gem 'pg', '~> 1.1'
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 5.6'
+gem 'puma', '~> 6.4'
+gem 'sd_notify', group: :production
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -92,8 +93,8 @@ group :development do
 
   # Use Capistrano to deploy code to production and prod-like environments
   gem 'capistrano', require: false
+  gem 'capistrano3-puma', '6.0.0.beta.1', require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-sidekiq', require: false
 
