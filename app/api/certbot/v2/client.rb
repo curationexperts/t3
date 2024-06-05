@@ -17,7 +17,7 @@ module Certbot
       CERTBOT_READ =
         'sudo certbot certificates --cert-name t3.application'.freeze
       CERTBOT_UPDATE =
-        'sudo certbot certonly --apache -n --cert-name t3.application --allow-subset-of-names --domains '.freeze
+        'sudo certbot certonly --nginx -n --cert-name t3.application --allow-subset-of-names --domains '.freeze
 
       attr_reader :not_after, :last_error
 
@@ -78,8 +78,21 @@ module Certbot
         cert_summary, status = Open3.capture2e(CERTBOT_READ)
 
         @domains = extract_domains(cert_summary)
+        update_action_cable
+
         @not_after = extract_expiration(cert_summary)
         @valid = not_after.present? && status.success?
+      end
+
+      # Updates allowed ActionCable origins to match certificate
+      def update_action_cable
+        ActionCable.server.config.allowed_request_origins = hosts_with_protocols
+        # ActionCable::Server::Base.new.restart
+      end
+
+      # List of hosts prefixed with 'https://'
+      def hosts_with_protocols
+        @domains.map { |host| "https://#{host}" }
       end
 
       # Extract domains from "certbot certificates" output

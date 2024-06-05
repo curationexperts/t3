@@ -52,6 +52,12 @@ Style/FrozenStringLiteralComment:
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
 
+Style/NumericLiterals:
+  # Permit integers representing timestamps
+  # ex. 2023_08_13_19_05_25 (for comparing ActiveRecord Migration versions)
+  AllowedPatterns:
+    - '\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}'
+
 Style/OpenStructUse:
   Exclude:
     - 'spec/helpers/t3_form_builder_spec.rb'
