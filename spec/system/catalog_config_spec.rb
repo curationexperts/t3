@@ -21,7 +21,7 @@ RSpec.describe 'Catalog Config' do
     field_seeds.each do |seed|
       Field.create!(seed)
     end
-    Config.current
+    SolrService.current
   end
 
   it 'sets CatalogController title field to the first active field' do

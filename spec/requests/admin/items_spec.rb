@@ -13,7 +13,7 @@ RSpec.describe '/admin/items' do
 
     # Fake a minimal Solr server
     solr_client = instance_double(RSolr::Client, { update: :stubbed })
-    allow(Config).to receive(:solr_connection).and_return(solr_client)
+    allow(SolrService).to receive(:solr_connection).and_return(solr_client)
   end
 
   describe 'GET /index' do

@@ -20,14 +20,14 @@ class Resource < ApplicationRecord
         find_each do |resource|
           resource.update_index(commit: false)
         end
-        Config.solr_connection.commit
+        SolrService.solr_connection.commit
       end
     end
 
     def delete_orphans
       previously_checked = minimum(:id)
       # Delete any Solr documents with IDs less than the lowest database ID
-      Config.solr_connection.delete_by_query("id:[ * TO #{previously_checked} }")
+      SolrService.solr_connection.delete_by_query("id:[ * TO #{previously_checked} }")
 
       # Compare Database and Solr IDs in batches (of 1,000)
       in_batches do |batch|
@@ -36,8 +36,8 @@ class Resource < ApplicationRecord
       end
 
       # Delete any Solr documents with IDs greater than the highest database ID
-      Config.solr_connection.delete_by_query("id:{ #{maximum(:id)} TO * ]")
-      Config.solr_connection.commit
+      SolrService.solr_connection.delete_by_query("id:{ #{maximum(:id)} TO * ]")
+      SolrService.solr_connection.commit
     end
 
     private
@@ -45,13 +45,13 @@ class Resource < ApplicationRecord
     def prune_orphans(batch, previously_checked)
       max_id = batch.last.id
       # Query Solr for IDs between the last ID checked and the highest ID in the batch
-      response = Config.solr_connection.get 'select',
-                                            params: { q: "id:{#{previously_checked} TO #{max_id}]", fl: 'id',
-                                                      sort: 'id ASC', wt: :csv, facet: false, spellcheck: false }
+      response = SolrService.solr_connection.get 'select',
+                                                 params: { q: "id:{#{previously_checked} TO #{max_id}]", fl: 'id',
+                                                           sort: 'id ASC', wt: :csv, facet: false, spellcheck: false }
       solr_ids = response.split("\n").drop(1).map(&:to_i) # drop the CSV column header, cast IDs to Integers
       db_ids = batch.map(&:id)
       orphans = solr_ids - db_ids
-      Config.solr_connection.delete_by_id(orphans)
+      SolrService.solr_connection.delete_by_id(orphans)
     end
   end
 
@@ -70,16 +70,16 @@ class Resource < ApplicationRecord
                                                      metric: "#{self.class}/index_one") do
       save if changed? # ensure we're indexing the stored version of the resource
       document = to_solr
-      Config.solr_connection.update data: { add: { doc: document } }.to_json,
-                                    headers: { 'Content-Type' => 'application/json' },
-                                    params: { commit: commit }
+      SolrService.solr_connection.update data: { add: { doc: document } }.to_json,
+                                         headers: { 'Content-Type' => 'application/json' },
+                                         params: { commit: commit }
     end
   end
 
   def delete_index
-    Config.solr_connection.update data: { delete: { id: id } }.to_json,
-                                  headers: { 'Content-Type' => 'application/json' },
-                                  params: { commit: true }
+    SolrService.solr_connection.update data: { delete: { id: id } }.to_json,
+                                       headers: { 'Content-Type' => 'application/json' },
+                                       params: { commit: true }
   end
 
   def to_solr

@@ -27,7 +27,7 @@ RSpec.describe Ability do
         expect(authz.can?(:read, User)).to be false
         expect(authz.can?(:read, Role)).to be false
         expect(authz.can?(:read, Theme)).to be false
-        expect(authz.can?(:read, Config)).to be false
+        expect(authz.can?(:read, SolrService)).to be false
         expect(authz.can?(:read, Blueprint)).to be false
         expect(authz.can?(:read, Field)).to be false
         expect(authz.can?(:read, Ingest)).to be false
