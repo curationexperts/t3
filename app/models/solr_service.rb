@@ -1,11 +1,11 @@
 # Data object for Solr and Field configuration
-class Config < ApplicationRecord
+class SolrService < ApplicationRecord
   DEFAULT_CONFIG = { solr_host: 'http://localhost:8983',
                      solr_core: 'blacklight-core',
                      solr_version: 'checked' }.freeze
 
   validates :solr_host, presence: true
-  validate  :solr_host_responsive, on: :create
+  validate :host_responsive, on: :create
   validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
 
@@ -14,14 +14,14 @@ class Config < ApplicationRecord
   after_commit :update_catalog_controller
 
   def self.current
-    Config.first || Config.create(DEFAULT_CONFIG)
+    SolrService.first || SolrService.create(DEFAULT_CONFIG)
   end
 
   def verified?
     solr_version.present?
   end
 
-  def solr_host_looks_valid
+  def host_looks_valid
     return false unless solr_host
 
     uri = URI.parse(solr_host)
@@ -61,8 +61,8 @@ class Config < ApplicationRecord
     errors.add :solr_host, "#{solr_host} is not responding"
   end
 
-  def solr_host_responsive
-    return false unless solr_host_looks_valid
+  def host_responsive
+    return false unless host_looks_valid
 
     if fetch_solr_version.nil?
       errors.add(:solr_host, 'did not return a valid Solr version')
@@ -88,16 +88,20 @@ class Config < ApplicationRecord
 
   private
 
-  def blacklight_fields_from_config # rubocop:disable Metrics/AbcSize
+  def blacklight_fields_from_config
     config = Blacklight::Configuration.new
     # NOTE: skip the first field because it's always used as the main title field for Blacklight
-    Field.active.order(:sequence)[1..]&.each do |f|
-      config.add_facet_field f.solr_facet_field, label: f.name if f.facetable
-      config.add_index_field f.solr_field, label: f.name if f.list_view
-      config.add_show_field f.solr_field, label: f.name if f.item_view
+    Field.active.order(:sequence)[1..]&.each do |field|
+      update_field(config, field)
     end
     config.add_show_field 'files_ssm', label: 'Files', helper_method: :file_links
     config
+  end
+
+  def update_field(config, field)
+    config.add_facet_field field.solr_facet_field, label: field.name if field.facetable
+    config.add_index_field field.solr_field, label: field.name if field.list_view
+    config.add_show_field field.solr_field, label: field.name if field.item_view
   end
 
   def title_field_from_config
@@ -109,6 +113,6 @@ class Config < ApplicationRecord
   end
 
   def check_for_existing
-    raise ActiveRecord::RecordInvalid if Config.count >= 1
+    raise ActiveRecord::RecordInvalid if SolrService.count >= 1
   end
 end

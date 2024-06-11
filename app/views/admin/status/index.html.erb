@@ -1,6 +1,6 @@
 <h1>System Status</h1>
 
 <h2>&nbsp;</h2>
-<h3>Solr Status: <%= Config&.current&.solr_version&.present? ? "connected" : "down" -%></h3>
-<h3>Solr Version: <%= Config.current.solr_version -%></h3>
+<h3>Solr Status: <%= SolrService.current.solr_version.present? ? "connected" : "down" -%></h3>
+<h3>Solr Version: <%= SolrService.current.solr_version -%></h3>
 <h3>Users: <%= User.count -%></h3>

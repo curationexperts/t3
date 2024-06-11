@@ -114,7 +114,7 @@ class Field < ApplicationRecord
   end
 
   def update_catalog_controller
-    Config.current.update_catalog_controller
+    SolrService.current.update_catalog_controller
   end
 
   # Put the field at the end of the sequence if it's sequence order has not ben set
