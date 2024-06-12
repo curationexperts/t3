@@ -56,6 +56,14 @@ class Field < ApplicationRecord
         field.update!(sequence: index) if field.sequence != index
       end
     end
+
+    def in_sequence
+      @in_sequence ||= reset_sequence
+    end
+
+    def reset_sequence
+      @in_sequence = Field.order(:sequence)
+    end
   end
 
   # If we call render directly on a Field object, e.g. `render field`,
@@ -111,6 +119,7 @@ class Field < ApplicationRecord
   def clear_solr_field
     @solr_field = nil
     @solr_facet_field = nil
+    self.class.reset_sequence
   end
 
   def update_catalog_controller
