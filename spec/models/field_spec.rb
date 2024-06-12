@@ -349,4 +349,19 @@ RSpec.describe Field do
         .from([]).to(['field2', 'field3'])
     end
   end
+
+  describe '.in_sequence' do
+    it 'returns fields in sequence order' do
+      fields = FactoryBot.create_list(:field, 2)
+      expect(described_class.in_sequence).to eq [fields[0], fields[1]]
+    end
+
+    it 'is updated when any field is saved', :aggregate_failures do
+      fields = FactoryBot.create_list(:field, 2)
+      fields[0].update_attribute(:sequence, 4) # i.e. move the field to the end of the list
+      expect(described_class.in_sequence).to eq [fields[1], fields[0]]
+      fields << FactoryBot.create(:field)
+      expect(described_class.in_sequence).to eq [fields[1], fields[0], fields[2]]
+    end
+  end
 end
