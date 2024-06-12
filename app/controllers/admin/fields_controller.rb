@@ -7,7 +7,7 @@ module Admin
 
     # GET /fields or /fields.json
     def index
-      @fields = Field.order(:sequence)
+      @fields = Field.in_sequence
     end
 
     # GET /fields/1 or /fields/1.json
@@ -53,7 +53,7 @@ module Admin
     def move # rubocop:disable Metrics/AbcSize
       respond_to do |format|
         if @field.move(params[:move])
-          @fields = Field.order(:sequence)
+          @fields = Field.in_sequence
           format.html { render :index }
           format.json { render :show, status: :ok, location: @field }
         else

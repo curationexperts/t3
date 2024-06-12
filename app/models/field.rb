@@ -42,6 +42,7 @@ class Field < ApplicationRecord
 
   before_save :check_sequence
   after_save :clear_solr_field
+  after_save { Field.resequence } # Call before :update_catalog_controller to reflect field order changes
   after_save :update_catalog_controller
   after_destroy { Field.resequence }
 
@@ -51,18 +52,22 @@ class Field < ApplicationRecord
     # Compact sequence numbers to eliminate gaps
     # and start the sequence count at 1
     def resequence
-      fields = Field.order(%i[sequence updated_at])
-      fields.each.with_index(1) do |field, index|
+      reset_sequence
+      in_sequence.each.with_index(1) do |field, index|
         field.update!(sequence: index) if field.sequence != index
       end
     end
 
     def in_sequence
-      @in_sequence ||= reset_sequence
+      @in_sequence ||= Field.order(%i[sequence updated_at])
+    end
+
+    def active_in_sequence
+      in_sequence.select(&:active)
     end
 
     def reset_sequence
-      @in_sequence = Field.order(:sequence)
+      @in_sequence = nil
     end
   end
 
@@ -119,7 +124,6 @@ class Field < ApplicationRecord
   def clear_solr_field
     @solr_field = nil
     @solr_facet_field = nil
-    self.class.reset_sequence
   end
 
   def update_catalog_controller

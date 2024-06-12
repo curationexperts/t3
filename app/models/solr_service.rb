@@ -5,7 +5,7 @@ class SolrService < ApplicationRecord
                      solr_version: 'checked' }.freeze
 
   validates :solr_host, presence: true
-  validate :host_responsive, on: :create
+  validate :host_responsive
   validates :solr_version, presence: true, on: :update
   validates :solr_core, presence: true
 
@@ -91,7 +91,7 @@ class SolrService < ApplicationRecord
   def blacklight_fields_from_config
     config = Blacklight::Configuration.new
     # NOTE: skip the first field because it's always used as the main title field for Blacklight
-    Field.active.order(:sequence)[1..]&.each do |field|
+    Field.active_in_sequence[1..]&.each do |field|
       update_field(config, field)
     end
     config.add_show_field 'files_ssm', label: 'Files', helper_method: :file_links
@@ -105,7 +105,7 @@ class SolrService < ApplicationRecord
   end
 
   def title_field_from_config
-    Field.active.order(:sequence).first&.solr_field
+    Field.active_in_sequence.first&.solr_field
   end
 
   def solr_connection_from_config
