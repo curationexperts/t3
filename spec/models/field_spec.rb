@@ -221,6 +221,7 @@ RSpec.describe Field do
     it 'gets set to the end of the list' do
       previous = FactoryBot.create(:field, sequence: 10)
       FactoryBot.create(:field)
+      previous.reload # because sequence numbers may have been consolidated
       expect(described_class.last.sequence).to be > previous.sequence
     end
   end
@@ -319,14 +320,8 @@ RSpec.describe Field do
     before do
       # Run these tests against an empty blacklight configuration
       allow(CatalogController).to receive(:blacklight_config).and_return(blacklight_config)
-      # Stub Fields.active and Fields.active.order
-      relation = described_class.where(id: nil) # empty relation
-      allow(relation).to receive(:records).and_return(sample_fields)
-      allow(relation).to receive(:order).and_return(sample_fields)
-      allow(relation).to receive(:order).with(:sequence).and_return(relation)
-      allow(relation).to receive(:find_by).and_return(nil)
-      allow(relation).to receive(:first).and_return(sample_fields[0])
-      allow(described_class).to receive(:active).and_return(relation)
+      # Stub Field#in_seqeuence
+      allow(described_class).to receive(:in_sequence).and_return(sample_fields)
     end
 
     it 'updates index fields', :aggregate_failures do

@@ -13,7 +13,7 @@ class Blueprint < ApplicationRecord
   end
 
   def self.fields
-    Field.active.order(:sequence)
+    Field.active_in_sequence
   end
 
   # Returns a reverse mapping of source_field ==> field name

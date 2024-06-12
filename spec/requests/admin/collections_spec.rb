@@ -124,9 +124,7 @@ RSpec.describe '/admin/collections' do
       let(:blueprint) { FactoryBot.build(:blueprint) }
 
       before do
-        active = instance_double(ActiveRecord::Relation)
-        allow(Field).to receive(:active).and_return(active)
-        allow(active).to receive(:order).and_return(
+        allow(Field).to receive(:active_in_sequence).and_return(
           [FactoryBot.build(:field, name: 'Author', multiple: true)]
         )
       end
@@ -171,8 +169,8 @@ RSpec.describe '/admin/collections' do
       end
 
       it 'handles field names that include spaces', :aggregate_failures do
-        allow(Field.active).to receive(:order).and_return([FactoryBot.build(:field, name: 'Resource Type',
-                                                                                    multiple: true)])
+        allow(Field).to receive(:active_in_sequence).and_return([FactoryBot.build(:field, name: 'Resource Type',
+                                                                                          multiple: true)])
         patch collection_url(collection), params: {
           refresh: 'add Resource Type -1', item: { metadata: collection.metadata }
         }
