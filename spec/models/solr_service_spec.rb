@@ -35,17 +35,15 @@ RSpec.describe SolrService, :aggregate_failures do
     end
 
     it 'does not allow another record to be created' do
-      FactoryBot.create(:solr_service)
+      described_class.current
       second_config = FactoryBot.build(:solr_service)
 
       expect(second_config.save).to be_falsey
     end
 
     it 'does not allow destruction of the record' do
-      config = FactoryBot.create(:solr_service)
-
       expect do
-        config.destroy
+        described_class.current.destroy
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
@@ -53,9 +51,10 @@ RSpec.describe SolrService, :aggregate_failures do
   describe '.current' do
     context 'when a configuration record exists' do
       it 'returns it' do
-        config = FactoryBot.create(:solr_service)
+        described_class.delete_all
+        service = FactoryBot.create(:solr_service)
 
-        expect(described_class.current).to eq(config)
+        expect(described_class.current).to eq(service)
       end
     end
 
@@ -73,6 +72,7 @@ RSpec.describe SolrService, :aggregate_failures do
   end
 
   it 'updates the catalog controller on saves' do
+    service = described_class.current
     allow(service).to receive(:update_catalog_controller)
     service.save!
     expect(service).to have_received(:update_catalog_controller)
@@ -116,6 +116,7 @@ RSpec.describe SolrService, :aggregate_failures do
   end
 
   it 'solr_version must be present' do
+    allow(solr_client).to receive(:get).and_return({})
     service.solr_version = nil
     expect(service).not_to be_valid(:update)
     expect(service.errors.messages[:solr_version]).to include("can't be blank")
