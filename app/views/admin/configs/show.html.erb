@@ -1,0 +1,6 @@
+<div id="<%= dom_id @config %>">
+  <h1>System Configuration</h1>
+
+  <pre><code><%= JSON.pretty_generate(@config.settings.as_json) %>
+  </code></pre>
+</div>

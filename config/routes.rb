@@ -48,7 +48,9 @@ Rails.application.routes.draw do
     end
     resources :custom_domains, except: %i[edit update show]
     get 'profile', to: 'users#edit', as: :edit_user_registration
+    resource :config, only: %i[show edit update]
   end
+  resolve('Config') { [:config] }
 
   # When app is firt booted and no Solr config exists, use this as the application root
   # We'll generally only need this route once or twice, so we're placing it at the bottom
