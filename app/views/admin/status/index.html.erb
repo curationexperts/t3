@@ -4,3 +4,7 @@
 <h3>Solr Status: <%= SolrService.current.solr_version.present? ? "connected" : "down" -%></h3>
 <h3>Solr Version: <%= SolrService.current.solr_version -%></h3>
 <h3>Users: <%= User.count -%></h3>
+
+<%= link_to('Download Config', config_url(format: :json),
+            id: 'export_config', class: 'btn btn-primary btn-sm',
+            download: "#{request&.host || 't3'}-#{Time.current.strftime("%Y%m%d%H%M%S")}.json") %>
