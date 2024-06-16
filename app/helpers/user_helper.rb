@@ -32,17 +32,12 @@ module UserHelper
   #   inactive    - user has not logged in for over a year
   #   deactivated - user has been administratively deactivated
   #   unknown     - any other state
-  def account_state(user) # rubocop:disable Metrics/MethodLength
-    if user.sign_in_count.positive? && user.current_sign_in_at >= 1.year.ago
-      :active
-    elsif user.deactivated_at?
-      :deactivated
-    elsif user.invited_to_sign_up?
-      :invited
-    elsif user.sign_in_count.positive? && user.current_sign_in_at < 1.year.ago
-      :inactive
-    else
-      :unknown
-    end
+  def account_state(user)
+    return :deactivated if user.deactivated_at?
+    return :invited     if user.invited_to_sign_up?
+    return :unknown     unless user.sign_in_count.positive?
+    return :active      if user.current_sign_in_at >= 1.year.ago # within the last year
+
+    :inactive
   end
 end
