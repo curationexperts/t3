@@ -61,6 +61,13 @@ RSpec.describe Field do
       expect(second_field.errors.where(:name, :taken)).to be_present
     end
 
+    it 'includes the field name in error messages' do
+      FactoryBot.create(:field, name: 'first-field')
+      second_field = FactoryBot.build(:field, name: 'First-Field')
+      second_field.valid?
+      expect(second_field.errors.full_messages_for(:name)).to include(/First-Field/)
+    end
+
     it 'cannot begin with a space or dash' do
       field.name = '-a field'
       field.valid?
@@ -94,11 +101,15 @@ RSpec.describe Field do
     end
 
     it 'does not accept invalid values' do
-      expect { field.data_type = 'irregular' }.to raise_exception ArgumentError
+      field.data_type = 'irregular'
+      field.valid?
+      expect(field.errors.where(:data_type, :invalid)).to be_empty
     end
 
     it 'accepts defined types' do
-      expect { field.data_type = 'text_en' }.not_to raise_exception
+      field.data_type = 'text_en'
+      field.valid?
+      expect(field.errors.where(:data_type, :invalid)).to be_empty
     end
 
     it 'casts to a string when read' do
