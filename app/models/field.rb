@@ -1,7 +1,7 @@
 # Configuration point for field definitions across CatalogController, Blueprints, Items, and
 # import jobs.
 class Field < ApplicationRecord
-  enum data_type: {
+  enum :data_type, {
     string: 1, # consider 'exact',  'literal', or 'verbatim' as type or type prefix
     text_en: 2,
     integer: 3,
@@ -9,7 +9,7 @@ class Field < ApplicationRecord
     date: 5,
     boolean: 6,
     vocabulary: 7
-  }
+  }, validate: true
 
   TYPE_TO_SOLR = {
     'string' => 's',
@@ -32,11 +32,12 @@ class Field < ApplicationRecord
   }.freeze
 
   validates :name, presence: true
-  validates :name, uniqueness: { case_sensitive: false }
-  validates :name, format: { with: /\A[a-z0-9]/i, message: 'must begin with a letter or number' }
-  validates :name, format: { with: /[a-z0-9]\z/i, message: 'must end with a letter or number' }
+  validates :name, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
+  validates :name, format: { with: /\A[a-z0-9]/i, message: '"%<value>s" must begin with a letter or number' }
+  validates :name, format: { with: /[a-z0-9]\z/i, message: '"%<value>s" must end with a letter or number' }
   validates :name, format: { with: /\A([a-z0-9]( |-)?)+\z/i,
-                             message: 'can only contain lettters or numbers, separated by single spaces or dashes' }
+                             message: '"%<value>s" can only contain letters and numbers, ' \
+                                      'separated by single spaces or dashes' }
 
   validates :data_type, presence: true
 
