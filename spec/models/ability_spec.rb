@@ -33,6 +33,7 @@ RSpec.describe Ability do
         expect(authz.can?(:read, Ingest)).to be false
         expect(authz.can?(:read, Item)).to be false
         expect(authz.can?(:read, Collection)).to be false
+        expect(authz.can?(:read, Config)).to be false
       end
     end
 
@@ -97,6 +98,10 @@ RSpec.describe Ability do
 
       it 'can manage Fields' do
         expect(authz.can?(:manage, Field)).to be true
+      end
+
+      it 'can manage Config' do
+        expect(authz.can?(:manage, Config)).to be true
       end
 
       it 'can manage Ingests' do

@@ -4,9 +4,10 @@ RSpec.describe '/admin/configs' do
   # This should return the minimal set of attributes required to create a valid
   # Config. As you add validations to Config, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
+  let(:super_admin)  { FactoryBot.create(:super_admin) }
+  let(:regular_user) { FactoryBot.create(:user) }
+
+  before { login_as super_admin }
 
   describe 'GET /index' do
     it 'is not implemented' do
@@ -90,6 +91,20 @@ RSpec.describe '/admin/configs' do
       expect do
         Admin::ConfigsController.new.destroy
       end.to raise_exception(NoMethodError)
+    end
+  end
+
+  describe 'resctricts access' do
+    example 'for guest users' do
+      logout
+      get edit_config_url
+      expect(response).to be_not_found
+    end
+
+    example 'for non-admin users' do
+      login_as regular_user
+      get edit_config_url
+      expect(response).to be_unauthorized
     end
   end
 end
