@@ -1,6 +1,10 @@
-<div id="<%= dom_id @config %>">
+<div id="current_config">
   <h1>System Configuration</h1>
 
-  <pre><code><%= JSON.pretty_generate(@config.settings.as_json) %>
-  </code></pre>
+  <%= link_to('Back to Status', status_path, class: 'btn btn-primary btn-sm') %>
+
+  <div id='config_json'>
+    <pre><code><%= JSON.pretty_generate(@config.settings.as_json) %>
+    </code></pre>
+  </div>
 </div>
