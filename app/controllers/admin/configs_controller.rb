@@ -1,7 +1,8 @@
 module Admin
   # Controller for dumping and loading singleton Config class
   class ConfigsController < ApplicationController
-    before_action :set_config, only: %i[show edit update destroy]
+    before_action :set_config, only: %i[show edit update]
+    authorize_resource
 
     # GET /configs or /configs.json
     def index
