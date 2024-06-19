@@ -2,9 +2,13 @@
 # export and import purposes
 # basically a singleton (.current) but without the formal overhead of the Singleton module
 class Config
-  # require 'singleton'
   include Singleton
   include ActiveModel::API
+
+  def self.current
+    instance.errors.clear
+    instance
+  end
 
   def settings
     { context: {
@@ -16,32 +20,36 @@ class Config
       fields: Field.in_sequence }
   end
 
-  def self.current
-    instance
+  # treat the config as always being persisted
+  # to support form helpers
+  def persisted?
+    true
   end
 
   def update(config_file)
-    file = config_file.read
-    data = JSON.parse(file)
+    data = JSON.parse(config_file.read)
+    import_fields = data['fields']
 
-    create_or_update_fields(data)
+    create_or_update_fields(import_fields)
   end
 
-  def create_or_update_fields(data)
-    source_fields = data['fields']
-    new_fields = source_fields.map do |field_values|
-      Field.new(field_values.with_indifferent_access.slice(*filtered_fields))
+  def create_or_update_fields(fields)
+    errors.clear
+    new_fields = fields.map do |field_attrs|
+      Field.new(field_attrs.with_indifferent_access.slice(*filtered_fields)).tap do |field|
+        field.validate
+        errors.merge!(field.errors) # copy any errors to the parent object (Config)
+      end
     end
 
-    all_valid = new_fields.reduce(true) { |valid, field| valid && field.valid? }
-
-    return false unless all_valid
+    return false if errors.any?
 
     new_fields.each(&:save!)
 
     true
   end
 
+  # returns the list of Field attributes that should not be imported
   def filtered_fields
     Field.attribute_names - ['id', 'created_at', 'updated_at']
   end
