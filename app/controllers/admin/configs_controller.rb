@@ -4,6 +4,10 @@ module Admin
     before_action :set_config, only: %i[show edit update]
     authorize_resource
 
+    def self.menu_group
+      Status
+    end
+
     # GET /configs or /configs.json
     def index
       # We're explicitly raising an error here to make it obvious that we don't want to

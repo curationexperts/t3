@@ -23,7 +23,13 @@ RSpec.describe '/admin/configs' do
       expect(response).to be_successful
     end
 
-    it 'renders as json' do
+    it 'appears under the status navigation menu' do
+      get config_url
+      page = Capybara.string(response.body)
+      expect(page).to have_link(href: status_path, class: 'nav-link active')
+    end
+
+    it 'can render as json' do
       get config_url(format: :json)
       json = response.parsed_body
       expect(json).to include(

@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe 'admin/_sidebar' do
   before do
+    # Allow the test controller to respond to menu_group messages; simulates inheriting from ApplicaitonController
+    without_partial_double_verification do
+      allow(view.controller).to receive(:menu_group)
+    end
+
     # Impresonate a user who can read the dashboard, but has no specific authroizations
     allow(view.controller.current_ability).to receive(:can?).and_return(false)
     allow(view.controller.current_ability).to receive(:can?).with(:read, :dashboard).and_return(true)
@@ -11,6 +16,28 @@ RSpec.describe 'admin/_sidebar' do
     allow(view.controller.current_ability).to receive(:can?).with(:read, Status).and_return(true)
     render
     expect(rendered).to have_link(href: status_path)
+  end
+
+  describe 'highlighting' do
+    before do
+      # Mimic displaying the status page
+      without_partial_double_verification do
+        allow(view.controller).to receive(:menu_group).and_return(Status)
+      end
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Status).and_return(true)
+      allow(view.controller.current_ability).to receive(:can?).with(:read, Item).and_return(true)
+    end
+
+    it 'shows the active group' do
+      render
+      expect(rendered).to have_link(href: status_path, class: 'nav-link active')
+    end
+
+    it 'does not show on other sections', :aggregate_failures do
+      render
+      expect(rendered).not_to have_link(href: items_path, class: 'nav-link active')
+      expect(rendered).to have_link(href: items_path, class: 'nav-link')
+    end
   end
 
   describe 'items link' do

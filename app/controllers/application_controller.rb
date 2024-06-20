@@ -28,6 +28,17 @@ class ApplicationController < ActionController::Base
       end
   end
 
+  # Returns the class name associated with the controller
+  # override the class method if you want a controller to group in a different navigation section
+  def self.menu_group
+    @menu_group ||= controller_name.singularize.classify.constantize
+  end
+
+  # Delegates to the class's ::menu_group
+  def menu_group
+    self.class.menu_group
+  end
+
   private
 
   def append_info_to_payload(payload)
