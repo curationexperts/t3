@@ -40,8 +40,10 @@ class Ability
     # Allow any user or guest to access the current theme so we can render the expected CSS
     can :read, Theme.current
 
+    return unless user
+
     # Assign authorizations based on system roles
-    authorized_resources = ROLE_MAPPER.select { |role, _objects| user&.role_name?(role) }.values.flatten
+    authorized_resources = ROLE_MAPPER.select { |role, _objects| user.role_name?(role) }.values.flatten
     can :manage, authorized_resources
     can :read, [:dashboard, Status] if authorized_resources.any?
   end
