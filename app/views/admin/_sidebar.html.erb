@@ -2,7 +2,7 @@
   <nav id='admin_sidebar' class='d-flex flex-column flex-shrink-0 p-3'>
     <h2>Admin Tools</h2>
     <ul class='nav nav-pills flex-column mb-auto'>
-      <% [Status, Item, Collection, Ingest, User, Role, Blueprint, Field, Theme, CustomDomain].each do |menu_area|  %>
+      <% [Status, Item, Collection, Ingest, Vocabulary, User, Role, Blueprint, Field, Theme, CustomDomain].each do |menu_area|  %>
         <% if can? :read, menu_area %>
           <li class='nav-item'>
             <%= link_to t("t3.admin.#{menu_area.model_name.plural}"), menu_area, class: ['nav-link', active_class(menu_area)] %>

@@ -29,7 +29,6 @@ Rails.application.routes.draw do
 
   scope path: '/admin', module: :admin do
     get :status, to: 'status#index'
-    post 'users/:id/password_reset', to: 'users#password_reset', as: :user_password_reset
     resources :ingests
     resources :items do
       get 'new/:blueprint', on: :collection, action: :new, as: :new_blueprinted
@@ -43,11 +42,13 @@ Rails.application.routes.draw do
     resources :fields do
       patch 'move', on: :member
     end
+    resources :vocabularies
     resources :themes do
       patch 'activate', on: :member
     end
     resources :custom_domains, except: %i[edit update show]
     get 'profile', to: 'users#edit', as: :edit_user_registration
+    post 'users/:id/password_reset', to: 'users#password_reset', as: :user_password_reset
     resource :config, only: %i[show edit update]
   end
   resolve('Config') { [:config] }
