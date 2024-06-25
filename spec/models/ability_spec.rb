@@ -9,8 +9,8 @@ RSpec.describe Ability do
     allow(user).to receive(:role_name?).with(role_name).and_return(true)
   end
 
-  describe 'from role' do
-    describe 'with no roles' do
+  describe 'with role' do
+    describe 'not set' do
       let(:role_name) { '' }
 
       it 'allows anyone to read the current theme' do
@@ -34,10 +34,11 @@ RSpec.describe Ability do
         expect(authz.can?(:read, Item)).to be false
         expect(authz.can?(:read, Collection)).to be false
         expect(authz.can?(:read, Config)).to be false
+        expect(authz.can?(:read, Vocabulary)).to be false
       end
     end
 
-    describe 'as Super Admin' do
+    describe 'Super Admin' do
       let(:role_name) { 'Super Admin' }
 
       it 'has full privleges' do
@@ -45,7 +46,7 @@ RSpec.describe Ability do
       end
     end
 
-    describe 'as User Manager' do
+    describe 'User Manager' do
       let(:role_name) { 'User Manager' }
 
       it 'can manage Users' do
@@ -73,7 +74,7 @@ RSpec.describe Ability do
       end
     end
 
-    describe 'as Brand Manager' do
+    describe 'Brand Manager' do
       let(:role_name) { 'Brand Manager' }
 
       it 'can manage Theme' do
@@ -87,9 +88,13 @@ RSpec.describe Ability do
       it 'cannot manage Roles' do
         expect(authz.can?(:read, Role)).to be false
       end
+
+      it 'cannot manage Vocabularies' do
+        expect(authz.can?(:read, Vocabulary)).to be false
+      end
     end
 
-    describe 'as System Manager' do
+    describe 'System Manager' do
       let(:role_name) { 'System Manager' }
 
       it 'can manage Blueprints' do
@@ -116,6 +121,10 @@ RSpec.describe Ability do
         expect(authz.can?(:manage, Collection)).to be true
       end
 
+      it 'can manage Vocabularies' do
+        expect(authz.can?(:manage, Vocabulary)).to be true
+      end
+
       it 'can read dashboard' do
         expect(authz.can?(:read, :dashboard)).to be true
       end
@@ -129,7 +138,7 @@ RSpec.describe Ability do
       end
     end
 
-    describe 'with multiple roles' do
+    describe 'multiple combined' do
       let(:role_name) { '' }
 
       before do
@@ -144,10 +153,9 @@ RSpec.describe Ability do
 
       it 'can manage Content related features', :aggregate_failures do
         expect(authz.can?(:manage, Item)).to be true
-        expect(authz.can?(:manage, Collection)).to be true
         expect(authz.can?(:manage, Field)).to be true
-        expect(authz.can?(:manage, Blueprint)).to be true
         expect(authz.can?(:manage, Ingest)).to be true
+        expect(authz.can?(:manage, Vocabulary)).to be true
       end
 
       it 'can not manage Brand related features' do

@@ -8,7 +8,7 @@ class Ability
     'Super Admin' => [:all],
     'User Manager' => [User, Role],
     'Brand Manager' => [Theme],
-    'System Manager' => [Blueprint, Field, Config, Ingest, Item, Collection]
+    'System Manager' => [Blueprint, Field, Config, Ingest, Item, Collection, Vocabulary]
   }.freeze
 
   def initialize(user)
