@@ -66,7 +66,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def vocabulary_params
-      params.require(:vocabulary).permit(:name, :description)
+      params.require(:vocabulary).permit(:name, :description, :slug)
     end
   end
 end

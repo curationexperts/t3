@@ -17,7 +17,7 @@ RSpec.describe '/admin/vocabularies' do
   # Vocabulary. As you add validations to Vocabulary, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) { FactoryBot.attributes_for(:vocabulary) }
-  let(:invalid_attributes) { { name: '<Invalid Vocabulary!>' } }
+  let(:invalid_attributes) { { slug: '<Invalid $lug!>' } }
   let(:super_admin)  { FactoryBot.create(:super_admin) }
   let(:regular_user) { FactoryBot.create(:user) }
 
@@ -85,14 +85,14 @@ RSpec.describe '/admin/vocabularies' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        { name: 'updated_vocabulary_name' }
+        { name: 'Updated Vocabulary Name' }
       end
 
       it 'updates the requested vocabulary' do
         vocabulary = Vocabulary.create! valid_attributes
         patch vocabulary_url(vocabulary), params: { vocabulary: new_attributes }
         vocabulary.reload
-        expect(vocabulary.name).to eq 'updated_vocabulary_name'
+        expect(vocabulary.name).to eq 'Updated Vocabulary Name'
       end
 
       it 'redirects to the vocabulary' do
