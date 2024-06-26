@@ -5,9 +5,8 @@ class Vocabulary < ApplicationRecord
 
   validates :slug, presence: true
   validates :slug, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
-  validates :slug, format: { with: /\A([[:lower:]]+-?)+[[:lower:]]\z/i,
-                             message: '"%<value>s" can only contain letters, ' \
-                                      'separated by single dashes' }
+  validates :slug, format: { with: /\A[a-z0-9]+(-[a-z0-9]+)*\z/,
+                             message: '"%<value>s" can only contain letters and numbers separated by single dashes' }
 
   before_validation :set_slug
 
@@ -23,7 +22,7 @@ class Vocabulary < ApplicationRecord
 
   # Set the slug attribute if it is blank
   # slugs are a url-friendly version of the name with the following characteristics
-  # * lovercase only
+  # * lowercase only
   # * alphabetic characters only
   # * whitespace and other characters collapsed into single underscores
   def set_slug

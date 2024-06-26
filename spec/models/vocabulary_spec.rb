@@ -44,10 +44,47 @@ RSpec.describe Vocabulary do
       expect(another.errors.where(:slug, :taken)).to be_present
     end
 
-    it 'can only contain letters or dashes' do
-      vocab.slug = '5 invalid^chars__OH_No!'
-      vocab.validate
-      expect(vocab.errors.where(:slug, :invalid)).to be_present
+    describe 'patterns' do
+      it 'can contain letters, numbers and dashes' do
+        vocab.slug = 'marc-9xx-extensions'
+        expect(vocab).to be_valid
+      end
+
+      it 'can not include spaces' do
+        vocab.slug = 'spaces as separators'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
+
+      it 'can not include underscores' do
+        vocab.slug = 'underscores_as_separators'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
+
+      it 'can not include symbols' do
+        vocab.slug = 'slug-[with]-sybols'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
+
+      it 'can not include leading dash' do
+        vocab.slug = '-leading-dash'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
+
+      it 'can not include trailing dash' do
+        vocab.slug = 'trailing-dash-'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
+
+      it 'can not include repeated dashes' do
+        vocab.slug = 'repeated--dashes'
+        vocab.validate
+        expect(vocab.errors.where(:slug, :invalid)).to be_present
+      end
     end
   end
 
