@@ -11,6 +11,10 @@ class Vocabulary < ApplicationRecord
 
   before_validation :set_slug
 
+  def to_param
+    slug
+  end
+
   def to_partial_path
     'admin/'.concat(super)
   end
