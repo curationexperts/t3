@@ -17,11 +17,37 @@ RSpec.describe Vocabulary do
       another.validate
       expect(another.errors.where(:name, :taken)).to be_present
     end
+  end
 
-    it 'can only contain alphanumerics, dashes, or underscores' do
-      vocab.name = 'invalid^chars'
+  describe '#slug' do
+    it 'is required' do
+      # Temporarily stub method that ensures slug is set before validations
+      allow(vocab).to receive(:set_slug)
+
+      vocab.slug = nil
       vocab.validate
-      expect(vocab.errors.where(:name, :invalid)).to be_present
+      expect(vocab.errors.where(:slug, :blank)).to be_present
+    end
+
+    it 'gets set from the name when missing' do
+      vocab.name = 'Kontrollü Terimler -- Sözlük!'
+      vocab.slug = nil
+      vocab.save!
+      expect(vocab.slug).to eq 'kontrollu-terimler-sozluk'
+    end
+
+    it 'must be unique' do
+      vocab.slug = 'my-test-vocabulary'
+      vocab.save!
+      another = FactoryBot.build(:vocabulary, slug: 'my-test-vocabulary')
+      another.validate
+      expect(another.errors.where(:slug, :taken)).to be_present
+    end
+
+    it 'can only contain letters or dashes' do
+      vocab.slug = '5 invalid^chars__OH_No!'
+      vocab.validate
+      expect(vocab.errors.where(:slug, :invalid)).to be_present
     end
   end
 
