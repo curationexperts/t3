@@ -130,13 +130,13 @@ RSpec.describe '/admin/vocabularies' do
   describe 'resctricts access' do
     example 'for guest users' do
       logout
-      get ingests_url
+      get vocabularies_url
       expect(response).to be_not_found
     end
 
     example 'for non-admin users' do
       login_as regular_user
-      get ingests_url
+      get vocabularies_url
       expect(response).to be_unauthorized
     end
   end

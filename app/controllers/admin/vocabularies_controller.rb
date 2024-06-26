@@ -1,7 +1,7 @@
 module Admin
   # Coordinate creation and management of controlled vocabularies
   class VocabulariesController < ApplicationController
-    before_action :set_vocabulary, only: %i[show edit update destroy]
+    load_and_authorize_resource(find_by: :slug, id_param: :slug)
 
     # GET /admin/vocabularies or /admin/vocabularies.json
     def index
@@ -59,14 +59,9 @@ module Admin
 
     private
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_vocabulary
-      @vocabulary = Vocabulary.find(params[:id])
-    end
-
     # Only allow a list of trusted parameters through.
     def vocabulary_params
-      params.require(:vocabulary).permit(:name, :description, :slug)
+      params.require(:vocabulary).permit(:name, :slug, :description)
     end
   end
 end

@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     resources :fields do
       patch 'move', on: :member
     end
-    resources :vocabularies
+    resources :vocabularies, param: :slug
     resources :themes do
       patch 'activate', on: :member
     end
