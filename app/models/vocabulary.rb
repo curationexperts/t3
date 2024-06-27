@@ -1,3 +1,5 @@
+require 'vocabulary/term'
+
 # Controlled Vocabulary
 class Vocabulary < ApplicationRecord
   validates :name, presence: true

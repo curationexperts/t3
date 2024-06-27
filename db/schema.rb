@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_26_170147) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_26_221653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
@@ -198,10 +198,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_26_170147) do
     t.index ["slug"], name: "index_vocabularies_on_slug", unique: true
   end
 
+  create_table "vocabulary_terms", force: :cascade do |t|
+    t.bigint "vocabulary_id", null: false
+    t.string "label"
+    t.string "slug"
+    t.string "value"
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["vocabulary_id", "label"], name: "index_vocabulary_terms_on_vocabulary_id_and_label", unique: true
+    t.index ["vocabulary_id", "slug"], name: "index_vocabulary_terms_on_vocabulary_id_and_slug", unique: true
+    t.index ["vocabulary_id"], name: "index_vocabulary_terms_on_vocabulary_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ingests", "users"
   add_foreign_key "resources", "blueprints"
   add_foreign_key "roles_users", "roles"
   add_foreign_key "roles_users", "users"
+  add_foreign_key "vocabulary_terms", "vocabularies"
 end
