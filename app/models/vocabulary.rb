@@ -1,5 +1,3 @@
-require 'vocabulary/term'
-
 # Controlled Vocabulary
 class Vocabulary < ApplicationRecord
   validates :name, presence: true
@@ -11,6 +9,8 @@ class Vocabulary < ApplicationRecord
                              message: '"%<value>s" can only contain letters and numbers separated by single dashes' }
 
   before_validation :set_slug
+
+  has_many :terms, dependent: :destroy
 
   def to_param
     slug
