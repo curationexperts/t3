@@ -1,8 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Vocabulary::Term do
-  let(:vocab) { FactoryBot.build(:vocabulary) }
-  let(:term)  { FactoryBot.build(:vocabulary_term, vocabulary: vocab) }
+RSpec.describe Term do
+  let(:term) { FactoryBot.build(:term) }
 
   it 'must belong to a vocabulary' do
     term.vocabulary = nil
@@ -19,7 +18,7 @@ RSpec.describe Vocabulary::Term do
 
     it 'must be unique (within vocabulary)' do
       term.save!
-      another_term = FactoryBot.build(:vocabulary_term, vocabulary: term.vocabulary, label: term.label)
+      another_term = FactoryBot.build(:term, vocabulary: term.vocabulary, label: term.label)
       another_term.validate
       expect(another_term.errors.where(:label, :taken)).to be_present
     end
@@ -27,7 +26,7 @@ RSpec.describe Vocabulary::Term do
     it 'may be repeated in a different vocabulary' do
       term.save!
       different_vocab = FactoryBot.build(:vocabulary)
-      different_term = FactoryBot.build(:vocabulary_term, vocabulary: different_vocab, label: term.label)
+      different_term = FactoryBot.build(:term, vocabulary: different_vocab, label: term.label)
       different_term.validate
       expect(different_term.errors.where(:label, :taken)).not_to be_present
     end
