@@ -1,0 +1,27 @@
+<div id="terms">
+  <h1 id="vocabulary_name"><%= @vocabulary.name %></h1>
+  <h2>Vocabulary Terms</h2>
+
+
+  <div id='terms_headers' class="row term_header">
+    <div class="col tools">
+    </div>
+    <div class="col term_label">
+      <strong>Label</strong>
+    </div>
+    <div class="col term_slug">
+      <strong>Slug</strong>
+    </div>
+    <div class="col term_value">
+      <strong>Value</strong>
+    </div>
+    <div class="col term_note">
+      <strong>Note</strong>
+    </div>
+  </div>
+  <% @terms.each do |term| %>
+    <%= render term %>
+  <% end %>
+
+  <%= link_to "New term", new_vocabulary_term_path %>
+</div>

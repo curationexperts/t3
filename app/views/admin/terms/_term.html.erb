@@ -1,0 +1,19 @@
+<div id="<%= dom_id term %>">
+  <div class="row term">
+    <div class="col tools">
+      <%= link_to("Show", [term.vocabulary, term]) if action_name == 'index' %>
+    </div>
+    <div class="col term_label">
+      <%= term.label %>
+    </div>
+    <div class="col term_slug">
+      <%= term.slug %>
+    </div>
+    <div class="col term_value">
+      <%= term.value %>
+    </div>
+    <div class="col term_note">
+      <%= term.note %>
+    </div>
+  </div>
+</div>

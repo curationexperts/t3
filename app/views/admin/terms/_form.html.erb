@@ -1,0 +1,43 @@
+<%= form_with(model: term, url: term_path(term)) do |form| %>
+  <% if term.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(term.errors.count, "error") %> prohibited this term from being saved:</h2>
+
+      <ul>
+        <% term.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :vocabulary, style: "display: block" %>
+    <%= form.hidden_field :vocabulary_id, value: term.vocabulary.id %>
+    <%= form.text_field term.vocabulary.name, disabled: true %>
+  </div>
+
+  <div>
+    <%= form.label :label, style: "display: block" %>
+    <%= form.text_field :label %>
+  </div>
+
+  <div>
+    <%= form.label :slug, style: "display: block" %>
+    <%= form.text_field :slug %>
+  </div>
+
+  <div>
+    <%= form.label :value, style: "display: block" %>
+    <%= form.text_field :value %>
+  </div>
+
+  <div>
+    <%= form.label :note, style: "display: block" %>
+    <%= form.text_field :note %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

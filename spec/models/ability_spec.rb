@@ -35,6 +35,7 @@ RSpec.describe Ability do
         expect(authz.can?(:read, Collection)).to be false
         expect(authz.can?(:read, Config)).to be false
         expect(authz.can?(:read, Vocabulary)).to be false
+        expect(authz.can?(:read, Term)).to be false
       end
     end
 
@@ -71,6 +72,10 @@ RSpec.describe Ability do
 
       it 'cannot manage Items' do
         expect(authz.can?(:read, Item)).to be false
+      end
+
+      it 'cannot manage Terms' do
+        expect(authz.can?(:read, Term)).to be false
       end
     end
 
@@ -123,6 +128,10 @@ RSpec.describe Ability do
 
       it 'can manage Vocabularies' do
         expect(authz.can?(:manage, Vocabulary)).to be true
+      end
+
+      it 'can manage Terms' do
+        expect(authz.can?(:manage, Term)).to be true
       end
 
       it 'can read dashboard' do

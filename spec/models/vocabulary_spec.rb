@@ -31,7 +31,7 @@ RSpec.describe Vocabulary do
 
     it 'gets set from the name when missing' do
       vocab.name = 'Kontrollü Terimler -- Sözlük!'
-      vocab.slug = nil
+      vocab.slug = ''
       vocab.save!
       expect(vocab.slug).to eq 'kontrollu-terimler-sozluk'
     end
@@ -85,6 +85,12 @@ RSpec.describe Vocabulary do
         vocab.validate
         expect(vocab.errors.where(:slug, :invalid)).to be_present
       end
+    end
+  end
+
+  describe '#to_param' do
+    it 'returns the slug' do
+      expect(vocab.to_param).to eq vocab.slug
     end
   end
 

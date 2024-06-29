@@ -28,6 +28,6 @@ class Vocabulary < ApplicationRecord
   # * alphabetic characters only
   # * whitespace and other characters collapsed into single underscores
   def set_slug
-    self.slug ||= name&.gsub('_', '-')&.parameterize
+    self.slug = name&.gsub('_', '-')&.parameterize if slug.blank?
   end
 end

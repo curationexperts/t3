@@ -1,0 +1,13 @@
+<div id="<%= dom_id(@term) -%>" class="term">
+    <h1 id="vocabulary_name"><%= @vocabulary.name -%></h1>
+    <h2 id="term_label"><%= @term.label -%></h2>
+  <%= render @term %>
+
+  <div>
+    <%= link_to "Edit this term", edit_term_path(@term) %> |
+    <%= link_to "Back to terms", vocabulary_terms_path(@term.vocabulary) %>
+
+    <%= button_to "Destroy this term", [@term.vocabulary, @term], method: :delete %>
+  </div>
+</div>
+
