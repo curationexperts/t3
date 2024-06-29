@@ -42,7 +42,9 @@ Rails.application.routes.draw do
     resources :fields do
       patch 'move', on: :member
     end
-    resources :vocabularies, param: :slug
+    resources :vocabularies, param: :slug do
+      resources :terms, param: :slug
+    end
     resources :themes do
       patch 'activate', on: :member
     end
@@ -52,6 +54,20 @@ Rails.application.routes.draw do
     resource :config, only: %i[show edit update]
   end
   resolve('Config') { [:config] }
+
+  direct :term do |term|
+    if term.slug
+      { controller: 'admin/terms', action: :show, vocabulary_slug: term.vocabulary.slug, slug: term.slug }
+    else
+      { controller: 'admin/terms', vocabulary_slug: term.vocabulary }
+    end
+  end
+  direct :edit_term do |term|
+    { controller: 'admin/terms', action: :edit, vocabulary_slug: term.vocabulary.slug, slug: term.slug }
+  end
+  direct :terms do |term|
+    { controller: 'admin/terms', vocabulary_slug: term.vocabulary }
+  end
 
   # When app is firt booted and no Solr config exists, use this as the application root
   # We'll generally only need this route once or twice, so we're placing it at the bottom

@@ -12,6 +12,10 @@ class Term < ApplicationRecord
 
   before_validation :set_slug
 
+  def to_param
+    slug
+  end
+
   def to_partial_path
     'admin/'.concat(super)
   end
@@ -19,6 +23,6 @@ class Term < ApplicationRecord
   private
 
   def set_slug
-    self.slug ||= label&.parameterize
+    self.slug = label&.parameterize if slug.blank?
   end
 end

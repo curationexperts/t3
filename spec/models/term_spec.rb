@@ -42,7 +42,7 @@ RSpec.describe Term do
 
     it 'is set from the label when blank' do
       term.label = 'First Term in Vocabulary'
-      term.slug = nil
+      term.slug = ''
       term.validate
       expect(term.slug).to eq 'first-term-in-vocabulary'
     end
@@ -57,6 +57,12 @@ RSpec.describe Term do
       term.slug = 'Invalid (Slug) with spaces & special characters'
       term.validate
       expect(term.errors.where(:slug, :invalid)).to be_present
+    end
+  end
+
+  describe '#to_param' do
+    it 'returns the slug' do
+      expect(term.to_param).to eq term.slug
     end
   end
 end
