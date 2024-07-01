@@ -28,5 +28,24 @@ RSpec.describe Config do
       expect(described_class.current.settings)
         .to include(fields: a_collection_including(field))
     end
+
+    context 'with multiple vocabularies' do
+      let(:short_list) { FactoryBot.create(:vocabulary, name: 'Shorter List') }
+      let(:long_list) { FactoryBot.create(:vocabulary, name: 'Longer List') }
+
+      before do
+        FactoryBot.create_list(:term, 1, vocabulary: short_list)
+        FactoryBot.create_list(:term, 3, vocabulary: long_list)
+      end
+
+      it 'returns the current voabularies & terms' do
+        expect(described_class.current.settings).to(
+          include({ vocabularies: {
+                    'longer-list' => a_hash_including(terms: satisfying { |array| array.count == 3 }),
+                    'shorter-list' => a_hash_including(terms: satisfying { |array| array.count == 1 })
+                  } })
+        )
+      end
+    end
   end
 end

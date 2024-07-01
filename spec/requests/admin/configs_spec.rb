@@ -34,7 +34,9 @@ RSpec.describe '/admin/configs' do
       json = response.parsed_body
       expect(json).to include(
         'url' => 'http://www.example.com/admin/config.json',
-        'context' => a_hash_including('description' => 'T3 Configuration export')
+        'context' => a_hash_including('description' => 'T3 Configuration export'),
+        'fields' => a_kind_of(Array),
+        'vocabularies' => a_kind_of(Hash)
       )
     end
   end
