@@ -32,37 +32,37 @@ RSpec.describe Term do
     end
   end
 
-  describe '#slug' do
+  describe '#key' do
     it 'is required' do
-      allow(term).to receive(:set_slug)
-      term.slug = nil
+      allow(term).to receive(:set_key)
+      term.key = nil
       term.validate
-      expect(term.errors.where(:slug, :blank)).to be_present
+      expect(term.errors.where(:key, :blank)).to be_present
     end
 
     it 'is set from the label when blank' do
       term.label = 'First Term in Vocabulary'
-      term.slug = ''
+      term.key = ''
       term.validate
-      expect(term.slug).to eq 'first-term-in-vocabulary'
+      expect(term.key).to eq 'first-term-in-vocabulary'
     end
 
     it 'may contain letters, numbers, dashes, and underscores' do
-      term.slug = 'A_valid_but-ugly-1234-SLUG'
+      term.key = 'A_valid_but-ugly-1234-KEY'
       term.validate
-      expect(term.errors.where(:slug, :invalid)).not_to be_present
+      expect(term.errors.where(:key, :invalid)).not_to be_present
     end
 
     it 'may not contain special characters' do
-      term.slug = 'Invalid (Slug) with spaces & special characters'
+      term.key = 'Invalid (key) with spaces & special characters'
       term.validate
-      expect(term.errors.where(:slug, :invalid)).to be_present
+      expect(term.errors.where(:key, :invalid)).to be_present
     end
   end
 
   describe '#to_param' do
-    it 'returns the slug' do
-      expect(term.to_param).to eq term.slug
+    it 'returns the key' do
+      expect(term.to_param).to eq term.key
     end
   end
 end

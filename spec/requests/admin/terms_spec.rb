@@ -4,7 +4,7 @@ RSpec.describe 'admin/terms' do
   let(:test_vocab) { Vocabulary.find_or_create_by(label: 'Admin/Terms Test Vocabulary') }
   let(:valid_attributes) { FactoryBot.attributes_for(:term, vocabulary_id: test_vocab.id) }
   let(:invalid_attributes) do
-    FactoryBot.attributes_for(:term, vocabulary_id: test_vocab.id, slug: '<Invalid $lug!>')
+    FactoryBot.attributes_for(:term, vocabulary_id: test_vocab.id, key: '<Invalid $lug!>')
   end
   let(:super_admin)  { FactoryBot.create(:super_admin) }
   let(:regular_user) { FactoryBot.create(:user) }
@@ -98,7 +98,7 @@ RSpec.describe 'admin/terms' do
     end
 
     context 'with invalid parameters' do
-      let(:invalid_attributes) { { slug: '<Invalid $lug!>' } }
+      let(:invalid_attributes) { { key: '<Invalid $lug!>' } }
 
       it "renders a response with 422 status (i.e. to display the 'edit' template)" do
         term = Term.create! valid_attributes

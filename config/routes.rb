@@ -43,7 +43,7 @@ Rails.application.routes.draw do
       patch 'move', on: :member
     end
     resources :vocabularies, param: :key do
-      resources :terms, param: :slug
+      resources :terms, param: :key
     end
     resources :themes do
       patch 'activate', on: :member
@@ -56,14 +56,14 @@ Rails.application.routes.draw do
   resolve('Config') { [:config] }
 
   direct :term do |term|
-    if term.slug
-      { controller: 'admin/terms', action: :show, vocabulary_key: term.vocabulary.key, slug: term.slug }
+    if term.key
+      { controller: 'admin/terms', action: :show, vocabulary_key: term.vocabulary.key, key: term.key }
     else
       { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }
     end
   end
   direct :edit_term do |term|
-    { controller: 'admin/terms', action: :edit, vocabulary_key: term.vocabulary.key, slug: term.slug }
+    { controller: 'admin/terms', action: :edit, vocabulary_key: term.vocabulary.key, key: term.key }
   end
   direct :terms do |term|
     { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }

@@ -87,7 +87,7 @@ class Config
     when 'Vocabulary'
       Vocabulary.find_or_initialize_by(key: json_attrs['key'])
     when 'Term'
-      Term.find_or_initialize_by(slug: json_attrs['slug'], vocabulary: vocab)
+      Term.find_or_initialize_by(key: json_attrs['key'], vocabulary: vocab)
     end
   end
 

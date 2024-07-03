@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_03_161757) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_214102) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
@@ -144,13 +144,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_161757) do
   create_table "terms", force: :cascade do |t|
     t.bigint "vocabulary_id", null: false
     t.string "label"
-    t.string "slug"
+    t.string "key"
     t.string "value"
     t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["vocabulary_id", "key"], name: "index_terms_on_vocabulary_id_and_key", unique: true
     t.index ["vocabulary_id", "label"], name: "index_terms_on_vocabulary_id_and_label", unique: true
-    t.index ["vocabulary_id", "slug"], name: "index_terms_on_vocabulary_id_and_slug", unique: true
     t.index ["vocabulary_id"], name: "index_terms_on_vocabulary_id"
   end
 

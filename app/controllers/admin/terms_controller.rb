@@ -11,7 +11,7 @@ module Admin
 
     # GET /admin/terms or /admin/terms.json
     def index
-      @terms = @vocabulary.terms.order(:slug)
+      @terms = @vocabulary.terms.order(:key)
     end
 
     # GET /admin/terms/1 or /admin/terms/1.json
@@ -74,12 +74,12 @@ module Admin
     end
 
     def set_term
-      @term = @vocabulary.terms.find_by(slug: params[:slug])
+      @term = @vocabulary.terms.find_by(key: params[:key])
     end
 
     # Only allow a list of trusted parameters through.
     def term_params
-      params.require(:term).permit(:vocabulary_id, :label, :slug, :value, :note)
+      params.require(:term).permit(:vocabulary_id, :label, :key, :value, :note)
     end
   end
 end

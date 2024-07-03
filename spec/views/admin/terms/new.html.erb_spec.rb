@@ -14,7 +14,7 @@ RSpec.describe 'admin/terms/new' do
     render
     form = Capybara.string(rendered).find("form[action=\"#{vocabulary_terms_path(vocabulary)}\"][method=\"post\"]")
     expect(form).to have_field('term_label')
-    expect(form).to have_field('term_slug')
+    expect(form).to have_field('term_key')
     expect(form).to have_field('term_value')
     expect(form).to have_field('term_note')
     expect(form).to have_button(type: 'submit')
