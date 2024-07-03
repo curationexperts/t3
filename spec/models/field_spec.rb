@@ -162,45 +162,45 @@ RSpec.describe Field do
     end
   end
 
-  describe '#solr_field' do
+  describe '#solr_field_name' do
     it 'returns a solr field name that matches dynamic field suffixes' do
       field.name = 'Year'
       field.data_type = 'integer'
-      expect(field.solr_field).to eq 'year_ltsi'
+      expect(field.solr_field_name).to eq 'year_ltsi'
     end
 
     it 'handles multiples' do
       field.name = 'Keyword'
       field.data_type = 'string'
       field.multiple = true
-      expect(field.solr_field).to eq 'keyword_ssim'
+      expect(field.solr_field_name).to eq 'keyword_ssim'
     end
 
     it 'replaces dashes and spaces in the name with underscores' do
       field.name = 'Additional co-authors'
       field.data_type = 'text_en'
       field.multiple = true
-      expect(field.solr_field).to eq 'additional_co_authors_tesim'
+      expect(field.solr_field_name).to eq 'additional_co_authors_tesim'
     end
 
     it 'is memoized' do
-      memo = field.solr_field
+      memo = field.solr_field_name
       field.name = 'new_name'
-      expect(field.solr_field).to eq memo
+      expect(field.solr_field_name).to eq memo
     end
 
     it 'clears memoization on save' do
-      memo = field.solr_field
+      memo = field.solr_field_name
       field.name = "#{field.name} changed"
       field.save!
-      expect(field.solr_field).not_to eq memo
+      expect(field.solr_field_name).not_to eq memo
     end
   end
 
   describe '#solr_facet_field' do
-    it 'is the same as solr_field for non-text fields' do
+    it 'is the same as solr_field_name for non-text fields' do
       field.data_type = 'integer'
-      expect(field.solr_facet_field).to eq field.solr_field
+      expect(field.solr_facet_field).to eq field.solr_field_name
     end
 
     it 'does not tokenize text fields' do

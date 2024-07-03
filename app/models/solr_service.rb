@@ -100,12 +100,12 @@ class SolrService < ApplicationRecord
 
   def update_field(config, field)
     config.add_facet_field field.solr_facet_field, label: field.name if field.facetable
-    config.add_index_field field.solr_field, label: field.name if field.list_view
-    config.add_show_field field.solr_field, label: field.name if field.item_view
+    config.add_index_field field.solr_field_name, label: field.name if field.list_view
+    config.add_show_field field.solr_field_name, label: field.name if field.item_view
   end
 
   def title_field_from_config
-    Field.active_in_sequence.first&.solr_field
+    Field.active_in_sequence.first&.solr_field_name
   end
 
   def solr_connection_from_config

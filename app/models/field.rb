@@ -90,12 +90,12 @@ class Field < ApplicationRecord
   end
 
   # Generate a solr field name based onf the field name and the dynamic suffix derived from field settings
-  def solr_field
-    @solr_field ||= name.downcase.gsub(/[- ]/, '_') + solr_suffix
+  def solr_field_name
+    @solr_field_name ||= name.downcase.gsub(/[- ]/, '_') + solr_suffix
   end
 
   def solr_facet_field
-    @solr_facet_field ||= data_type == 'text_en' ? solr_field.gsub('_tesi', '_si') : solr_field
+    @solr_facet_field ||= data_type == 'text_en' ? solr_field_name.gsub('_tesi', '_si') : solr_field_name
   end
 
   # Change the field's position in the display sequence
@@ -123,7 +123,7 @@ class Field < ApplicationRecord
   private
 
   def clear_solr_field
-    @solr_field = nil
+    @solr_field_name = nil
     @solr_facet_field = nil
   end
 
