@@ -6,7 +6,6 @@ class Config
   include ActiveModel::API
 
   def self.current
-    instance.errors.clear
     instance
   end
 
@@ -14,7 +13,7 @@ class Config
   def settings
     { context:      context_for_export,
       fields:       Field.in_sequence,
-      vocabularies: vocabularies_for_export }
+      vocabularies: Vocabulary.order(:slug).as_json(include: :terms) }
   end
   # rubocop:enable Layout/HashAlignment:
 
@@ -25,10 +24,16 @@ class Config
   end
 
   def update(config_file)
+    errors.clear
     data = JSON.parse(config_file.read)
     import_fields = data['fields']
+    import_vocabularies = data['vocabularies']
 
-    create_or_update_fields(import_fields)
+    create_or_update_from_json(Field, import_fields)
+    create_or_update_from_json(Vocabulary, import_vocabularies)
+    create_or_update_vocab_terms(import_vocabularies)
+
+    errors.empty?
   end
 
   private
@@ -41,35 +46,59 @@ class Config
       host: Certbot::V2::Client.default_host,
       timestamp: Time.current.iso8601,
       field_count: Field.count,
-      vocabulary_count: Vocabulary.count
+      vocabulary_count: Vocabulary.count,
+      term_count: Term.count
     }
   end
 
-  # Returns a hash structure describing vocabuaries and included terms
-  def vocabularies_for_export
-    Vocabulary.order(:slug).to_h do |vocab|
-      [vocab.slug, { attributes: vocab, terms: vocab.terms.order(:slug) }]
-    end
-  end
+  # Create or update a set of object records from a JSON list of serialized objects
+  def create_or_update_from_json(klass, list, vocab = nil)
+    return if list.blank?
 
-  def create_or_update_fields(fields)
-    errors.clear
-    new_fields = fields.map do |field_attrs|
-      Field.new(field_attrs.with_indifferent_access.slice(*filtered_fields)).tap do |field|
-        field.validate
-        errors.merge!(field.errors) # copy any errors to the parent object (Config)
+    modified_items = list.map do |json_attrs|
+      initialize_item_with(json_attrs, klass, vocab).tap do |item|
+        clean_attributes = sanitize_attributes(klass, json_attrs)
+        item.assign_attributes(clean_attributes)
+        item.validate
+        errors.merge!(item.errors) # copy any errors to the parent object (Config)
       end
     end
 
-    return false if errors.any?
-
-    new_fields.each(&:save!)
-
-    true
+    modified_items.each(&:save!) unless errors.any?
   end
 
-  # returns the list of Field attributes that should not be imported
-  def filtered_fields
-    Field.attribute_names - ['id', 'created_at', 'updated_at']
+  # Handle Terms after Vocabularies since we don't want to
+  # save any Terms if there are any Vocabulary errors
+  def create_or_update_vocab_terms(vocabularies)
+    return if vocabularies.blank?
+
+    vocabularies.each do |json_attrs|
+      vocab = Vocabulary.find_by(slug: json_attrs['slug'])
+      create_or_update_from_json(Term, json_attrs['terms'], vocab)
+    end
+  end
+
+  # Find or initizize and object based on the given klass and attributes
+  def initialize_item_with(json_attrs, klass, vocab = nil)
+    case klass.name
+    when 'Field'
+      Field.find_or_initialize_by(name: json_attrs['name'])
+    when 'Vocabulary'
+      Vocabulary.find_or_initialize_by(slug: json_attrs['slug'])
+    when 'Term'
+      Term.find_or_initialize_by(slug: json_attrs['slug'], vocabulary: vocab)
+    end
+  end
+
+  # Return a white-listed set of attributes
+  # drops key-value pairs not in the key whitelist
+  def sanitize_attributes(klass, attrs_hash)
+    filtered_keys = filter_attributes(klass)
+    attrs_hash.with_indifferent_access.slice(*filtered_keys)
+  end
+
+  # List of attribute keys to copy from another instance
+  def filter_attributes(klass)
+    klass.attribute_names - ['id', 'created_at', 'updated_at', 'vocabulary_id']
   end
 end
