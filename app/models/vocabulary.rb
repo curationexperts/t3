@@ -22,11 +22,11 @@ class Vocabulary < ApplicationRecord
 
   private
 
-  # Set the slug attribute if it is blank
-  # slugs are a url-friendly version of the name with the following characteristics
+  # Set the key attribute if it is blank
+  # keys are a url-friendly version of the label with the following characteristics
   # * lowercase only
   # * alphabetic characters only
-  # * whitespace and other characters collapsed into single underscores
+  # * whitespace and other non-alphanumeric characters collapsed into single dashes
   def set_key
     self.key = label&.gsub('_', '-')&.parameterize if key.blank?
   end

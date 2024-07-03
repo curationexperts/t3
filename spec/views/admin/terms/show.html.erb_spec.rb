@@ -5,11 +5,11 @@ RSpec.describe 'admin/terms/show' do
   let(:term) { FactoryBot.build(:term, vocabulary: vocabulary, value: 'forty_two', note: 'usage note') }
 
   before do
-    term.validate # use #validate to set the slug
+    term.validate # use #validate to set the key
     assign(:term, term)
     assign(:vocabulary, vocabulary)
     request.path_parameters[:vocabulary_key] = vocabulary.key
-    request.path_parameters[:slug] = term.slug
+    request.path_parameters[:key] = term.key
   end
 
   it 'displays the vocabulary name' do
