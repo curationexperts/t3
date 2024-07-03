@@ -36,7 +36,7 @@ RSpec.describe '/admin/configs' do
         'url' => 'http://www.example.com/admin/config.json',
         'context' => a_hash_including('description' => 'T3 Configuration export'),
         'fields' => a_kind_of(Array),
-        'vocabularies' => a_kind_of(Hash)
+        'vocabularies' => a_kind_of(Array)
       )
     end
   end
@@ -66,9 +66,7 @@ RSpec.describe '/admin/configs' do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:valid_config) do
-        fixture_file_upload('config/minimal_valid_config.json')
-      end
+      let(:valid_config) { fixture_file_upload('config/minimal_valid_config.json') }
 
       it 'updates the requested config' do
         patch config_url, params: { config_file: valid_config }
