@@ -23,7 +23,8 @@ class Config
     true
   end
 
-  def update(config_file)
+  # Update configuration settings from a JSON file
+  def upload(config_file)
     errors.clear
     data = JSON.parse(config_file.read)
     import_fields = data['fields']

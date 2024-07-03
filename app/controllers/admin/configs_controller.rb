@@ -13,7 +13,6 @@ module Admin
       # We're explicitly raising an error here to make it obvious that we don't want to
       # default to the default ActionController behavior.
       raise NoMethodError
-      # @configs = Config.all
     end
 
     # GET /configs/1 or /configs/1.json
@@ -35,23 +34,13 @@ module Admin
       # We're explicitly raising an error here to make it obvious that we don't want to
       # default to the default ActionController behavior.
       raise NoMethodError
-      # @config = Config.new(config_params)
-      #
-      # respond_to do |format|
-      #   if @config.save
-      #     format.html { redirect_to config_url(@config), notice: 'Config was successfully created.' }
-      #     format.json { render :show, status: :created, location: @config }
-      #   else
-      #     format.html { render :new, status: :unprocessable_entity }
-      #     format.json { render json: @config.errors, status: :unprocessable_entity }
-      #   end
-      # end
     end
 
     # PATCH/PUT /configs/1 or /configs/1.json
+    # Upload configuration changes from a JSON configuration file
     def update
       respond_to do |format|
-        if @config.update(config_params)
+        if @config.upload(config_file)
           format.html { redirect_to config_url(@config), notice: 'Config was successfully updated.' }
           format.json { render :show, status: :ok, location: @config }
         else
@@ -66,12 +55,6 @@ module Admin
       # We're explicitly raising an error here to make it obvious that we don't want to
       # default to the default ActionController behavior.
       raise NoMethodError
-      # @config.destroy!
-      #
-      # respond_to do |format|
-      #   format.html { redirect_to configs_url, notice: 'Config was successfully destroyed.' }
-      #   format.json { head :no_content }
-      # end
     end
 
     private
@@ -82,7 +65,7 @@ module Admin
     end
 
     # Only allow a list of trusted parameters through.
-    def config_params
+    def config_file
       params.fetch(:config_file)
     end
   end
