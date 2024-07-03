@@ -1,19 +1,19 @@
 # Controlled Vocabulary
 class Vocabulary < ApplicationRecord
-  validates :name, presence: true
-  validates :name, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
+  validates :label, presence: true
+  validates :label, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
 
-  validates :slug, presence: true
-  validates :slug, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
-  validates :slug, format: { with: /\A[a-z0-9]+(-[a-z0-9]+)*\z/,
-                             message: '"%<value>s" can only contain letters and numbers separated by single dashes' }
+  validates :key, presence: true
+  validates :key, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
+  validates :key, format: { with: /\A[a-z0-9]+(-[a-z0-9]+)*\z/,
+                            message: '"%<value>s" can only contain letters and numbers separated by single dashes' }
 
-  before_validation :set_slug
+  before_validation :set_key
 
   has_many :terms, dependent: :destroy
 
   def to_param
-    slug
+    key
   end
 
   def to_partial_path
@@ -27,7 +27,7 @@ class Vocabulary < ApplicationRecord
   # * lowercase only
   # * alphabetic characters only
   # * whitespace and other characters collapsed into single underscores
-  def set_slug
-    self.slug = name&.gsub('_', '-')&.parameterize if slug.blank?
+  def set_key
+    self.key = label&.gsub('_', '-')&.parameterize if key.blank?
   end
 end

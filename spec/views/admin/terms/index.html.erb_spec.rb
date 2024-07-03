@@ -7,7 +7,7 @@ RSpec.describe 'admin/terms/index' do
   before do
     assign(:terms, terms)
     assign(:vocabulary, vocabulary)
-    request.path_parameters[:vocabulary_slug] = vocabulary.slug
+    request.path_parameters[:vocabulary_key] = vocabulary.key
   end
 
   it 'renders a list of vocabulary/terms' do
@@ -17,6 +17,6 @@ RSpec.describe 'admin/terms/index' do
 
   it 'displays the vocabulary name' do
     render
-    expect(rendered).to have_selector('#vocabulary_name', text: vocabulary.name)
+    expect(rendered).to have_selector('#vocabulary_label', text: vocabulary.label)
   end
 end

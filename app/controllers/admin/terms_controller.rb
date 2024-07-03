@@ -70,7 +70,7 @@ module Admin
 
     # Use callbacks to share common setup or constraints between actions.
     def set_vocabulary
-      @vocabulary = Vocabulary.find_by(slug: params[:vocabulary_slug])
+      @vocabulary = Vocabulary.find_by(key: params[:vocabulary_key])
     end
 
     def set_term

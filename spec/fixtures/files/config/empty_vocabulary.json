@@ -1,11 +1,11 @@
 {"vocabularies": [
   {
     "id": 2,
-    "name": "Vocab fixture for Import",
-    "description": "Simple test vocabulary",
+    "label": "Vocab fixture for Import",
+    "note": "Simple test vocabulary",
     "created_at": "2024-06-26T17:20:25.240Z",
     "updated_at": "2024-06-26T17:20:25.240Z",
-    "slug": "vocab-fixture-for-import",
+    "key": "vocab-fixture-for-import",
     "terms": []
   }
 ]}

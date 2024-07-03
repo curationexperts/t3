@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_28_173658) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_161757) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
@@ -202,13 +202,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_28_173658) do
   end
 
   create_table "vocabularies", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
+    t.string "label"
+    t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.citext "slug"
-    t.index ["name"], name: "index_vocabularies_on_name", unique: true
-    t.index ["slug"], name: "index_vocabularies_on_slug", unique: true
+    t.citext "key"
+    t.index ["key"], name: "index_vocabularies_on_key", unique: true
+    t.index ["label"], name: "index_vocabularies_on_label", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

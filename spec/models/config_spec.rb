@@ -28,8 +28,8 @@ RSpec.describe Config do
     end
 
     context 'with multiple vocabularies' do
-      let(:short_list) { FactoryBot.create(:vocabulary, name: 'Shorter List') }
-      let(:long_list) { FactoryBot.create(:vocabulary, name: 'Longer List') }
+      let(:short_list) { FactoryBot.create(:vocabulary, label: 'Shorter List') }
+      let(:long_list) { FactoryBot.create(:vocabulary, label: 'Longer List') }
 
       before do
         FactoryBot.create_list(:term, 1, vocabulary: short_list)
@@ -38,8 +38,8 @@ RSpec.describe Config do
 
       it 'returns the current vocabularies & terms' do
         expect(config.settings[:vocabularies])
-          .to(include(hash_including('slug' => 'longer-list', 'terms' => satisfying { |a| a.count == 3 }),
-                      hash_including('slug' => 'shorter-list', 'terms' => satisfying { |a| a.count == 1 })))
+          .to(include(hash_including('key' => 'longer-list', 'terms' => satisfying { |a| a.count == 3 }),
+                      hash_including('key' => 'shorter-list', 'terms' => satisfying { |a| a.count == 1 })))
       end
     end
   end
@@ -67,15 +67,15 @@ RSpec.describe Config do
     end
 
     it 'updates existing vocabularies' do
-      FactoryBot.create(:vocabulary, name: 'Vocab fixture for Import', description: 'TBD')
+      FactoryBot.create(:vocabulary, label: 'Vocab fixture for Import', note: 'TBD')
       cfg_import_file = fixture_file_upload('config/empty_vocabulary.json')
       expect { config.upload(cfg_import_file) }.to(
-        change { Vocabulary.last.description }.from('TBD').to('Simple test vocabulary')
+        change { Vocabulary.last.note }.from('TBD').to('Simple test vocabulary')
       )
     end
 
     it 'updates existing vocabulary terms' do
-      vocab = FactoryBot.create(:vocabulary, name: 'Resource Type')
+      vocab = FactoryBot.create(:vocabulary, label: 'Resource Type')
       term = FactoryBot.create(:term, vocabulary: vocab, label: 'Article', note: 'TBD')
       cfg_import_file = fixture_file_upload('config/short_vocabulary.json')
       config.upload(cfg_import_file)
