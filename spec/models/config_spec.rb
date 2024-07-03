@@ -44,24 +44,24 @@ RSpec.describe Config do
     end
   end
 
-  describe '#update from a file' do
+  describe '#upload from a file' do
     it 'creates new vocabularies' do
       cfg_import_file = fixture_file_upload('config/empty_vocabulary.json')
-      expect { config.update(cfg_import_file) }.to(
+      expect { config.upload(cfg_import_file) }.to(
         change(Vocabulary, :count).by(1)
       )
     end
 
     it 'creates new vocabulary terms' do
       cfg_import_file = fixture_file_upload('config/short_vocabulary.json')
-      expect { config.update(cfg_import_file) }.to(
+      expect { config.upload(cfg_import_file) }.to(
         change(Term, :count).by(2)
       )
     end
 
     it 'creates new fields' do
       cfg_import_file = fixture_file_upload('config/minimal_field.json')
-      expect { config.update(cfg_import_file) }.to(
+      expect { config.upload(cfg_import_file) }.to(
         change(Field, :count).by(1)
       )
     end
@@ -69,7 +69,7 @@ RSpec.describe Config do
     it 'updates existing vocabularies' do
       FactoryBot.create(:vocabulary, name: 'Vocab fixture for Import', description: 'TBD')
       cfg_import_file = fixture_file_upload('config/empty_vocabulary.json')
-      expect { config.update(cfg_import_file) }.to(
+      expect { config.upload(cfg_import_file) }.to(
         change { Vocabulary.last.description }.from('TBD').to('Simple test vocabulary')
       )
     end
@@ -78,14 +78,14 @@ RSpec.describe Config do
       vocab = FactoryBot.create(:vocabulary, name: 'Resource Type')
       term = FactoryBot.create(:term, vocabulary: vocab, label: 'Article', note: 'TBD')
       cfg_import_file = fixture_file_upload('config/short_vocabulary.json')
-      config.update(cfg_import_file)
+      config.upload(cfg_import_file)
       expect(term.reload.note).to eq 'Textual works included in a serialized publication'
     end
 
     it 'updates existing fields' do
       FactoryBot.create(:field, name: 'New Field', source_field: 'TBD')
       cfg_import_file = fixture_file_upload('config/minimal_field.json')
-      expect { config.update(cfg_import_file) }.to(
+      expect { config.upload(cfg_import_file) }.to(
         change { Field.last.source_field }.from('TBD').to('new_field_tesim')
       )
     end
