@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'admin/terms' do
-  let(:test_vocab) { Vocabulary.find_or_create_by(name: 'Admin/Terms Test Vocabulary') }
+  let(:test_vocab) { Vocabulary.find_or_create_by(label: 'Admin/Terms Test Vocabulary') }
   let(:valid_attributes) { FactoryBot.attributes_for(:term, vocabulary_id: test_vocab.id) }
   let(:invalid_attributes) do
     FactoryBot.attributes_for(:term, vocabulary_id: test_vocab.id, slug: '<Invalid $lug!>')

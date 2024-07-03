@@ -3,100 +3,100 @@ require 'rails_helper'
 RSpec.describe Vocabulary do
   let(:vocab) { FactoryBot.build(:vocabulary) }
 
-  describe '#name' do
+  describe '#label' do
     it 'is required' do
-      vocab.name = nil
+      vocab.label = nil
       vocab.validate
-      expect(vocab.errors.where(:name, :blank)).to be_present
+      expect(vocab.errors.where(:label, :blank)).to be_present
     end
 
     it 'must be unique (case insensitive)' do
-      vocab.name = 'My_TEST_Vocabulary'
+      vocab.label = 'My_TEST_Vocabulary'
       vocab.save!
-      another = FactoryBot.build(:vocabulary, name: 'my_test_vocabulary')
+      another = FactoryBot.build(:vocabulary, label: 'my_test_vocabulary')
       another.validate
-      expect(another.errors.where(:name, :taken)).to be_present
+      expect(another.errors.where(:label, :taken)).to be_present
     end
   end
 
-  describe '#slug' do
+  describe '#key' do
     it 'is required' do
-      # Temporarily stub method that ensures slug is set before validations
-      allow(vocab).to receive(:set_slug)
+      # Temporarily stub method that ensures key is set before validations
+      allow(vocab).to receive(:set_key)
 
-      vocab.slug = nil
+      vocab.key = nil
       vocab.validate
-      expect(vocab.errors.where(:slug, :blank)).to be_present
+      expect(vocab.errors.where(:key, :blank)).to be_present
     end
 
-    it 'gets set from the name when missing' do
-      vocab.name = 'Kontrollü Terimler -- Sözlük!'
-      vocab.slug = ''
+    it 'gets set from the label when missing' do
+      vocab.label = 'Kontrollü Terimler -- Sözlük!'
+      vocab.key = ''
       vocab.save!
-      expect(vocab.slug).to eq 'kontrollu-terimler-sozluk'
+      expect(vocab.key).to eq 'kontrollu-terimler-sozluk'
     end
 
     it 'must be unique' do
-      vocab.slug = 'my-test-vocabulary'
+      vocab.key = 'my-test-vocabulary'
       vocab.save!
-      another = FactoryBot.build(:vocabulary, slug: 'my-test-vocabulary')
+      another = FactoryBot.build(:vocabulary, key: 'my-test-vocabulary')
       another.validate
-      expect(another.errors.where(:slug, :taken)).to be_present
+      expect(another.errors.where(:key, :taken)).to be_present
     end
 
     describe 'patterns' do
       it 'can contain letters, numbers and dashes' do
-        vocab.slug = 'marc-9xx-extensions'
+        vocab.key = 'marc-9xx-extensions'
         expect(vocab).to be_valid
       end
 
       it 'can not include spaces' do
-        vocab.slug = 'spaces as separators'
+        vocab.key = 'spaces as separators'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
 
       it 'can not include underscores' do
-        vocab.slug = 'underscores_as_separators'
+        vocab.key = 'underscores_as_separators'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
 
       it 'can not include symbols' do
-        vocab.slug = 'slug-[with]-sybols'
+        vocab.key = 'key-[with]-sybols'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
 
       it 'can not include leading dash' do
-        vocab.slug = '-leading-dash'
+        vocab.key = '-leading-dash'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
 
       it 'can not include trailing dash' do
-        vocab.slug = 'trailing-dash-'
+        vocab.key = 'trailing-dash-'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
 
       it 'can not include repeated dashes' do
-        vocab.slug = 'repeated--dashes'
+        vocab.key = 'repeated--dashes'
         vocab.validate
-        expect(vocab.errors.where(:slug, :invalid)).to be_present
+        expect(vocab.errors.where(:key, :invalid)).to be_present
       end
     end
   end
 
   describe '#to_param' do
-    it 'returns the slug' do
-      expect(vocab.to_param).to eq vocab.slug
+    it 'returns the key' do
+      expect(vocab.to_param).to eq vocab.key
     end
   end
 
-  describe '#description' do
+  describe '#note' do
     it 'is optional' do
-      vocab.description = nil
+      vocab.note = nil
       expect(vocab).to be_valid
     end
   end

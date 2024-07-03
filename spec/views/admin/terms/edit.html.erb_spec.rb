@@ -8,7 +8,7 @@ RSpec.describe 'admin/terms/edit' do
     term.validate # use #validate to set the slug
     assign(:term, term)
     assign(:vocabulary, vocabulary)
-    request.path_parameters[:vocabulary_slug] = vocabulary.slug
+    request.path_parameters[:vocabulary_key] = vocabulary.key
     request.path_parameters[:slug] = term.slug
   end
 

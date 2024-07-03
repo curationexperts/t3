@@ -1,7 +1,7 @@
 module Admin
   # Coordinate creation and management of controlled vocabularies
   class VocabulariesController < ApplicationController
-    load_and_authorize_resource(find_by: :slug, id_param: :slug)
+    load_and_authorize_resource(find_by: :key, id_param: :key)
 
     # GET /admin/vocabularies or /admin/vocabularies.json
     def index
@@ -61,7 +61,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def vocabulary_params
-      params.require(:vocabulary).permit(:name, :slug, :description)
+      params.require(:vocabulary).permit(:label, :key, :note)
     end
   end
 end

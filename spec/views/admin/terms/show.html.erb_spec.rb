@@ -8,13 +8,13 @@ RSpec.describe 'admin/terms/show' do
     term.validate # use #validate to set the slug
     assign(:term, term)
     assign(:vocabulary, vocabulary)
-    request.path_parameters[:vocabulary_slug] = vocabulary.slug
+    request.path_parameters[:vocabulary_key] = vocabulary.key
     request.path_parameters[:slug] = term.slug
   end
 
   it 'displays the vocabulary name' do
     render
-    expect(rendered).to have_selector('#vocabulary_name', text: vocabulary.name)
+    expect(rendered).to have_selector('#vocabulary_label', text: vocabulary.label)
   end
 
   it 'displays other attributes' do

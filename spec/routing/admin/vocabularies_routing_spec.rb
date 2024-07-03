@@ -11,12 +11,12 @@ RSpec.describe Admin::VocabulariesController do
     end
 
     it 'routes to #show' do
-      expect(get: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#show', slug: 'my-vocabulary')
+      expect(get: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#show', key: 'my-vocabulary')
     end
 
     it 'routes to #edit' do
       expect(get: '/admin/vocabularies/my-vocabulary/edit').to route_to('admin/vocabularies#edit',
-                                                                        slug: 'my-vocabulary')
+                                                                        key: 'my-vocabulary')
     end
 
     it 'routes to #create' do
@@ -24,16 +24,16 @@ RSpec.describe Admin::VocabulariesController do
     end
 
     it 'routes to #update via PUT' do
-      expect(put: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#update', slug: 'my-vocabulary')
+      expect(put: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#update', key: 'my-vocabulary')
     end
 
     it 'routes to #update via PATCH' do
-      expect(patch: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#update', slug: 'my-vocabulary')
+      expect(patch: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#update', key: 'my-vocabulary')
     end
 
     it 'routes to #destroy' do
       expect(delete: '/admin/vocabularies/my-vocabulary').to route_to('admin/vocabularies#destroy',
-                                                                      slug: 'my-vocabulary')
+                                                                      key: 'my-vocabulary')
     end
   end
 end

@@ -13,7 +13,7 @@ class Config
   def settings
     { context:      context_for_export,
       fields:       Field.in_sequence,
-      vocabularies: Vocabulary.order(:slug).as_json(include: :terms) }
+      vocabularies: Vocabulary.order(:key).as_json(include: :terms) }
   end
   # rubocop:enable Layout/HashAlignment:
 
@@ -74,7 +74,7 @@ class Config
     return if vocabularies.blank?
 
     vocabularies.each do |json_attrs|
-      vocab = Vocabulary.find_by(slug: json_attrs['slug'])
+      vocab = Vocabulary.find_by(key: json_attrs['key'])
       create_or_update_from_json(Term, json_attrs['terms'], vocab)
     end
   end
@@ -85,7 +85,7 @@ class Config
     when 'Field'
       Field.find_or_initialize_by(name: json_attrs['name'])
     when 'Vocabulary'
-      Vocabulary.find_or_initialize_by(slug: json_attrs['slug'])
+      Vocabulary.find_or_initialize_by(key: json_attrs['key'])
     when 'Term'
       Term.find_or_initialize_by(slug: json_attrs['slug'], vocabulary: vocab)
     end

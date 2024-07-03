@@ -14,7 +14,7 @@
   <div>
     <%= form.label :vocabulary, style: "display: block" %>
     <%= form.hidden_field :vocabulary_id, value: term.vocabulary.id %>
-    <%= form.text_field term.vocabulary.name, disabled: true %>
+    <%= form.text_field term.vocabulary.label, disabled: true %>
   </div>
 
   <div>

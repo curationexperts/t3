@@ -7,7 +7,7 @@ RSpec.describe 'admin/terms/new' do
   before do
     assign(:term, term)
     assign(:vocabulary, vocabulary)
-    request.path_parameters[:vocabulary_slug] = vocabulary.slug
+    request.path_parameters[:vocabulary_key] = vocabulary.key
   end
 
   it 'renders the expected form fields', :aggregate_failures do # rubocop:disable RSpec/ExampleLength

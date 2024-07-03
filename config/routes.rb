@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     resources :fields do
       patch 'move', on: :member
     end
-    resources :vocabularies, param: :slug do
+    resources :vocabularies, param: :key do
       resources :terms, param: :slug
     end
     resources :themes do
@@ -57,16 +57,16 @@ Rails.application.routes.draw do
 
   direct :term do |term|
     if term.slug
-      { controller: 'admin/terms', action: :show, vocabulary_slug: term.vocabulary.slug, slug: term.slug }
+      { controller: 'admin/terms', action: :show, vocabulary_key: term.vocabulary.key, slug: term.slug }
     else
-      { controller: 'admin/terms', vocabulary_slug: term.vocabulary }
+      { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }
     end
   end
   direct :edit_term do |term|
-    { controller: 'admin/terms', action: :edit, vocabulary_slug: term.vocabulary.slug, slug: term.slug }
+    { controller: 'admin/terms', action: :edit, vocabulary_key: term.vocabulary.key, slug: term.slug }
   end
   direct :terms do |term|
-    { controller: 'admin/terms', vocabulary_slug: term.vocabulary }
+    { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }
   end
 
   # When app is firt booted and no Solr config exists, use this as the application root
