@@ -37,7 +37,7 @@
       <%= form.fields_for 'fields[]', field do |field_form| %>
         <tr>
           <td class='name'><%= field_form.text_field :name %></td>
-          <td class='solr_field_name'><%= field_form.text_field :solr_field %></td>
+          <td class='solr_field_name'><%= field_form.text_field :solr_field_name %></td>
           <td class='searchable'><%= field_form.check_box :searchable %></td>
           <td class='facetable'><%= field_form.check_box :facetable %></td>
           <td class='list_view'><%= field_form.check_box :list_view %></td>
