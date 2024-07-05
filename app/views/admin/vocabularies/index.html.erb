@@ -1,12 +1,30 @@
-<h1>Vocabularies</h1>
-
 <div id="vocabularies">
+  <h1>Vocabularies</h1>
+  <div class="vocabulary_row vocabulary_header">
+    <div class="vocabulary_label">
+      Vocabulary
+    </div>
+    <div class="vocabulary_term_count">
+      Terms
+    </div>
+    <div class="vocabulary_note">
+      Note
+    </div>
+  </div>
   <% @vocabularies.each do |vocabulary| %>
-    <%= render vocabulary %>
-    <p>
-      <%= link_to "Show this vocabulary", vocabulary %>
-    </p>
+    <div class="vocabulary_row" id=<%= dom_id(vocabulary) -%> >
+      <div class="vocabulary_label">
+        <%= link_to vocabulary.label, vocabulary, id: dom_id(vocabulary, :show) %>
+      </div>
+      <div class="vocabulary_term_count">
+        <%= vocabulary.terms.count -%>
+      </div>
+      <div class="vocabulary_note">
+        <%= vocabulary.note -%>
+      </div>
+    </div>
   <% end %>
+
+  <%= link_to "Add a vocabulary", new_vocabulary_path, id: 'add_vocab', class: 'btn btn-sm btn-primary' %>
 </div>
 
-<%= link_to "New vocabulary", new_vocabulary_path %>
