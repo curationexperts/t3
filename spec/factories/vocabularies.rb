@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :vocabulary do
     label { Faker::Lorem.unique.words.join(' ').titleize }
-    note { 'A vocaublary for use when testing' }
+
+    factory(:vocabulary_with_note) do
+      note { Faker::Lorem.sentence }
+    end
   end
 end

@@ -1,0 +1,36 @@
+#vocabularies {
+  .vocabulary_row:nth-of-type(even) {
+    background-color: white;
+  }
+
+  .vocabulary_row {
+    width: auto;
+    display: flex;
+  }
+
+  .vocabulary_header {
+    font-weight: bold;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+  }
+
+  .vocabulary_label {
+    width: 18rem;
+    flex-shrink: 0;
+  }
+
+  .vocabulary_term_count {
+    width: 4rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .vocabulary_note {
+    margin-right: 0;
+    width: auto;
+  }
+
+  #add_vocab {
+    margin-top: .75rem;
+  }
+}
