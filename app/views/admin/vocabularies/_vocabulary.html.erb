@@ -1,7 +1,12 @@
-<div id="<%= dom_id vocabulary %>">
+<div id="<%= dom_id vocabulary %>" class="card">
   <p>
     <strong>Label:</strong>
     <%= vocabulary.label %>
+  </p>
+
+  <p>
+    <strong>Key:</strong>
+    <span id="vocabulary_key"><%= vocabulary.key %></span>
   </p>
 
   <p>

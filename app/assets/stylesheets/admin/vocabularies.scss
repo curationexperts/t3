@@ -3,6 +3,74 @@
     background-color: white;
   }
 
+  a:link, a:visited { text-decoration: none; }
+  a:hover { text-decoration: underline}
+
+  max-width: 70rem;
+
+  .title_row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    h1 {
+      display: inline-block;
+      width: max-content;
+    }
+
+    .vocabulary_title {
+      flex-grow: 10;
+    }
+
+    .delete_action, .cancel_action {
+      width: max-content;
+    }
+
+  }
+
+  form {
+    label {
+      width: 5rem;
+      padding-right: 0.5rem;
+      text-align: right;
+    }
+    textarea {
+
+    }
+  }
+
+  .form_flex {
+    display: flex;
+    flex-wrap: wrap;
+
+    .form_buttons {
+      width: 10rem;
+
+    }
+
+    .form_fields {
+      flex-grow: 10;
+      a, input[type="submit"] {
+        margin-top: 0.5rem;
+        margin-left: 5.25rem;
+      }
+
+      div {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0.25rem;
+      }
+
+      input[type=text], textarea {
+        flex-grow: 10;
+      }
+
+
+    }
+  }
+
   .vocabulary_row {
     width: auto;
     display: flex;
@@ -32,5 +100,34 @@
 
   #add_vocab {
     margin-top: .75rem;
+  }
+
+  .vocabulary_terms {
+    margin-top: 0.5rem;
+    .term:nth-of-type(odd) {
+      background-color: white;
+    }
+
+
+    .term {
+      display: flex;
+      //flex-wrap: nowrap;
+      flex-wrap: wrap;
+
+      a {
+        display: inline-block;
+        min-width: 14.5rem;
+        margin-left: 0.5rem;
+      }
+
+      .note {
+        //max-width: 50%;
+        width: calc(100% - 18rem);
+        min-width: 15rem;
+        flex-shrink: 10;
+        margin-left: 0.5rem;
+      }
+
+    }
   }
 }
