@@ -18,7 +18,7 @@ RSpec.describe 'admin/vocabularies/edit' do
     assert_select 'form[action=?][method=?]', vocabulary_path(vocabulary), 'post' do
       assert_select 'input[name=?]', 'vocabulary[label]'
 
-      assert_select 'input[name=?]', 'vocabulary[note]'
+      assert_select 'textarea[name=?]', 'vocabulary[note]'
     end
   end
 end

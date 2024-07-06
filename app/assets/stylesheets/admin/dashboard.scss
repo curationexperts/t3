@@ -3,10 +3,5 @@
   margin-right: 2rem;
   margin-top: 1.5rem;
 
-  a {
-    color: #000099;
-    &.btn {
-      color: var(--bs-btn-color);
-    }
-  }
+  --bs-link-color-rgb: 0, 0, 175;
 }

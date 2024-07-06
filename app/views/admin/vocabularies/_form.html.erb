@@ -1,6 +1,6 @@
-<%= form_with(model: vocabulary) do |form| %>
+<%= form_with(model: vocabulary, class: 'card-body') do |form| %>
   <% if vocabulary.errors.any? %>
-    <div style="color: red">
+    <div class="validation_errors">
       <h2><%= pluralize(vocabulary.errors.count, "error") %> prohibited this vocabulary from being saved:</h2>
 
       <ul>
@@ -11,22 +11,37 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :label, style: "display: block" %>
-    <%= form.text_field :label %>
-  </div>
+  <div class="form_flex">
+    <div class="form_buttons">
+      <% if action_name == 'show' %>
+        <%= link_to "Edit this vocabulary", edit_vocabulary_path(@vocabulary), class: 'edit-action btn btn-sm btn-outline-primary' %>
+      <% end %>
+    </div>
 
-  <div>
-    <%= form.label :key, style: "display: block" %>
-    <%= form.text_field :key %>
-  </div>
+    <div class="form_fields">
+      <fieldset <%= 'disabled' if controller.action_name == 'show' -%>>
+        <div>
+          <%= form.label :label %>
+          <%= form.text_field :label %>
+        </div>
 
-  <div>
-    <%= form.label :note, style: "display: block" %>
-    <%= form.text_field :note %>
-  </div>
+        <div>
+          <%= form.label :key %>
+          <%= form.text_field :key %>
+        </div>
 
-  <div>
-    <%= form.submit %>
+        <div>
+          <%= form.label :note %>
+          <%= form.text_area :note %>
+        </div>
+
+        <% if action_name != 'show' %>
+          <%= form.submit "Save changes", class: 'btn btn-primary' %><br>
+          <%= link_to " Cancel changes", @vocabulary, class: 'cancel_action btn btn-sm btn-outline-info bi bi-x-square' %>
+        <% end %>
+
+      </fieldset>
+    </div>
+
   </div>
 <% end %>

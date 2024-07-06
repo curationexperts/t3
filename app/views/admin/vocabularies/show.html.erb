@@ -1,10 +1,26 @@
-<p style="color: green"><%= notice %></p>
+<div id="vocabularies">
+  <div class="title_row">
+    <h1><%= link_to "Vocabularies", vocabularies_path %> > </h1><h1 class="vocabulary_title"> <%= @vocabulary.label %> </h1>
+    <%= button_to " Delete this vocabulary", @vocabulary, method: :delete, class: 'delete_action btn btn-outline-danger bi bi-trash3-fill' %>
+  </div>
 
-<%= render @vocabulary %>
+  <div class="card">
+    <%= render "form", vocabulary: @vocabulary %>
+  </div>
 
-<div>
-  <%= link_to "Edit this vocabulary", edit_vocabulary_path(@vocabulary) %> |
-  <%= link_to "Back to vocabularies", vocabularies_path %>
+  <div class="vocabulary_terms card">
+    <div class="card-body">
+      <h2>Terms (<span id="term_count"><%= @vocabulary.terms.count -%></span>)</h2>
+      <% @vocabulary.terms.order(:label).each do |term| %>
+        <div class="term">
+          <div><%= link_to term.label, term %></div>
+          <div class="note"><%= term.note -%></div>
+        </div>
+      <% end %>
 
-  <%= button_to "Destroy this vocabulary", @vocabulary, method: :delete %>
+    </div>
+  </div>
+
+
 </div>
+

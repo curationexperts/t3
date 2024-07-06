@@ -1,10 +1,10 @@
-<h1>Editing vocabulary</h1>
+<div id="vocabularies">
+  <div class="title_row">
+    <h1><%= link_to "Vocabularies", vocabularies_path %> > </h1>
+    <h1 class="vocabulary_title"> <%= @vocabulary.label %> (edit)</h1>
+  </div>
 
-<%= render "form", vocabulary: @vocabulary %>
-
-<br>
-
-<div>
-  <%= link_to "Show this vocabulary", @vocabulary %> |
-  <%= link_to "Back to vocabularies", vocabularies_path %>
+  <div class="card">
+    <%= render "form", vocabulary: @vocabulary %>
+  </div>
 </div>
