@@ -16,10 +16,6 @@ class Vocabulary < ApplicationRecord
     key
   end
 
-  def to_partial_path
-    'admin/'.concat(super)
-  end
-
   private
 
   # Set the key attribute if it is blank
