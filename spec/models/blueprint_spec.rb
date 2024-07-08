@@ -35,7 +35,7 @@ RSpec.describe Blueprint, :aggregate_failures do
   describe 'fields' do
     it 'defaults to all active fields' do
       FactoryBot.create_list(:field, 2)
-      expect(blueprint.fields).to match_array Field.active
+      expect(blueprint.fields).to match_array Field.active_in_sequence
     end
   end
 end

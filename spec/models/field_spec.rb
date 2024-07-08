@@ -39,14 +39,6 @@ RSpec.describe Field do
     end
   end
 
-  describe 'has defined scopes:' do
-    example 'active' do
-      active_fields = FactoryBot.create_list(:field, 2)
-      FactoryBot.create(:field, active: false)
-      expect(described_class.active).to match_array active_fields
-    end
-  end
-
   describe '#name' do
     it 'must have a value' do
       field.name = nil
@@ -119,6 +111,27 @@ RSpec.describe Field do
 
     it 'has a class method to return valid values' do
       expect(described_class.data_types).to be_a Hash
+    end
+
+    context 'with "vocabulary" selected' do
+      before { field.data_type = 'vocabulary' }
+
+      it 'requires a vocab value' do
+        field.vocabulary = nil
+        field.validate
+        expect(field.errors.where(:vocabulary, :blank)).to be_present
+      end
+
+      it 'accepts vocabulary objects' do
+        vocabulary = FactoryBot.create(:vocabulary)
+        field.vocabulary = vocabulary
+        expect(field.errors.where(:vocabulary, :blank)).to be_empty
+      end
+
+      it 'rejects other object classes' do
+        vocabulary = 'A plain old string'
+        expect { field.vocabulary = vocabulary }.to raise_exception ActiveRecord::AssociationTypeMismatch
+      end
     end
   end
 
@@ -333,6 +346,10 @@ RSpec.describe Field do
       allow(CatalogController).to receive(:blacklight_config).and_return(blacklight_config)
       # Stub Field#in_seqeuence
       allow(described_class).to receive(:in_sequence).and_return(sample_fields)
+      # Mimic #in_sequence returning an  ActiveRecord::Relation instead of an Array
+      without_partial_double_verification do
+        allow(described_class.in_sequence).to receive(:where).and_return(sample_fields)
+      end
     end
 
     it 'updates index fields', :aggregate_failures do
