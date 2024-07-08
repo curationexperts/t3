@@ -1,6 +1,8 @@
 # Configuration point for field definitions across CatalogController, Blueprints, Items, and
 # import jobs.
 class Field < ApplicationRecord
+  belongs_to :vocabulary, optional: true
+
   enum :data_type, {
     string: 1, # consider 'exact',  'literal', or 'verbatim' as type or type prefix
     text_en: 2,
@@ -40,6 +42,7 @@ class Field < ApplicationRecord
                                       'separated by single spaces or dashes' }
 
   validates :data_type, presence: true
+  validate :valid_vocabulary
 
   before_save :check_sequence
   after_save :clear_solr_field
@@ -47,13 +50,11 @@ class Field < ApplicationRecord
   after_save :update_catalog_controller
   after_destroy { Field.resequence }
 
-  scope :active, -> { where(active: true) }
-
   class << self
     # Compact sequence numbers to eliminate gaps
     # and start the sequence count at 1
     def resequence
-      reset_sequence
+      @in_sequence = nil
       in_sequence.each.with_index(1) do |field, index|
         field.update!(sequence: index) if field.sequence != index
       end
@@ -64,11 +65,7 @@ class Field < ApplicationRecord
     end
 
     def active_in_sequence
-      in_sequence.select(&:active)
-    end
-
-    def reset_sequence
-      @in_sequence = nil
+      in_sequence.where(active: true)
     end
   end
 
@@ -170,5 +167,12 @@ class Field < ApplicationRecord
 
   def end_of_sequence
     Field.maximum(:sequence).to_i + 1
+  end
+
+  # Require a valid vocabulary relation if data_type is set to 'vocabulary'
+  def valid_vocabulary
+    return unless data_type == 'vocabulary' && vocabulary.blank?
+
+    errors.add(:vocabulary, :blank, message: 'must be chosen when data_type is "vocabuluary"')
   end
 end
