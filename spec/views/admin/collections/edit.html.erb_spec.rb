@@ -170,8 +170,8 @@ RSpec.describe 'admin/items/edit', :solr do
   end
 
   describe 'a vocabulary field' do
-    let(:vocabulary_field) do
-      FactoryBot.build(:field, name: 'collection', data_type: 'vocabulary', multiple: false, id: 1, sequence: 1)
+    let(:collection_field) do
+      FactoryBot.build(:field, name: 'collection', data_type: 'collection', multiple: false, id: 1, sequence: 1)
     end
 
     before do
@@ -184,13 +184,13 @@ RSpec.describe 'admin/items/edit', :solr do
     end
 
     it 'renders a slection list' do
-      allow(blueprint).to receive(:fields).and_return([vocabulary_field])
+      allow(blueprint).to receive(:fields).and_return([collection_field])
       render
       expect(rendered).to have_select('item[metadata][collection]')
     end
 
     it 'lists available values' do
-      allow(blueprint).to receive(:fields).and_return([vocabulary_field])
+      allow(blueprint).to receive(:fields).and_return([collection_field])
       render
       select_options = Capybara.string(rendered).all('select option').map(&:text)
       expect(select_options).to include('Cyan', 'Magenta', 'Yellow')

@@ -10,7 +10,8 @@ class Field < ApplicationRecord
     float: 4,
     date: 5,
     boolean: 6,
-    vocabulary: 7
+    collection: 7,
+    vocabulary: 8
   }, validate: true
 
   TYPE_TO_SOLR = {
@@ -20,6 +21,7 @@ class Field < ApplicationRecord
     'float' => 'dbt',
     'date' => 'dt',
     'boolean' => 'b',
+    'collection' => 's',
     'vocabulary' => 's'
   }.freeze
 
@@ -30,6 +32,7 @@ class Field < ApplicationRecord
     'float' => :number_field,
     'date' => :date_field,
     'boolean' => :check_box,
+    'collection' => :collection_field,
     'vocabulary' => :vocabulary_field
   }.freeze
 
