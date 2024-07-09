@@ -12,4 +12,5 @@ class T3FormBuilder < ActionView::Helpers::FormBuilder
     option_tags = @template.options_from_collection_for_select(Collection.order(:created_at), :label, :label, selected)
     select(method, option_tags, { prompt: 'Select one', selected: '', disabled: true }, select_options)
   end
+  alias collection_field vocabulary_field
 end
