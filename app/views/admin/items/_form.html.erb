@@ -29,15 +29,18 @@
             <% item_detail.object[field.name] ||= [nil] %>
             <% item_detail.object[field.name].each.with_index(1) do |value, index| %>
               <%= item_detail.send(field.form_helper, field.name,
-                                   value: value, id: item_detail.field_id(field.name, index),
-                                   multiple: field.multiple, aria: {label: field.name + " #{index}",
-                                                                    required: field.required}) %>
+                                   value: value,
+                                   multiple: true,
+                                   id: item_detail.field_id(field.name, index),
+                                   vocabulary: field.vocabulary,
+                                   aria: {label: field.name + " #{index}", required: field.required}) %>
               <%= form.button t('t3.item.delete_entry', field: field.name, index: index), name: 'refresh', value: ['delete', field.name, index], class: 'delete_value' %>
               <br/>
             <% end %>
             <%= form.button t('t3.item.add_entry', field: field.name), name: 'refresh', value: ['add', field.name, -1], class: 'add_value' %>
           <% else %>
-            <%= item_detail.send(field.form_helper, field.name, multiple: field.multiple,
+            <%= item_detail.send(field.form_helper, field.name,
+                                 vocabulary: field.vocabulary,
                                  aria: {label: field.name, required: field.required}) %>
           <% end %>
         </label>

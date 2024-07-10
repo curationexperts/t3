@@ -180,7 +180,7 @@ RSpec.describe 'admin/items/edit', :solr do
         instance_double(Collection, { id: 2, label: 'Magenta' }),
         instance_double(Collection, { id: 4, label: 'Yellow' })
       ]
-      allow(Collection).to receive(:order).and_return(collections)
+      allow(Collection).to receive(:all).and_return(collections)
     end
 
     it 'renders a slection list' do
