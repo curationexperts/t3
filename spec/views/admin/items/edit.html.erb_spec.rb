@@ -120,6 +120,24 @@ RSpec.describe 'admin/items/edit', :solr do
     end
   end
 
+  describe 'a vocabualry field' do
+    let(:vocabulary) { FactoryBot.build(:vocabulary) }
+    let(:vocab_field) do
+      FactoryBot.build(:field, name: 'list', data_type: 'vocabulary', vocabulary: vocabulary, multiple: false)
+    end
+
+    before do
+      FactoryBot.create(:term, label: 'Draft', vocabulary: vocabulary)
+      FactoryBot.create(:term, label: 'Published', vocabulary: vocabulary)
+    end
+
+    it 'renders as a vocabulary selection field' do
+      allow(blueprint).to receive(:fields).and_return([vocab_field])
+      render
+      expect(rendered).to have_select('item_metadata_list', options: ['Select one', 'Draft', 'Published'])
+    end
+  end
+
   describe 'a multivalue field' do
     let(:string_field) { FactoryBot.build(:field, name: 'keyword', data_type: 'string', multiple: true) }
     let(:item) do

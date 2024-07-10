@@ -1,31 +1,42 @@
 # Custom form controls to support T3 field-specific data types
 # e.g. #vacabulary provides a customized select populated with a defined vocabulary
 class T3FormBuilder < ActionView::Helpers::FormBuilder
-  def collection_field(method, options = {})
-    multiple = options.delete(:multiple)
-    selected = options.delete(:value) || ''
-    select_options = options.except(:multiple)
-                            .reverse_merge(
-                              { name: @template.field_name(@object_name, method, multiple: multiple) }
-                            )
-                            .merge({ selected: selected })
-    option_tags = @template.options_from_collection_for_select(Collection.order(:created_at), :label, :label, selected)
-    select(method, option_tags, { prompt: 'Select one', selected: '', disabled: true }, select_options)
+  # Render a select box with options populated from collection names
+  # @param options [Hash]
+  # @param html_options [hash]
+  #   see #custom_select for common options
+  def collection_field(method, options = {}, html_options = {})
+    choices = Collection.all.map(&:label).sort
+    custom_select(method, choices, options, html_options)
   end
 
-  # Render a slect box with options populated from a local vocabulary
-  # @param options [Hash] primary options include
+  # Render a select box with options populated from a local vocabulary
+  # @param options [Hash]
   #   :vocabualry - the vocabulary to display
-  #   :selected - the current value for the input (must match the key of one of the vocabulary terms)
-  #   :multiple - flag whether this form parameter should be named as an individual field or part of an array []
-  #   :prompt - defaults to 'Select one', accepts an alternate string, or pass `false` to suppress
-  #   see Rails FormBuilder#select for additional options
+  # @param html_options [hash]
+  #   see #custom_select for other common options
   def vocabulary_field(method, options = {}, html_options = {})
     vocabulary = options.delete(:vocabulary)
+    choices = vocabulary.terms.order(:label, :key).pluck(:label, :key)
+    custom_select(method, choices, options, html_options)
+  end
+
+  # Render a custom dropdown that only allows only one option per input,
+  # but can be rendered as part of a multi-value parameter if repeated
+  # by the calling form.
+  # @param options [Hash] primary options include
+  #   :value - the option label (if any) that should be selected when initially rendered
+  #   :multiple - flag whether this form parameter should be named as an individual field or part of an array []
+  #   :prompt - defaults to 'Select one', accepts an alternate string, or pass `false` to suppress
+  # @param html_options [hash]
+  #   see Rails FormBuilder#select for additional options
+  def custom_select(method, choices, options = {}, html_options = {})
+    options[:selected] ||= options.delete(:value)
     multiple = options.delete(:multiple)
-    html_options[:name] ||= @template.field_name(@object_name, method, multiple: multiple)
+    suffix = options.delete(:suffix)
     options[:prompt] ||= 'Select one'
-    choices = vocabulary.terms.order(:label, :key).map { |term| [term.label, term.key] }
+    html_options[:name] ||= @template.field_name(@object_name, method, multiple: multiple)
+    html_options[:id] ||= @template.field_id(@object_name, method, suffix)
 
     select(method, choices, options, html_options)
   end

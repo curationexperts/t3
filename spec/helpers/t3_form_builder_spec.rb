@@ -18,7 +18,7 @@ RSpec.describe T3FormBuilder do
     end
 
     it 'displays a prompt when no value is selected' do
-      expect(collection_helper).to have_selector('select option[selected]', text: 'Select one')
+      expect(collection_helper).to have_selector('select option', text: 'Select one')
     end
 
     context 'with options {multipe: true}' do
@@ -30,23 +30,22 @@ RSpec.describe T3FormBuilder do
     end
 
     describe 'displays options' do
-      let(:tag_options) { { value: 'Green' } }
-
       before do
         collections = [
           instance_double(Collection, { label: 'Red', id: 5 }),
           instance_double(Collection, { label: 'Green', id: 20 }),
           instance_double(Collection, { label: 'Blue', id: 25 })
         ]
-        allow(Collection).to receive(:order).and_return(collections)
+        allow(Collection).to receive(:all).and_return(collections)
       end
 
       example 'showing available collections' do
         select_options = collection_helper.all('option').map(&:text)
-        expect(select_options).to eq ['Select one', 'Red', 'Green', 'Blue']
+        expect(select_options).to eq ['Select one', 'Blue', 'Green', 'Red']
       end
 
       example 'with a selection' do
+        tag_options[:selected] = 'Green'
         expect(collection_helper).to have_selector('select option[selected]', text: 'Green')
       end
     end
