@@ -9,7 +9,7 @@ RSpec.describe 'admin/fields/new' do
     render
     form = Capybara.string(rendered).find("form[action=\"#{fields_path}\"][method=\"post\"]")
     expect(form).to have_field('field_name')
-    expect(form).to have_select('field_data_type', options: Field.data_types.keys)
+    expect(form).to have_select('field_type_selection', with_options: ['string', 'integer', 'collection'])
     expect(form).to have_field('field_source_field')
     expect(form).to have_checked_field('field_active')
     expect(form).to have_unchecked_field('field_required')

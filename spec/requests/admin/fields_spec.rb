@@ -16,9 +16,9 @@ RSpec.describe '/admin/fields' do
   # This should return the minimal set of attributes required to create a valid
   # Field. As you add validations to Field, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { name: 'test field', data_type: 'integer' } }
+  let(:valid_attributes) { { name: 'test field', type_selection: 'integer' } }
 
-  let(:invalid_attributes) { { name: 'invalid_name', data_type: '' } }
+  let(:invalid_attributes) { { name: 'invalid_name', type_selection: 'invalid_data_type' } }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -53,10 +53,11 @@ RSpec.describe '/admin/fields' do
 
   describe 'POST /create' do
     context 'with valid parameters' do
-      it 'creates a new Field' do
+      it 'creates a new Field', :aggregate_failures do
         expect do
           post fields_url, params: { field: valid_attributes }
         end.to change(Field, :count).by(1)
+        expect(Field.last.data_type).to eq 'integer'
       end
 
       it 'redirects to the created field' do
@@ -95,6 +96,19 @@ RSpec.describe '/admin/fields' do
         patch field_url(field), params: { field: new_attributes }
         field.reload
         expect(response).to redirect_to(field_url(field))
+      end
+    end
+
+    context 'with a new vocabulary' do
+      let(:vocabulary) { FactoryBot.create(:vocabulary) }
+      let(:new_attributes) { { type_selection: "vocabulary|#{vocabulary.id}" } }
+
+      it 'updates the requested field', :aggregate_failures do
+        field = Field.create! valid_attributes
+        patch field_url(field), params: { field: new_attributes }
+        field.reload
+        expect(field.data_type).to eq 'vocabulary'
+        expect(field.vocabulary_id).to eq vocabulary.id
       end
     end
 
