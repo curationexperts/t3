@@ -11,7 +11,7 @@ RSpec.describe 'admin/fields/show' do
     render
     form = Capybara.string(rendered).find(id: 'field_form')
     expect(form).to have_field('field_name')
-    expect(form).to have_select('field_data_type')
+    expect(form).to have_select('field_type_selection')
     expect(form).to have_field('field_source_field')
     expect(form).to have_field('field_active')
     expect(form).to have_field('field_required')

@@ -14,7 +14,7 @@ RSpec.describe 'admin/fields/edit' do
     render
     form = Capybara.string(rendered).find("form[action=\"#{fields_path}\"][method=\"post\"]")
     expect(form).to have_field('field_name')
-    expect(form).to have_select('field_data_type')
+    expect(form).to have_select('field_type_selection')
     expect(form).to have_field('field_source_field')
     expect(form).to have_field('field_active')
     expect(form).to have_field('field_required')
@@ -23,5 +23,27 @@ RSpec.describe 'admin/fields/edit' do
     expect(form).to have_field('field_facetable')
     expect(form).to have_field('field_list_view')
     expect(form).to have_field('field_item_view')
+  end
+
+  describe 'type_selection' do
+    it 'selects basic types' do
+      field.data_type = 'date'
+      render
+      expect(rendered).to have_select('field_type_selection', selected: 'date')
+    end
+
+    it 'selects vocabularies' do
+      field.data_type = 'vocabulary'
+      field.vocabulary = FactoryBot.create(:vocabulary, label: 'Resource Type')
+      render
+      expect(rendered).to have_select('field_type_selection', selected: 'Resource Type')
+    end
+
+    it 'omits vocabulary for basic types' do
+      field.data_type = 'boolean'
+      field.vocabulary = FactoryBot.create(:vocabulary, label: 'Custom Terms')
+      render
+      expect(rendered).to have_select('field_type_selection', selected: 'boolean')
+    end
   end
 end

@@ -21,8 +21,8 @@
       </div>
       <div class="column-2">
         <div>
-          <%= form.label :data_type, style: "display: block" %>
-          <%= form.select :data_type, Field.data_types.keys %>
+          <%= form.label :type_selection, 'Data Type', style: "display: block" %>
+          <%= form.select :type_selection, data_type_options %>
         </div>
 
         <div>

@@ -82,7 +82,7 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def field_params
-      params.require(:field).permit(:name, :data_type, :source_field, :active, :required, :multiple, :list_view,
+      params.require(:field).permit(:name, :type_selection, :source_field, :active, :required, :multiple, :list_view,
                                     :item_view, :searchable, :facetable)
     end
   end

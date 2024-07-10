@@ -109,6 +109,12 @@ RSpec.describe Field do
       expect(field.data_type).to eq 'text_en'
     end
 
+    it 'returns the expected #type_selection for basic types' do
+      field.vocabulary = FactoryBot.build(:vocabulary, id: 321)
+      field.data_type = 'integer'
+      expect(field.type_selection).to eq 'integer'
+    end
+
     it 'has a class method to return valid values' do
       expect(described_class.data_types).to be_a Hash
     end
@@ -123,7 +129,7 @@ RSpec.describe Field do
       end
 
       it 'accepts vocabulary objects' do
-        vocabulary = FactoryBot.create(:vocabulary)
+        vocabulary = FactoryBot.build(:vocabulary)
         field.vocabulary = vocabulary
         expect(field.errors.where(:vocabulary, :blank)).to be_empty
       end
@@ -132,6 +138,40 @@ RSpec.describe Field do
         vocabulary = 'A plain old string'
         expect { field.vocabulary = vocabulary }.to raise_exception ActiveRecord::AssociationTypeMismatch
       end
+
+      it 'returns the expected #type_selection' do
+        vocabulary = FactoryBot.create(:vocabulary, id: 321)
+        field.vocabulary = vocabulary
+        expect(field.type_selection).to eq 'vocabulary|321'
+      end
+    end
+  end
+
+  describe '#type_selection=' do
+    it 'sets the data_type' do
+      field.type_selection = 'boolean'
+      expect(field.data_type).to eq 'boolean'
+    end
+
+    it 'clears the vocabulary for basic types', :aggregate_failures do
+      field.vocabulary = FactoryBot.build(:vocabulary)
+      expect(field.vocabulary).to be_present
+      field.type_selection = 'date'
+      expect(field.vocabulary).to be_blank
+    end
+
+    it 'sets the vocabualry when provided', :aggregate_failures do
+      expect(field.vocabulary).to be_blank
+      vocabulary = FactoryBot.create(:vocabulary)
+      field.type_selection = "vocabulary|#{vocabulary.id}"
+      expect(field.vocabulary).to eq vocabulary
+    end
+
+    it 'clears the vocabulary on invalid ids' do
+      FactoryBot.build(:vocabulary, id: 321)
+      allow(described_class).to receive(:find_by).with(id: '321').and_return(nil)
+      field.type_selection = 'vocabulary|321'
+      expect(field.vocabulary).to be_blank
     end
   end
 

@@ -1,6 +1,6 @@
 # Configuration point for field definitions across CatalogController, Blueprints, Items, and
 # import jobs.
-class Field < ApplicationRecord
+class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :vocabulary, optional: true
 
   enum :data_type, {
@@ -38,9 +38,9 @@ class Field < ApplicationRecord
 
   validates :name, presence: true
   validates :name, uniqueness: { case_sensitive: false, message: '"%<value>s" is already in use' }
-  validates :name, format: { with: /\A[a-z0-9]/i, message: '"%<value>s" must begin with a letter or number' }
-  validates :name, format: { with: /[a-z0-9]\z/i, message: '"%<value>s" must end with a letter or number' }
-  validates :name, format: { with: /\A([a-z0-9]( |-)?)+\z/i,
+  validates :name, format: { with: /\A[a-zA-Z]/, message: '"%<value>s" must begin with a letter' }
+  validates :name, format: { with: /[a-zA-Z0-9]\z/, message: '"%<value>s" must end with a letter or number' }
+  validates :name, format: { with: /\A([a-z0-9]( |-)?)*[a-z0-9]\z/i,
                              message: '"%<value>s" can only contain letters and numbers, ' \
                                       'separated by single spaces or dashes' }
 
@@ -87,6 +87,21 @@ class Field < ApplicationRecord
     suffix += 'si' # store and index all fields (until we have a clear reason not to)
     suffix += 'm' if multiple?
     suffix
+  end
+
+  # data_type and vocabulary_id concatnated for select box UI
+  def type_selection
+    return data_type unless vocabulary?
+
+    [data_type, vocabulary_id].join('|')
+  end
+
+  # extract data_type and vocabulary_id from form submissions
+  def type_selection=(select_value)
+    type, vocab_id = select_value.split('|')
+    self.vocabulary = nil
+    self.vocabulary = Vocabulary.find_by(id: vocab_id) if type == 'vocabulary'
+    self.data_type = type
   end
 
   # Generate a solr field name based onf the field name and the dynamic suffix derived from field settings
