@@ -1,6 +1,8 @@
 # Configuration point for field definitions across CatalogController, Blueprints, Items, and
 # import jobs.
-class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
+class Field < ApplicationRecord
+  include Solrization
+
   belongs_to :vocabulary, optional: true
 
   enum :data_type, {
@@ -13,17 +15,6 @@ class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
     collection: 7,
     vocabulary: 8
   }, validate: true
-
-  TYPE_TO_SOLR = {
-    'string' => 's',
-    'text_en' => 'te',
-    'integer' => 'lt',
-    'float' => 'dbt',
-    'date' => 'dt',
-    'boolean' => 'b',
-    'collection' => 's',
-    'vocabulary' => 's'
-  }.freeze
 
   TYPE_TO_HELPER = {
     'string' => :text_field,
@@ -79,16 +70,6 @@ class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
   #   "admin/#{super}"
   # end
 
-  # Transform definition into a dynamic field suffix for Solr
-  # see solr/conf/schema.xml
-  def solr_suffix
-    suffix = '_'
-    suffix += TYPE_TO_SOLR[data_type]
-    suffix += 'si' # store and index all fields (until we have a clear reason not to)
-    suffix += 'm' if multiple?
-    suffix
-  end
-
   # data_type and vocabulary_id concatnated for select box UI
   def type_selection
     return data_type unless vocabulary?
@@ -102,15 +83,6 @@ class Field < ApplicationRecord # rubocop:disable Metrics/ClassLength
     self.vocabulary = nil
     self.vocabulary = Vocabulary.find_by(id: vocab_id) if type == 'vocabulary'
     self.data_type = type
-  end
-
-  # Generate a solr field name based onf the field name and the dynamic suffix derived from field settings
-  def solr_field_name
-    @solr_field_name ||= name.downcase.gsub(/[- ]/, '_') + solr_suffix
-  end
-
-  def solr_facet_field
-    @solr_facet_field ||= data_type == 'text_en' ? solr_field_name.gsub('_tesi', '_si') : solr_field_name
   end
 
   # Change the field's position in the display sequence
