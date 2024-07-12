@@ -17,8 +17,10 @@ module Solrization
   # @return Hash solr field names mapped to metadata values
   def to_solr(value)
     {}.tap do |doc|
-      doc[solr_field_name] = value
-      doc[solr_facet_field] = value if facetable
+      display_value = extract_labels(value)
+      doc[solr_field_name] = display_value
+      doc[solr_facet_field] = display_value if facetable
+      doc[id_list_field] = Array(value) if vocabulary?
     end
   end
 
@@ -56,8 +58,24 @@ module Solrization
     solr_base_name + solr_suffix('string', stored: false)
   end
 
+  # Stores a list of ids (as Solr LongInts)
+  def id_list_field
+    "#{solr_base_name}_ids_lsim"
+  end
+
   def clear_solr_field
     @solr_field_name = nil
     @solr_facet_field = nil
+  end
+
+  # Convert vocabulary ids into labels; otherwise return unmodified
+  def extract_labels(value)
+    return value unless vocabulary?
+
+    if multiple
+      value.map { |id| Term.find(id).label }
+    else
+      Term.find(value).label
+    end
   end
 end

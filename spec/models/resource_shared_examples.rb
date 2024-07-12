@@ -108,6 +108,35 @@ RSpec.shared_examples 'a resource' do
     end
   end
 
+  context 'with vocabularies' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    let(:vocabulary) { FactoryBot.create(:vocabulary, label: 'Test Vocab') }
+    let(:awaiting_approval) { FactoryBot.create(:term, label: 'Awaiting final approval', vocabulary: vocabulary) }
+    let(:unpublished) { FactoryBot.create(:term, label: 'Unpulished Text', vocabulary: vocabulary) }
+    let(:illuminated) { FactoryBot.create(:term, label: 'Illuminated Manuscript', vocabulary: vocabulary) }
+
+    it 'indexes single-value term labels & ids' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Publication Status', data_type: 'vocabulary',
+                                  vocabulary: vocabulary, facetable: true, multiple: false)]
+      )
+
+      resource.metadata['Publication Status'] = awaiting_approval.id
+      expect(resource.to_solr).to include({ 'publication_status_ssi' => 'Awaiting final approval',
+                                            'publication_status_ids_lsim' => [awaiting_approval.id] })
+    end
+
+    it 'indexes multi-value term labels & ids' do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Resource Type', data_type: 'vocabulary',
+                                  vocabulary: vocabulary, facetable: true, multiple: true)]
+      )
+
+      resource.metadata['Resource Type'] = [unpublished.id, illuminated.id]
+      expect(resource.to_solr).to include({ 'resource_type_ssim' => ['Unpulished Text', 'Illuminated Manuscript'],
+                                            'resource_type_ids_lsim' => [unpublished.id, illuminated.id] })
+    end
+  end
+
   it 'validates required fields' do
     allow(blueprint).to receive(:fields).and_return([FactoryBot.build(:field, name: 'Required', required: true)])
 
