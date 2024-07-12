@@ -17,7 +17,7 @@ class T3FormBuilder < ActionView::Helpers::FormBuilder
   #   see #custom_select for other common options
   def vocabulary_field(method, options = {}, html_options = {})
     vocabulary = options.delete(:vocabulary)
-    choices = vocabulary.terms.order(:label, :key).pluck(:label, :key)
+    choices = vocabulary.terms.order(:label, :id).pluck(:label, :id)
     custom_select(method, choices, options, html_options)
   end
 
