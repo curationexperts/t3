@@ -85,7 +85,7 @@ RSpec.describe T3FormBuilder do
       end
 
       example 'with a term selected' do
-        tag_options[:selected] = 'beta'
+        tag_options[:selected] = vocabulary.terms.find_by(key: 'beta').id
         expect(vocabulary_helper).to have_selector('select option[selected]', text: 'βήτα')
       end
     end
