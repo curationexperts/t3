@@ -85,11 +85,8 @@ class Resource < ApplicationRecord
   def to_solr
     doc = solr_base_values
     blueprint.fields.each do |field|
-      solr_field = field.solr_field_name
-      solr_facet = field.solr_facet_field
       value = metadata[field.name]
-      doc[solr_field] = value
-      doc[solr_facet] = value if field.facetable
+      doc.merge!(field.to_solr(value))
     end
     doc
   end
