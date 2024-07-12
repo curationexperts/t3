@@ -109,11 +109,6 @@ class Field < ApplicationRecord
 
   private
 
-  def clear_solr_field
-    @solr_field_name = nil
-    @solr_facet_field = nil
-  end
-
   def update_catalog_controller
     SolrService.current.update_catalog_controller
   end
