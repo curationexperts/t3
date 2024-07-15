@@ -1,10 +1,12 @@
 require 'rails_helper'
 require './spec/models/resource_shared_examples'
+require './spec/models/indexed_resource_shared_examples'
 
 RSpec.describe Item do
   let(:new_item) { FactoryBot.build(:item) }
 
   it_behaves_like 'a resource'
+  it_behaves_like 'an indexed resource'
 
   describe '#files' do
     it 'is empty by default' do
