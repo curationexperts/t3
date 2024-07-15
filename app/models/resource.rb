@@ -1,5 +1,5 @@
 # Basic repository object, smallest unit of discovery
-class Resource < ApplicationRecord
+class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :blueprint
 
   after_initialize :check_metadata
@@ -10,6 +10,7 @@ class Resource < ApplicationRecord
   validates :type, presence: true
   validates :metadata, presence: true
   validate :required_fields_present
+  validate :vocabulary_field_values
 
   delegate :label_field, to: :blueprint
 
@@ -127,10 +128,28 @@ class Resource < ApplicationRecord
     end
   end
 
+  # Validates that each vocabulary field references valid Terms
+  def vocabulary_field_values
+    return if blueprint&.fields.blank?
+
+    vocabulary_fields.each do |field|
+      if invalid_terms(field)
+        errors.add(:metadata, :invalid, message:
+          "field \"#{field.name}\" references invalid term")
+      end
+    end
+  end
+
   # Return a list of any required fields in the blueprint
-  # @return Array<String> names of any required fields
+  # @return [Array<String>] names of any required fields
   def required_fields
     blueprint.fields.select(&:required).map(&:name)
+  end
+
+  # Return a list of any vocabulary fields in the blueprint
+  # @return [Array<String>] names of any vocabulary fields
+  def vocabulary_fields
+    blueprint.fields.select(&:vocabulary?)
   end
 
   # Check for possible permutations of 'blank' input values in both
@@ -142,5 +161,17 @@ class Resource < ApplicationRecord
   def missing_value?(field_name)
     value = metadata[field_name]
     [*value].compact_blank.empty?
+  end
+
+  # Check for invalid term IDs in a vocabulary, including id's for terms from other
+  # vocabularies
+  # @param [Field] field the field to check - should be a vocabulary field
+  # @return [Array, nil] the list of invalid ids
+  def invalid_terms(field)
+    return unless field.vocabulary? && field.vocabulary
+
+    values = Array(metadata[field.name])
+    valid_values = field.vocabulary.terms.where(id: values).pluck(:id)
+    (values - valid_values).presence
   end
 end
