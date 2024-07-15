@@ -73,6 +73,32 @@ RSpec.shared_examples 'a resource' do
     expect(resource.errors.where(:metadata, :invalid)).to be_present
   end
 
+  describe 'with vocabulary fields' do
+    let(:vocabulary) { FactoryBot.create(:vocabulary, label: 'Test Vocab') }
+    # let(:awaiting_approval) { FactoryBot.create(:term, label: 'Awaiting final approval', vocabulary: vocabulary) }
+    let(:unpublished) { FactoryBot.create(:term, label: 'Unpulished Text', vocabulary: vocabulary) }
+
+    before do
+      allow(blueprint).to receive(:fields).and_return(
+        [FactoryBot.build(:field, name: 'Publication Status', data_type: 'vocabulary',
+                                  vocabulary: vocabulary, facetable: true, multiple: false)]
+      )
+    end
+
+    example 'when terms are valid' do
+      resource.metadata['Publication Status'] = unpublished.id
+      expect(resource).to be_valid
+    end
+
+    example 'when terms are not valid' do
+      # e.g. assign a term from a vocabulary not associated with the field
+      foreign_term = FactoryBot.create(:term, vocabulary: FactoryBot.create(:vocabulary))
+      resource.metadata['Publication Status'] = foreign_term.id
+      resource.valid?
+      expect(resource.errors.where(:metadata, :invalid)).to be_present
+    end
+  end
+
   describe '#save' do
     before do
       # Stub solr calls which are tested elsewhere
