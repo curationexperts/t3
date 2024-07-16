@@ -10,6 +10,7 @@ RSpec.describe ImportJob do
         'has_model_ssim' => ['Book'],
         'title_tesi' => 'Anna Karenina',
         'author_tesim' => ['Tolstoy, Lev Nikolayevich', 'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
+        'language_ssim' => ['en', 'Russian'],
         'date_isi' => 1878
       }
     end
@@ -29,16 +30,28 @@ RSpec.describe ImportJob do
       expect { job.process_record(doc) }.to change(Item, :count).by(1)
     end
 
-    it 'maps metadata according to the blueprint' do
-      FactoryBot.create(:field, name: 'Title', data_type: 'text_en', source_field: 'title_tesi')
-      FactoryBot.create(:field, name: 'Author', data_type: 'text_en', multiple: true, source_field: 'author_tesim')
-      FactoryBot.create(:field, name: 'Date', data_type: 'integer', source_field: 'date_isi')
+    context 'with metadata' do
+      let(:languages) { FactoryBot.create(:vocabulary, label: 'Languages') }
 
-      job.process_record(doc)
-      expect(Item.last.metadata).to include('Title' => 'Anna Karenina',
-                                            'Author' => ['Tolstoy, Lev Nikolayevich',
-                                                         'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
-                                            'Date' => 1878)
+      before do
+        FactoryBot.create(:field, name: 'Title', data_type: 'text_en', source_field: 'title_tesi')
+        FactoryBot.create(:field, name: 'Author', data_type: 'text_en', multiple: true, source_field: 'author_tesim')
+        FactoryBot.create(:field, name: 'Date', data_type: 'integer', source_field: 'date_isi')
+        FactoryBot.create(:field, name: 'Language', data_type: 'vocabulary', vocabulary: languages,
+                                  source_field: 'language_ssim', multiple: true)
+      end
+
+      it 'maps according to the blueprint' do
+        english = FactoryBot.create(:term, key: 'en', label: 'English', vocabulary: languages)
+        russian = FactoryBot.create(:term, key: 'ru', label: 'Russian', vocabulary: languages)
+
+        job.process_record(doc)
+        expect(Item.last.metadata).to include('Title' => 'Anna Karenina',
+                                              'Author' => ['Tolstoy, Lev Nikolayevich',
+                                                           'Tolstoy, Leo', 'Толстой, Лев Николаевич'],
+                                              'Language' => contain_exactly(english.id, russian.id),
+                                              'Date' => 1878)
+      end
     end
 
     context 'with files' do
