@@ -37,5 +37,10 @@ RSpec.describe 'admin/vocabularies/show' do
       render
       expect(rendered).to have_link(href: url_for(terms[1]))
     end
+
+    it 'has a link to add a term' do
+      render
+      expect(rendered).to have_link(href: new_vocabulary_term_path(vocabulary))
+    end
   end
 end
