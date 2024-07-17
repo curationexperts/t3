@@ -10,7 +10,12 @@
 
   <div class="vocabulary_terms card">
     <div class="card-body">
-      <h2>Terms (<span id="term_count"><%= @vocabulary.terms.count -%></span>)</h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <div><h2>Terms (<span id="term_count"><%= @vocabulary.terms.count -%></span>)</h2></div>
+        <div><%= link_to "Add new term", new_vocabulary_term_path(@vocabulary), class: 'btn btn-sm btn-outline-primary' %></div>
+      </div>
+
+
       <% @vocabulary.terms.order(:label).each do |term| %>
         <div class="term">
           <div><%= link_to term.label, term %></div>

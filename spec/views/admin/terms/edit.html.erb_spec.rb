@@ -21,4 +21,9 @@ RSpec.describe 'admin/terms/edit' do
     expect(form).to have_field('term_note', with: term.note)
     expect(form).to have_button(type: 'submit')
   end
+
+  it 'has a link back to the vocabulary' do
+    render
+    expect(rendered).to have_link(href: vocabulary_path(vocabulary))
+  end
 end
