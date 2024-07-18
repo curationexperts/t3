@@ -147,6 +147,16 @@ RSpec.describe Field do
     end
   end
 
+  describe '#source_field' do
+    it 'cannot be the same for multiple fields' do
+      field.source_field = 'field_ssi'
+      field.save!
+      conflicting_field = FactoryBot.build(:field, source_field: 'field_ssi')
+      conflicting_field.validate
+      expect(conflicting_field.errors.where(:source_field, :taken)).to be_present
+    end
+  end
+
   describe '#type_selection=' do
     it 'sets the data_type' do
       field.type_selection = 'boolean'

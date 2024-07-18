@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_08_144104) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_18_190620) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_08_144104) do
     t.bigint "vocabulary_id"
     t.index ["name"], name: "index_fields_on_name", unique: true
     t.index ["sequence"], name: "index_fields_on_sequence"
+    t.index ["source_field"], name: "index_fields_on_source_field", unique: true
     t.index ["vocabulary_id"], name: "index_fields_on_vocabulary_id"
   end
 
