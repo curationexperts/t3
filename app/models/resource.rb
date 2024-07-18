@@ -170,7 +170,7 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def invalid_terms(field)
     return unless field.vocabulary? && field.vocabulary
 
-    values = Array(metadata[field.name])
+    values = Array(metadata[field.name]).compact_blank.map(&:to_i)
     valid_values = field.vocabulary.terms.where(id: values).pluck(:id)
     (values - valid_values).presence
   end
