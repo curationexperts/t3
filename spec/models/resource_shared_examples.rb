@@ -81,21 +81,43 @@ RSpec.shared_examples 'a resource' do
     before do
       allow(blueprint).to receive(:fields).and_return(
         [FactoryBot.build(:field, name: 'Publication Status', data_type: 'vocabulary',
-                                  vocabulary: vocabulary, facetable: true, multiple: false)]
+                                  vocabulary: vocabulary, facetable: true, multiple: true)]
       )
+
+      # Stub solr calls which are tested elsewhere
+      allow(resource).to receive(:update_index)
     end
 
     example 'when terms are valid' do
-      resource.metadata['Publication Status'] = unpublished.id
+      resource.metadata['Publication Status'] = [unpublished.id]
+      expect(resource).to be_valid
+    end
+
+    it 'accepts ids as strings from forms' do
+      resource.metadata['Publication Status'] = [unpublished.id.to_s]
       expect(resource).to be_valid
     end
 
     example 'when terms are not valid' do
       # e.g. assign a term from a vocabulary not associated with the field
       foreign_term = FactoryBot.create(:term, vocabulary: FactoryBot.create(:vocabulary))
-      resource.metadata['Publication Status'] = foreign_term.id
+      resource.metadata['Publication Status'] = [foreign_term.id]
       resource.valid?
       expect(resource.errors.where(:metadata, :invalid)).to be_present
+    end
+
+    it 'disregards blank entries', :aggregate_failures do
+      resource.metadata['Publication Status'] = [nil, '']
+      expect { resource.save! }.not_to raise_exception
+      resource.reload
+      expect(resource.metadata['Publication Status']).to eq []
+    end
+
+    it 'filters out blank entries from non-blank values' do
+      resource.metadata['Publication Status'] = ['', unpublished.id, '']
+      resource.save!
+      resource.reload
+      expect(resource.metadata['Publication Status']).to eq [unpublished.id]
     end
   end
 
