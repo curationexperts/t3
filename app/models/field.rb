@@ -36,6 +36,7 @@ class Field < ApplicationRecord
                                       'separated by single spaces or dashes' }
 
   validates :data_type, presence: true
+  validates :source_field, uniqueness: { case_sensitive: false }, allow_nil: true
   validate :valid_vocabulary
 
   before_save :check_sequence
