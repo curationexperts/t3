@@ -16,16 +16,6 @@ class Vocabulary < ApplicationRecord
     key
   end
 
-  def id_lookup(values)
-    ids = []
-    Array(values).each do |value|
-      term = terms.find_by(key: value)
-      term ||= terms.find_by(label: value)
-      ids << term.id if term
-    end
-    values.respond_to?(:each) ? ids : ids.first
-  end
-
   private
 
   # Set the key attribute if it is blank
