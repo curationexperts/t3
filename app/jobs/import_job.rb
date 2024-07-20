@@ -47,16 +47,7 @@ class ImportJob < ApplicationJob
 
   # Return a hash with incoming document keys mapped to their blueprint targets
   def build_description(blueprint, doc)
-    process_vocabularies(blueprint, doc)
     doc.transform_keys(blueprint.key_map).merge({ ingest_snippet: doc.to_json[0..99] })
-  end
-
-  # Transform vocabulary terms to corresponding ids
-  def process_vocabularies(blueprint, doc)
-    blueprint.fields.select(&:vocabulary?).each do |field|
-      values = doc[field.source_field]
-      doc[field.source_field] = field.vocabulary.id_lookup(values)
-    end
   end
 
   # Save a new Item, rescuing & capturing exceptions

@@ -76,7 +76,7 @@ RSpec.shared_examples 'a resource' do
   describe 'with vocabulary fields' do
     let(:vocabulary) { FactoryBot.create(:vocabulary, label: 'Test Vocab') }
     # let(:awaiting_approval) { FactoryBot.create(:term, label: 'Awaiting final approval', vocabulary: vocabulary) }
-    let(:unpublished) { FactoryBot.create(:term, label: 'Unpulished Text', vocabulary: vocabulary) }
+    let(:unpublished) { FactoryBot.create(:term, label: 'Unpulished Text', key: 'unpub', vocabulary: vocabulary) }
 
     before do
       allow(blueprint).to receive(:fields).and_return(
@@ -98,7 +98,24 @@ RSpec.shared_examples 'a resource' do
       expect(resource).to be_valid
     end
 
-    example 'when terms are not valid' do
+    it 'accepts term keys' do
+      resource.metadata['Publication Status'] = [unpublished.key]
+      expect(resource).to be_valid
+    end
+
+    it 'accepts term values' do
+      resource.metadata['Publication Status'] = [unpublished.label]
+      expect(resource).to be_valid
+    end
+
+    it 'persists term ids' do
+      resource.metadata['Publication Status'] = [unpublished.key]
+      resource.save!
+      resource.reload
+      expect(resource.metadata['Publication Status']).to eq [unpublished.id]
+    end
+
+    it 'gives validation errors when terms are not valid' do
       # e.g. assign a term from a vocabulary not associated with the field
       foreign_term = FactoryBot.create(:term, vocabulary: FactoryBot.create(:vocabulary))
       resource.metadata['Publication Status'] = [foreign_term.id]

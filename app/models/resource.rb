@@ -3,6 +3,7 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :blueprint
 
   after_initialize :check_metadata
+  before_validation :cast_vocabulary_fields
   before_save :prune_blank_values
   after_save :update_index
   after_destroy_commit :delete_index
@@ -10,7 +11,7 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :type, presence: true
   validates :metadata, presence: true
   validate :required_fields_present
-  validate :vocabulary_field_values
+  validate :vocabulary_terms_exist
 
   delegate :label_field, to: :blueprint
 
@@ -128,28 +129,10 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # Validates that each vocabulary field references valid Terms
-  def vocabulary_field_values
-    return if blueprint&.fields.blank?
-
-    vocabulary_fields.each do |field|
-      if invalid_terms(field)
-        errors.add(:metadata, :invalid, message:
-          "field \"#{field.name}\" references invalid term")
-      end
-    end
-  end
-
   # Return a list of any required fields in the blueprint
   # @return [Array<String>] names of any required fields
   def required_fields
     blueprint.fields.select(&:required).map(&:name)
-  end
-
-  # Return a list of any vocabulary fields in the blueprint
-  # @return [Array<String>] names of any vocabulary fields
-  def vocabulary_fields
-    blueprint.fields.select(&:vocabulary?)
   end
 
   # Check for possible permutations of 'blank' input values in both
@@ -163,15 +146,87 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
     [*value].compact_blank.empty?
   end
 
-  # Check for invalid term IDs in a vocabulary, including id's for terms from other
-  # vocabularies
-  # @param [Field] field the field to check - should be a vocabulary field
-  # @return [Array, nil] the list of invalid ids
-  def invalid_terms(field)
-    return unless field.vocabulary? && field.vocabulary
+  # Return a list of any vocabulary fields in the blueprint
+  # @return [Array<Field>] list of vocabulary fields
+  def vocabulary_fields
+    blueprint&.fields&.select(&:vocabulary?) || []
+  end
 
-    values = Array(metadata[field.name]).compact_blank.map(&:to_i)
-    valid_values = field.vocabulary.terms.where(id: values).pluck(:id)
-    (values - valid_values).presence
+  # Iterate over vocabulary fields to process their terms
+  def cast_vocabulary_fields
+    vocabulary_fields.each do |field|
+      metadata[field.name] = cast_terms(field)
+    end
+  end
+
+  def vocabulary_terms_exist
+    vocabulary_fields.each do |field|
+      metadata[field.name].each do |term|
+        if term.is_a?(TermError)
+          errors.add(:metadata, :invalid,
+                     message: "field \"#{term.field_name}\" references invalid term: \"#{term.value}\"")
+        end
+      end
+    end
+  end
+
+  # Iterate over the terms in a single vocabulary field and cast them to TermValue objects
+  # returns single-value or list based on field configuration (multiple)
+  # @param [Field] field - the field to check - raises exceptions if not a vocabulary field
+  # @return [Array<TermValue>, TermValue] the list of TermValue objects corresponding to each term
+  def cast_terms(field)
+    values = Array(metadata[field.name]).compact_blank
+    ids = extract_term_ids(field, values)
+    field.multiple ? ids : ids.first
+  end
+
+  # Attempt to match each supplied value with the key, label, or id of an existing metadata term
+  # @param [Field] field - the field to check - raises exceptions if not a vocabulary field
+  # @param [Array] values - strings or integers corresponding to the key, label, or id of a Term
+  # @return [Array<TermValue>] the list of TermValue objects corresponding to each value
+  def extract_term_ids(field, values)
+    values.map do |term|
+      cast_term(field, term)
+    end
+  end
+
+  def cast_term(field, term)
+    id = field.vocabulary.terms.find_by(key: term)&.id
+    id ||= field.vocabulary.terms.find_by(label: term)&.id
+    id ||= field.vocabulary.terms.find_by(id: term)&.id
+    TermFactory.call(field, term, id)
+  end
+
+  # Factory to create objects carrying vocabulary term data during validation and serialization
+  class TermFactory
+    def self.call(field, value, id)
+      if id.present?
+        TermValue.new(field, value, id)
+      else
+        TermError.new(field, value)
+      end
+    end
+  end
+
+  # Valid term with source key, label, or id and matching Term :id
+  class TermValue
+    attr_accessor :field_name, :value, :id
+
+    def initialize(field, value, id)
+      @field_name = field.name
+      @value = value
+      @id = id
+    end
+
+    def as_json
+      id
+    end
+  end
+
+  # Invalid term with with target field and unmatched data
+  class TermError < TermValue
+    def initialize(field, value, id = nil)
+      super
+    end
   end
 end
