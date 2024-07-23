@@ -41,8 +41,17 @@ class ImportJob < ApplicationJob
 
   # Return the blueprint object matching the name from the input document
   def find_blueprint(doc)
-    blueprint_name = doc['has_model_ssim']&.first
-    Blueprint.find_by(name: blueprint_name) || Blueprint.find_by(name: 'Default')
+    name = doc['has_model_ssim']&.first
+    fetch_blueprint(name)
+  end
+
+  # Lookup a blueprint based on it's name
+  # NOTE: Caches previous lookups for the duration of the ImportJob
+  def fetch_blueprint(name)
+    @blueprint_cache ||= Hash.new do |hash, key|
+      hash[key] = Blueprint.find_by(name: key) || Blueprint.find_by(name: 'Default')
+    end
+    @blueprint_cache[name]
   end
 
   # Return a hash with incoming document keys mapped to their blueprint targets
