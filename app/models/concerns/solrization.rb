@@ -73,9 +73,13 @@ module Solrization
     return value unless vocabulary?
 
     if multiple
-      value.map { |id| Term.find(id).label }
+      value.map { |id| term_label(id) }
     else
-      Term.find(value).label
+      term_label(value)
     end
+  end
+
+  def term_label(id)
+    Term.find_by(id: id).label
   end
 end

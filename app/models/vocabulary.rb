@@ -16,6 +16,14 @@ class Vocabulary < ApplicationRecord
     key
   end
 
+  # Return the id for a given a term key, label, id, or id in string form
+  # Returns nil if supplied value does not exist in the vocabulary
+  # @param [String, Integer] - value to match
+  # @return [Integer, nil] - id of matching term or nil
+  def resolve_term(target)
+    id_map[target.to_s]
+  end
+
   private
 
   # Set the key attribute if it is blank
@@ -25,5 +33,17 @@ class Vocabulary < ApplicationRecord
   # * whitespace and other non-alphanumeric characters collapsed into single dashes
   def set_key
     self.key = label&.gsub('_', '-')&.parameterize if key.blank?
+  end
+
+  # Return a lookup hash mapping the string version of each ID, the key, and the label
+  # for each term to it's corresponding database ID
+  def id_map
+    @id_map ||= terms.map do |term|
+      [
+        [term.id.to_s, term.id],
+        [term.key, term.id],
+        [term.label, term.id]
+      ]
+    end.flatten(1).to_h
   end
 end
