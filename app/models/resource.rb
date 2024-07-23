@@ -191,9 +191,7 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def cast_term(field, term)
-    id = field.vocabulary.terms.find_by(key: term)&.id
-    id ||= field.vocabulary.terms.find_by(label: term)&.id
-    id ||= field.vocabulary.terms.find_by(id: term)&.id
+    id = field.vocabulary.resolve_term(term)
     TermFactory.call(field, term, id)
   end
 
