@@ -105,6 +105,14 @@ RSpec.describe 'admin/terms' do
         patch term_url(term), params: { term: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
+
+      it 'routes correctly on invalid key changes', :aggregate_failures do
+        term = Term.create! valid_attributes
+        old_key = term.key
+        term.key = '!invalid~key'
+        expect { get term_url(term) }.not_to raise_exception
+        expect(term_url(term)).to match(old_key)
+      end
     end
   end
 

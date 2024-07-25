@@ -57,16 +57,16 @@ Rails.application.routes.draw do
 
   direct :term do |term|
     if term.key
-      { controller: 'admin/terms', action: :show, vocabulary_key: term.vocabulary.key, key: term.key }
+      { controller: 'admin/terms', action: :show, vocabulary_key: term.vocabulary.to_param, key: term.to_param }
     else
       { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }
     end
   end
   direct :edit_term do |term|
-    { controller: 'admin/terms', action: :edit, vocabulary_key: term.vocabulary.key, key: term.key }
+    { controller: 'admin/terms', action: :edit, vocabulary_key: term.vocabulary.to_param, key: term.to_param }
   end
   direct :terms do |term|
-    { controller: 'admin/terms', vocabulary_key: term.vocabulary.key }
+    { controller: 'admin/terms', vocabulary_key: term.vocabulary.to_param }
   end
 
   # When app is firt booted and no Solr config exists, use this as the application root
