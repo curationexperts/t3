@@ -1,6 +1,6 @@
 <%= form_with(model: term, url: term_path(term)) do |form| %>
   <% if term.errors.any? %>
-    <div style="color: red">
+    <div class="validation_errors">
       <h2><%= pluralize(term.errors.count, "error") %> prohibited this term from being saved:</h2>
 
       <ul>
