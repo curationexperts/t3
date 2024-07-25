@@ -101,6 +101,12 @@ RSpec.describe '/admin/vocabularies' do
         vocabulary.reload
         expect(response).to redirect_to(vocabulary_url(vocabulary))
       end
+
+      it 'handles key changes successfuly' do
+        vocabulary = Vocabulary.create! valid_attributes
+        patch vocabulary_url(vocabulary), params: { vocabulary: { key: 'new-key' } }
+        expect(response.location).to match(/new-key/)
+      end
     end
 
     context 'with invalid parameters' do
@@ -108,6 +114,14 @@ RSpec.describe '/admin/vocabularies' do
         vocabulary = Vocabulary.create! valid_attributes
         patch vocabulary_url(vocabulary), params: { vocabulary: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'routes correctly on invalid key changes', :aggregate_failures do
+        vocabulary = Vocabulary.create! valid_attributes
+        old_key = vocabulary.key
+        vocabulary.key = '!invalid~key'
+        expect { get vocabulary_url(vocabulary) }.not_to raise_exception
+        expect(vocabulary_url(vocabulary)).to match(old_key)
       end
     end
   end
