@@ -13,7 +13,8 @@ class Term < ApplicationRecord
   before_validation :set_key
 
   def to_param
-    key
+    # Use #key_was instead of #key when present to prevent attempts to route objects via non-persisted route keys
+    key_was || key
   end
 
   def to_partial_path
