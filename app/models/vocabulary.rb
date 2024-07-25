@@ -13,7 +13,8 @@ class Vocabulary < ApplicationRecord
   has_many :terms, dependent: :destroy
 
   def to_param
-    key
+    # Use #key_was instead of #key when present to prevent attempts to route objects via non-persisted route keys
+    key_was || key
   end
 
   # Return the id for a given a term key, label, id, or id in string form
