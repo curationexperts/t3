@@ -1,47 +1,48 @@
 <%= form_with(model: vocabulary, class: 'card-body') do |form| %>
-  <% if vocabulary.errors.any? %>
-    <div class="validation_errors">
-      <h2><%= pluralize(vocabulary.errors.count, "error") %> prohibited this vocabulary from being saved:</h2>
-
-      <ul>
-        <% vocabulary.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="form_flex">
     <div class="form_buttons">
-      <% if action_name == 'show' %>
-        <%= link_to "Edit this vocabulary", edit_vocabulary_path(@vocabulary), class: 'edit-action btn btn-sm btn-outline-primary' %>
-      <% end %>
-    </div>
+      <div>
+        <%= link_to "Edit this vocabulary", edit_vocabulary_path(@vocabulary), class: 'edit-action btn btn-sm btn-outline-primary' if action_name == 'show'  %>
+      </div>
+
+      <div><%# blank center space that expands to fill any remaining height in the card %></div>
+
+      <div>
+        <%= link_to " Cancel changes", @vocabulary, class: 'cancel_action btn btn-sm btn-outline-primary bi bi-x-square' if action_name != 'show'%>
+      </div>
+
+      <div>
+        <%= form.submit "Save changes", class: 'btn btn-primary bi bi-check-square' if action_name != 'show'%>
+      </div>
+    </div> <!-- .form_buttons -->
 
     <div class="form_fields">
       <fieldset <%= 'disabled' if controller.action_name == 'show' -%>>
-        <div>
-          <%= form.label :label %>
-          <%= form.text_field :label %>
-        </div>
+        <% if vocabulary.errors.any? %>
+          <div class="validation_errors">
+            <h2><%= pluralize(vocabulary.errors.count, "error") %> prohibited this vocabulary from being saved:</h2>
 
-        <div>
-          <%= form.label :key %>
-          <%= form.text_field :key %>
-        </div>
-
-        <div>
-          <%= form.label :note %>
-          <%= form.text_area :note %>
-        </div>
-
-        <% if action_name != 'show' %>
-          <%= form.submit "Save changes", class: 'btn btn-primary' %><br>
-          <%= link_to " Cancel changes", @vocabulary, class: 'cancel_action btn btn-sm btn-outline-info bi bi-x-square' %>
+            <ul>
+              <% vocabulary.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
         <% end %>
 
+        <%= form.label :label %>
+        <%= form.text_field :label %>
+
+        <%= form.label :key %>
+        <%= form.text_field :key %>
+
+        <%= form.label :note %>
+        <%= form.text_area :note, oninput: 'this.style.height = this.scrollHeight + "px"', onfocus: 'this.style.height = this.scrollHeight + "px"' %>
       </fieldset>
     </div>
 
-  </div>
 <% end %>
+
+<script>
+  note = document.getElementById('vocabulary_note')
+  note.style.height = note.scrollHeight + 'px'
+</script>

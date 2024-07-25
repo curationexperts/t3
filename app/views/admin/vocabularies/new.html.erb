@@ -1,9 +1,12 @@
-<h1>New vocabulary</h1>
+<div id="vocabularies">
+  <div>
+    <h1>New Vocabulary </h1>
+  </div>
 
-<%= render "form", vocabulary: @vocabulary %>
-
-<br>
+  <div class="vocabulary_details card">
+    <%= render "form", vocabulary: @vocabulary %>
+  </div>
 
 <div>
-  <%= link_to "Back to vocabularies", vocabularies_path %>
+  <%= link_to "≪ Back to vocabularies", vocabularies_path %>
 </div>
