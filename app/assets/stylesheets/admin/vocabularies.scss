@@ -76,8 +76,10 @@
   }
 
   .vocabulary_row {
-    width: auto;
-    display: flex;
+    display: grid;
+    grid-template-columns: 12rem 4rem auto;
+    column-gap: 1rem;
+    overflow-wrap: anywhere;
   }
 
   .vocabulary_header {
@@ -86,27 +88,15 @@
     border-bottom-style: solid;
   }
 
-  .vocabulary_label {
-    width: 18rem;
-    flex-shrink: 0;
-  }
-
   .vocabulary_term_count {
-    width: 4rem;
-    text-align: center;
-    flex-shrink: 0;
-  }
-
-  .vocabulary_note {
-    margin-right: 0;
-    width: auto;
+    text-align: right;
   }
 
   .vocabulary_terms {
-
     .term {
       display: grid;
-      grid-template-columns: 16rem auto;
+      grid-template-columns: 15rem auto;
+      column-gap: 1rem;
     }
 
     .term:nth-of-type(odd) {
