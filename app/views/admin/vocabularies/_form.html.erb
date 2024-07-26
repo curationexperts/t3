@@ -1,3 +1,22 @@
+<script>
+    function resizeTextArea(node) {
+        node.style.height = 'auto';
+        node.style.height = node.scrollHeight + 'px';
+    }
+    function suggestKey() {
+        label = document.getElementById('vocabulary_label');
+        key = document.getElementById('vocabulary_key');
+        key.placeholder =
+            label.value
+            .normalize('NFKD')
+            .replace(/\p{Diacritic}/gu, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g,'-')
+            .replace(/(^-|-$)/g,'');
+    }
+    window.onload = resizeTextArea(document.getElementById('vocabulary_note'));
+</script>
+
 <%= form_with(model: vocabulary, class: 'card-body') do |form| %>
     <div class="form_buttons">
       <div>
@@ -30,19 +49,14 @@
         <% end %>
 
         <%= form.label :label %>
-        <%= form.text_field :label %>
+        <%= form.text_field :label, oninput: 'suggestKey()' %>
 
         <%= form.label :key %>
         <%= form.text_field :key %>
 
         <%= form.label :note %>
-        <%= form.text_area :note, oninput: 'this.style.height = this.scrollHeight + "px"', onfocus: 'this.style.height = this.scrollHeight + "px"' %>
+        <%= form.text_area :note, oninput: 'resizeTextArea(this);', data: {lpignore:'true'} %>
       </fieldset>
     </div>
 
 <% end %>
-
-<script>
-  note = document.getElementById('vocabulary_note')
-  note.style.height = note.scrollHeight + 'px'
-</script>
