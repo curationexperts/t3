@@ -12,4 +12,10 @@ module DocumentHelper
       to_sentence(links)
     end
   end
+
+  def render_markdown(string)
+    return if string.blank?
+
+    Commonmarker.to_html(string).html_safe # rubocop:disable Rails/OutputSafety
+  end
 end

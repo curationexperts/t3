@@ -29,7 +29,7 @@
             <%= vocabulary.terms.count -%>
           </div>
           <div class="vocabulary_note">
-            <%= vocabulary.note -%>
+            <%= render_markdown(vocabulary.note) -%>
           </div>
         </div>
       <% end %>
