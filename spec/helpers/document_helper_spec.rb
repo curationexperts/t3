@@ -29,4 +29,25 @@ RSpec.describe DocumentHelper do
       end.to raise_exception ActiveSupport::MessageVerifier::InvalidSignature
     end
   end
+
+  describe '#render_markdwon' do
+    it 'renders markdown as HTML' do
+      sample = '[**CommonMark**](https://commonmark.org/help/) examples'
+      expect(helper.render_markdown(sample))
+        .to include '<a href="https://commonmark.org/help/"><strong>CommonMark</strong></a> examples'
+    end
+
+    it 'returns unescaped HTML' do
+      sample = 'Some *markdown* formatted `text`'
+      rendered = helper.render_markdown(sample)
+      expect(rendered).to be_html_safe
+    end
+
+    it 'suppresses raw HTML', :aggregate_failures do
+      sample = '<script>window.alert("danger");</sript>'
+      rendered = helper.render_markdown(sample)
+      expect(rendered).to include '<!-- raw HTML omitted -->'
+      expect(rendered).not_to include '<script>'
+    end
+  end
 end

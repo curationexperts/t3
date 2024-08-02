@@ -23,6 +23,9 @@ gem 'omniauth-rails_csrf_protection'
 # Implement user authorization within the app
 gem 'cancancan'
 
+# Provide Markdown rendering support
+gem 'commonmarker'
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 

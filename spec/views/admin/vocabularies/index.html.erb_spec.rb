@@ -23,6 +23,12 @@ RSpec.describe 'admin/vocabularies/index' do
     expect(rendered).to include(*vocabulary_notes)
   end
 
+  it 'renders markdown in notes' do
+    vocabularies[1].note = '[**CommonMark**](https://commonmark.org/help/) examples'
+    render
+    expect(rendered).to include '<a href="https://commonmark.org/help/"><strong>CommonMark</strong></a> examples'
+  end
+
   it 'provides links to each vocabulary' do
     render
     expect(rendered).to have_link(href: url_for(vocabularies[1]))
