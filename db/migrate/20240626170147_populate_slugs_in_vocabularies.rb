@@ -1,7 +1,7 @@
 class PopulateSlugsInVocabularies < ActiveRecord::Migration[7.1]
   def up
     # Ensure each vocabluary has a valid slug
-    Vocabulary.all.each do |vocabulary|
+    Vocabulary.find_each do |vocabulary|
       # Calling the validation will populate the slug if it's missing
       if vocabulary.invalid?
         # If the validation fails (presumably because the name can't be converted into a valid tag),

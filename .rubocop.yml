@@ -3,9 +3,16 @@ require:
   - rubocop-rspec
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-rspec_rails
 
 AllCops:
   NewCops: enable
+
+Capybara/NegationMatcher:
+  EnforcedStyle: not_to
+
+Capybara/RSpec/HaveSelector:
+  Enabled: false
 
 Metrics/AbcSize:
   Exclude:
@@ -42,6 +49,12 @@ FactoryBot/SyntaxMethods:
 RSpec/ExampleLength:
   CountAsOne: ['array', 'hash', 'heredoc']
 
+RSpec/ReceiveMessages:
+  Enabled: false
+
+RSpec/Rails/NegationBeValid:
+  Enabled: false
+
 Style/Documentation:
   Exclude:
     - 'db/**/*'
@@ -61,6 +74,10 @@ Style/NumericLiterals:
 Style/OpenStructUse:
   Exclude:
     - 'spec/helpers/t3_form_builder_spec.rb'
+
+Style/RedundantReturn:
+  Exclude:
+    - 'app/models/custom_domain.rb'
 
 Style/SymbolProc:
   AllowedPatterns: ['map', 'select']
