@@ -5,9 +5,10 @@ RSpec.describe 'layouts/blacklight/base' do
   let(:theme) { Theme.new(site_name: 'A fancy new archive', id: 1) }
 
   before do
-    allow(view).to receive(:controller).and_return(catalog)
     allow(view).to receive(:application_name).and_return('Test App')
-    allow(catalog).to receive(:request).and_return(request)
+    without_partial_double_verification do
+      allow(view).to receive(:blacklight_config).and_return(catalog.blacklight_config)
+    end
 
     stub_template('shared/_header_navbar.html.erb' => 'HEADER',
                   'shared/_footer.html.erb' => 'FOOTER')

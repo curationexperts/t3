@@ -95,7 +95,8 @@ RSpec.describe SolrService, :aggregate_failures do
   end
 
   it 'solr_host is responding' do
-    allow(solr_client).to receive(:get).and_raise(RSolr::Error::ConnectionRefused)
+    allow(solr_client).to receive(:get)
+      .and_raise(RSolr::Error::ConnectionRefused.new(uri: URI('https://defunct.com/not-in-service')))
 
     expect(service).not_to be_valid
     expect(service.errors.messages[:solr_host]).to include(/is not responding/)
