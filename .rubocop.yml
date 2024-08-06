@@ -52,7 +52,7 @@ RSpec/ExampleLength:
 RSpec/ReceiveMessages:
   Enabled: false
 
-RSpec/Rails/NegationBeValid:
+RSpecRails/NegationBeValid:
   Enabled: false
 
 Style/Documentation:
