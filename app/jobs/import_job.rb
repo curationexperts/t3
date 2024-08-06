@@ -158,7 +158,7 @@ class ImportJob < ApplicationJob
     def record_error(err, doc = nil, index = nil)
       ImportJob.logger.error err
       @errors << { id: "manifest_record_#{index || 'none'}", error_class: err.class,
-                   message: err.message, document: (doc || 'none') }
+                   message: err.message, document: doc || 'none' }
       # broadcast_status
       { id: "manifest_record_#{index}", status: 'errored', timestamp: Time.current.iso8601(3) }
     end
