@@ -42,7 +42,7 @@ class Field < ApplicationRecord
   before_save :check_sequence
   after_save :clear_solr_field
   after_save { Field.resequence } # Call before :update_catalog_controller to reflect field order changes
-  after_save :update_catalog_controller
+  after_save { CatalogConfigService.update_catalog_controller }
   after_destroy { Field.resequence }
 
   class << self
@@ -109,10 +109,6 @@ class Field < ApplicationRecord
   end
 
   private
-
-  def update_catalog_controller
-    SolrService.current.update_catalog_controller
-  end
 
   # Put the field at the end of the sequence if it's sequence order has not ben set
   def check_sequence
