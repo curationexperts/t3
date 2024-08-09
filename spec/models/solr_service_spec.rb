@@ -72,10 +72,9 @@ RSpec.describe SolrService, :aggregate_failures do
   end
 
   it 'updates the catalog controller on saves' do
-    service = described_class.current
-    allow(service).to receive(:update_catalog_controller)
+    allow(CatalogConfigService).to receive(:update_catalog_controller)
     service.save!
-    expect(service).to have_received(:update_catalog_controller)
+    expect(CatalogConfigService).to have_received(:update_catalog_controller)
   end
 
   it 'validates' do

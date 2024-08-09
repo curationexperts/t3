@@ -242,5 +242,5 @@ class CatalogController < ApplicationController
   end
 
   # Apply any dynamic field configurations from the current configuration record
-  SolrService.current.update_catalog_controller
+  CatalogConfigService.update_catalog_controller
 end
