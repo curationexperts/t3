@@ -128,6 +128,18 @@ RSpec.describe SolrService, :aggregate_failures do
     expect(service.errors.messages[:solr_core]).to include("can't be blank")
   end
 
+  describe '#url' do
+    it 'has a sane default' do
+      expect(service.url).to eq 'http://localhost:8983/solr/blacklight-core'
+    end
+
+    it 'reflects the assigned host and core' do
+      service.solr_host = 'https://secure-solr.local'
+      service.solr_core = 'tenejo'
+      expect(service.url).to eq 'https://secure-solr.local/solr/tenejo'
+    end
+  end
+
   describe '#verified?' do
     it 'proxies solr_version' do
       service.solr_version = nil

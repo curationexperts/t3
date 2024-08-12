@@ -39,5 +39,11 @@ RSpec.describe CatalogConfigService do
         .to change { CatalogController.blacklight_config.facet_fields.values.map(&:label) }
         .from([]).to(['field2', 'field3'])
     end
+
+    it 'updates search fields', :aggregate_failures do
+      expect { described_class.send(:update_catalog_controller) }
+        .to change { CatalogController.blacklight_config.search_fields.values.map(&:label) }
+        .from([]).to(['All Fields', 'field1', 'field3'])
+    end
   end
 end
