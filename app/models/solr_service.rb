@@ -17,6 +17,10 @@ class SolrService < ApplicationRecord
     SolrService.first || SolrService.create(DEFAULT_CONFIG)
   end
 
+  def url
+    "#{solr_host}/solr/#{solr_core}"
+  end
+
   def verified?
     solr_version.present?
   end
