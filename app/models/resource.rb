@@ -19,8 +19,10 @@ class Resource < ApplicationRecord # rubocop:disable Metrics/ClassLength
     def reindex_all
       logger.measure_info('Reindexing everything', metric: "#{name}/index_all",
                                                    payload: { resource_count: count }) do
-        find_each do |resource|
-          resource.update_index(commit: false)
+        ActiveRecord::Base.connection.cache do
+          find_each do |resource|
+            resource.update_index(commit: false)
+          end
         end
         SolrService.solr_connection.commit
       end
