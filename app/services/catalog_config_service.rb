@@ -61,7 +61,7 @@ class CatalogConfigService
 
     config.add_search_field(field.solr_field_name,
                             label: field.name,
-                            solr_parameters: { qf: field.solr_field_name })
+                            solr_parameters: { df: field.solr_field_name })
   end
 
   def configure_facet(config, field)
