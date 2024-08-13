@@ -35,6 +35,6 @@ RSpec.describe 'Search' do
     fill_in 'q', with: 'έννοιες που ψάχνω'
     click_on 'search'
     expect(solr_client).to have_received(:send_and_receive)
-      .with('select', hash_including(params: hash_including(q: 'έννοιες που ψάχνω', qf: /description/)))
+      .with('select', hash_including(params: hash_including(q: 'έννοιες που ψάχνω', df: /description/)))
   end
 end
