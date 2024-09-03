@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock '~> 3.17.3'
+lock '~> 3.19.1'
 
 set :application, 't3'
 set :repo_url, 'https://github.com/curationexperts/t3.git'
